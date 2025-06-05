@@ -1,31 +1,37 @@
 import { Database, User, Follow, Event } from '../src/database/database';
+import { UserRepository } from '../src/repository/userRepository';
 
 describe('Database', () => {
-    it('シングルトンインスタンスが正しく取得できること', () => {
-        const instance1 = Database.getInstance();
-        const instance2 = Database.getInstance();
-        expect(instance1).toBe(instance2);
-    });
+    let userRepository: UserRepository = new UserRepository();
 
-    it('ユーザーモデルが取得できること', () => {
-        const db = Database.getInstance();
-        expect(User).toBeDefined();
-    });
+    it('ユーザーを作成できること', async () => {
+        try {
+            const user1 = await userRepository.create('user1', 'password1', 'name1');
+            const user2 = await userRepository.create('user2', 'password2', 'name2');
+            expect(user1).toBeDefined();
+            expect(user2).toBeDefined();
 
-    it('イベントモデルが取得できること', () => {
-        const db = Database.getInstance();
-        expect(Event).toBeDefined();
-    });
+            const fetchedUser1 = await userRepository.get('user1');
+            const fetchedUser2 = await userRepository.get('user2');
+            expect(fetchedUser1?.userId).toBe(user1.userId);
+            expect(fetchedUser1?.name).toBe(user1.name);
+            expect(fetchedUser2?.userId).toBe(user2.userId);
+            expect(fetchedUser2?.name).toBe(user2.name);
 
-    it('フォローモデルが取得できること', () => {
-        const db = Database.getInstance();
-        expect(Follow).toBeDefined();
-    });
-
-    describe('接続', () => {
-        it('接続ができること', async () => {
-            const db = Database.getInstance();
-            await db.connect();
-        });
+            const deleted = await userRepository.delete('user1');
+            expect(deleted).toBe(true);
+            const notFound = await userRepository.get('user1');
+            expect(notFound).toBeNull();
+            const updated = await userRepository.update('user2', 'name2-updated');
+            expect(updated).toBeDefined();
+            expect(updated?.name).toBe('name2-updated');
+            const found = await userRepository.get('user2');
+            expect(found).toBeDefined();
+            expect(found?.name).toBe('name2-updated');
+        } catch (error) {
+            console.error('Error details:', error);
+            throw error;
+        }
     });
 });
+

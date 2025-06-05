@@ -1,4 +1,3 @@
-
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import path from 'path';
 
@@ -160,12 +159,17 @@ export class Database {
 
     public async init(): Promise<void> {
         try {
-            await this.sequelize.sync();
+            await this.sequelize.sync({ force: true });
             console.log('データベースを初期化しました。');
         } catch (error) {
             console.error('データベース初期化エラー:', error);
             throw error;
         }
+    }
+
+    public async close(): Promise<void> {
+        await this.sequelize.close();
+        console.log('データベースを閉じました。');
     }
 
     public getSequelize(): Sequelize {

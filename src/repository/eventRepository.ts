@@ -7,15 +7,7 @@ export class EventRepository {
         this.db = Database.getInstance();
     }
 
-    /**
-     * イベントを作成する
-     * @param userId ユーザーID
-     * @param name イベント名
-     * @param startTime 開始時間
-     * @param endTime 終了時間
-     * @returns 作成されたイベント
-     */
-    public async create(userId: string, name: string, startTime: Date, endTime: Date) {
+    public async create(userId: string, name: string, startTime: Date, endTime: Date): Promise<Event> {
         return await Event.create({
             userId,
             name,
@@ -25,26 +17,13 @@ export class EventRepository {
         });
     }
 
-    /**
-     * イベントを削除する
-     * @param id イベントID
-     */
-    public async delete(id: number): Promise<void> {
-        await Event.destroy({
-            where: {
-                id
-            }
-        });
+    public async delete(id: number): Promise<boolean> {
+        const event = await Event.findByPk(id);
+        if (!event) return false;
+        await event.destroy();
+        return true;
     }
 
-    /**
-     * イベントを更新する
-     * @param id イベントID
-     * @param name イベント名
-     * @param startTime 開始時間
-     * @param endTime 終了時間
-     * @param isDone 完了フラグ
-     */
     public async update(id: number, name?: string, startTime?: Date, endTime?: Date, isDone?: boolean): Promise<Event | null> {
         const updateData: any = {};
         
@@ -59,20 +38,10 @@ export class EventRepository {
         return event;
     }
 
-    /**
-     * イベントを取得する
-     * @param id イベントID
-     * @returns イベント
-     */
-    public async get(id: number) {
+    public async get(id: number): Promise<Event | null> {
         return await Event.findByPk(id);
     }
 
-    /**
-     * ユーザーのイベント一覧を取得する
-     * @param userId ユーザーID
-     * @returns イベント一覧
-     */
     public async getByUserId(userId: string): Promise<Event[]> {
         return await Event.findAll({
             where: {

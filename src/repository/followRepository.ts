@@ -1,4 +1,4 @@
-import { Database } from '../database/database';
+import { Database, Follow } from '../database/database';
 
 export class FollowRepository {
     private db: Database;
@@ -7,42 +7,26 @@ export class FollowRepository {
         this.db = Database.getInstance();
     }
 
-    /**
-     * フォロー関係を作成する
-     * @param followee フォローされるユーザーID
-     * @param follower フォローするユーザーID
-     */
-    public async create(followee: string, follower: string): Promise<void> {
-        const Follow = this.db.getFollowModel();
-        await Follow.create({
+    public async create(followee: string, follower: string): Promise<Follow> {
+        return await Follow.create({
             followee,
             follower
         });
     }
 
-    /**
-     * フォロー関係を削除する
-     * @param followee フォローされるユーザーID
-     * @param follower フォローするユーザーID
-     */
-    public async delete(followee: string, follower: string): Promise<void> {
-        const Follow = this.db.getFollowModel();
-        await Follow.destroy({
+    public async delete(followee: string, follower: string): Promise<boolean> {
+        const follow = await Follow.findOne({
             where: {
                 followee,
                 follower
             }
         });
+        if (!follow) return false;
+        await follow.destroy();
+        return true;
     }
 
-    /**
-     * フォロー関係が存在するか確認する
-     * @param followee フォローされるユーザーID
-     * @param follower フォローするユーザーID
-     * @returns フォロー関係が存在する場合はtrue
-     */
     public async exists(followee: string, follower: string): Promise<boolean> {
-        const Follow = this.db.getFollowModel();
         const follow = await Follow.findOne({
             where: {
                 followee,
@@ -52,13 +36,7 @@ export class FollowRepository {
         return follow !== null;
     }
 
-    /**
-     * ユーザーがフォローしているユーザーIDのリストを取得する
-     * @param userId ユーザーID
-     * @returns フォローしているユーザーIDのリスト
-     */
     public async getFollowees(userId: string): Promise<string[]> {
-        const Follow = this.db.getFollowModel();
         const follows = await Follow.findAll({
             where: {
                 follower: userId
@@ -67,13 +45,7 @@ export class FollowRepository {
         return follows.map(follow => follow.followee);
     }
 
-    /**
-     * ユーザーをフォローしているユーザーIDのリストを取得する
-     * @param userId ユーザーID
-     * @returns フォロワーのユーザーIDのリスト
-     */
     public async getFollowers(userId: string): Promise<string[]> {
-        const Follow = this.db.getFollowModel();
         const follows = await Follow.findAll({
             where: {
                 followee: userId

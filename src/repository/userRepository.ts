@@ -1,4 +1,4 @@
-import { Database } from '../database/database';
+import { Database, User } from '../database/database';
 
 export class UserRepository {
     private db: Database;
@@ -8,9 +8,8 @@ export class UserRepository {
     }
 
     // 新規ユーザーを作成する
-    public async create(userId: string, password: string, name: string): Promise<void> {
-        const User = this.db.getUserModel();
-        await User.create({
+    public async create(userId: string, password: string, name: string): Promise<User> {
+        return await User.create({
             userId,
             password,
             name
@@ -18,51 +17,39 @@ export class UserRepository {
     }
 
     // ユーザーを削除する
-    public async delete(userId: string): Promise<void> {
-        const User = this.db.getUserModel();
-        await User.destroy({
-            where: { userId }
-        });
+    public async delete(userId: string): Promise<boolean> {
+        const user = await User.findByPk(userId);
+        if (!user) return false;
+        await user.destroy();
+        return true;
     }
 
     // ユーザー情報を更新する
-    public async update(userId: string, name: string): Promise<void> {
-        const User = this.db.getUserModel();
-        await User.update({ name }, {
-            where: { userId }
-        });
+    public async update(userId: string, name: string): Promise<User | null> {
+        const user = await User.findByPk(userId);
+        if (!user) return null;
+        await user.update({ name });
+        return user;
     }
 
     // ユーザーが存在するか確認する
     public async exists(userId: string): Promise<boolean> {
-        const User = this.db.getUserModel();
         const user = await User.findByPk(userId);
         return user !== null;
     }
 
     // ユーザー情報を取得する
-    public async get(userId: string): Promise<{userId: string, name: string} | null> {
-        const User = this.db.getUserModel();
+    public async get(userId: string): Promise<User | null> {
         const user = await User.findByPk(userId);
-        if (!user) return null;
-        
-        return {
-            userId: user.userId,
-            name: user.name
-        };
+        return user;
     }
 
     // ユーザー情報をパスワードごと取得する
-    public async getWithPassword(userId: string): Promise<{userId: string, password: string, name: string} | null> {
-        const User = this.db.getUserModel();
+    public async getWithoutPassword(userId: string): Promise<User | null> {
         const user = await User.findByPk(userId);
         if (!user) return null;
-        
-        return {
-            userId: user.userId,
-            password: user.password,
-            name: user.name
-        };
+        user.password = "";
+        return user;
     }
 }
 
