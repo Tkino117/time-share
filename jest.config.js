@@ -9,4 +9,5 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   setupFilesAfterEnv: ["<rootDir>/test/setup.ts"],
+  maxWorkers: 1,
 };

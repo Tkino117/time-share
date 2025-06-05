@@ -11,10 +11,11 @@ describe('EventRepository', () => {
     });
 
     beforeEach(async () => {
-        const events = await eventRepository.getByUserId(userId);
-        for (const event of events) {
-            await eventRepository.delete(event.id);
-        }
+        await eventRepository.clearAll();
+    });
+
+    afterAll(async () => {
+        await eventRepository.clearAll();
     });
 
     it('create', async () => {

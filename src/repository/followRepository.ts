@@ -53,4 +53,14 @@ export class FollowRepository {
         });
         return follows.map(follow => follow.follower);
     }
+
+    public async findAll(): Promise<Follow[]> {
+        return await Follow.findAll();
+    }   
+
+    public async clearAll(): Promise<void> {
+        await Follow.destroy({
+            where: {}
+        });
+    }
 }

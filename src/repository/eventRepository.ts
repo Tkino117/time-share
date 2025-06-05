@@ -52,4 +52,14 @@ export class EventRepository {
             ]
         });
     }
+
+    public async findAll(): Promise<Event[]> {
+        return await Event.findAll();
+    }
+
+    public async clearAll(): Promise<void> {
+        await Event.destroy({
+            where: {}
+        });
+    }
 }

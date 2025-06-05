@@ -1,30 +1,21 @@
 import { UserRepository } from "../../src/repository/userRepository";
-import { Database } from "../../src/database/database";
 
 describe('UserRepository', () => {
-    let userRepository: UserRepository;
-    let database: Database;
+    const userRepository = new UserRepository();
 
     beforeAll(async () => {
-        database = Database.getInstance();
-        await database.connect();
-        await database.init();
-        userRepository = new UserRepository();
+        await userRepository.clearAll();
     });
 
     afterAll(async () => {
-        // テストデータのクリーンアップ
-        await userRepository.delete('test-user-1');
-        await userRepository.delete('test-user-2');
+        await userRepository.clearAll();
     });
 
     beforeEach(async () => {
-        // 各テスト前にデータをクリーンアップ
-        await userRepository.delete('test-user-1');
-        await userRepository.delete('test-user-2');
+        await userRepository.clearAll();
     });
 
-    it('ユーザーの作成と取得ができること', async () => {
+    it('create', async () => {
         const userId = 'test-user-1';
         const password = 'password123';
         const name = 'テストユーザー1';
@@ -42,7 +33,7 @@ describe('UserRepository', () => {
         expect(fetchedUser?.name).toBe(name);
     });
 
-    it('ユーザーの削除ができること', async () => {
+    it('delete', async () => {
         const userId = 'test-user-1';
         const password = 'password123';
         const name = 'テストユーザー1';
@@ -55,7 +46,7 @@ describe('UserRepository', () => {
         expect(user).toBeNull();
     });
 
-    it('ユーザー情報の更新ができること', async () => {
+    it('update', async () => {
         const userId = 'test-user-1';
         const password = 'password123';
         const name = 'テストユーザー1';
@@ -71,7 +62,7 @@ describe('UserRepository', () => {
         expect(user?.name).toBe(newName);
     });
 
-    it('ユーザーの存在確認ができること', async () => {
+    it('exists', async () => {
         const userId = 'test-user-1';
         const password = 'password123';
         const name = 'テストユーザー1';
@@ -81,7 +72,7 @@ describe('UserRepository', () => {
         expect(await userRepository.exists(userId)).toBe(true);
     });
 
-    it('パスワードなしでユーザー情報を取得できること', async () => {
+    it('getWithoutPassword', async () => {
         const userId = 'test-user-1';
         const password = 'password123';
         const name = 'テストユーザー1';

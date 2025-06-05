@@ -51,5 +51,15 @@ export class UserRepository {
         user.password = "";
         return user;
     }
+
+    public async findAll(): Promise<User[]> {
+        return await User.findAll();
+    }
+
+    public async clearAll(): Promise<void> {
+        await User.destroy({
+            where: {}
+        });
+    }
 }
 
