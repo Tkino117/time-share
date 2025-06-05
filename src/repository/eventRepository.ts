@@ -1,4 +1,4 @@
-import { Database } from '../database/database';
+import { Database , Event, User } from '../database/database';
 
 export class EventRepository {
     private db: Database;
@@ -16,7 +16,6 @@ export class EventRepository {
      * @returns 作成されたイベント
      */
     public async create(userId: string, name: string, startTime: Date, endTime: Date) {
-        const Event = this.db.getEventModel();
         return await Event.create({
             userId,
             name,
@@ -31,7 +30,6 @@ export class EventRepository {
      * @param id イベントID
      */
     public async delete(id: number): Promise<void> {
-        const Event = this.db.getEventModel();
         await Event.destroy({
             where: {
                 id
@@ -47,8 +45,7 @@ export class EventRepository {
      * @param endTime 終了時間
      * @param isDone 完了フラグ
      */
-    public async update(id: number, name?: string, startTime?: Date, endTime?: Date, isDone?: boolean): Promise<void> {
-        const Event = this.db.getEventModel();
+    public async update(id: number, name?: string, startTime?: Date, endTime?: Date, isDone?: boolean): Promise<Event | null> {
         const updateData: any = {};
         
         if (name !== undefined) updateData.name = name;
@@ -56,11 +53,10 @@ export class EventRepository {
         if (endTime !== undefined) updateData.endTime = endTime;
         if (isDone !== undefined) updateData.isDone = isDone;
 
-        await Event.update(updateData, {
-            where: {
-                id
-            }
-        });
+        const event = await Event.findByPk(id);
+        if (!event) return null;
+        await event.update(updateData);
+        return event;
     }
 
     /**
@@ -69,7 +65,6 @@ export class EventRepository {
      * @returns イベント
      */
     public async get(id: number) {
-        const Event = this.db.getEventModel();
         return await Event.findByPk(id);
     }
 
@@ -78,8 +73,7 @@ export class EventRepository {
      * @param userId ユーザーID
      * @returns イベント一覧
      */
-    public async getByUserId(userId: string) {
-        const Event = this.db.getEventModel();
+    public async getByUserId(userId: string): Promise<Event[]> {
         return await Event.findAll({
             where: {
                 userId

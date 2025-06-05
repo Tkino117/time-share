@@ -51,5 +51,18 @@ export class UserRepository {
             name: user.name
         };
     }
+
+    // ユーザー情報をパスワードごと取得する
+    public async getWithPassword(userId: string): Promise<{userId: string, password: string, name: string} | null> {
+        const User = this.db.getUserModel();
+        const user = await User.findByPk(userId);
+        if (!user) return null;
+        
+        return {
+            userId: user.userId,
+            password: user.password,
+            name: user.name
+        };
+    }
 }
 

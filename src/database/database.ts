@@ -2,19 +2,19 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import path from 'path';
 
-class User extends Model {
+export class User extends Model {
     public userId!: string;
     public password!: string;
     public name!: string;
 }
 
-class Follow extends Model {
+export class Follow extends Model {
     public id!: number;
     public followee!: string;
     public follower!: string;
 }
 
-class Event extends Model {
+export class Event extends Model {
     public id!: number;
     public userId!: string;
     public name!: string;
@@ -170,18 +170,6 @@ export class Database {
 
     public getSequelize(): Sequelize {
         return this.sequelize;
-    }
-
-    public getUserModel(): typeof User {
-        return User;
-    }
-
-    public getFollowModel(): typeof Follow {
-        return Follow;
-    }
-
-    public getEventModel(): typeof Event {
-        return Event;
     }
 }
 
