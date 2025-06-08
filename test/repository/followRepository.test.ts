@@ -5,65 +5,65 @@ describe('FollowRepository', () => {
     const followRepository = new FollowRepository();
     const userRepository = new UserRepository();
     const followerId = 'test-follower-1';
-    const followeeId = 'test-followee-1';
-    const followeeId2 = 'test-followee-2';
-    const followeeId3 = 'test-followee-3';
-    const followeeId4 = 'test-followee-4';
+    const followingId = 'test-following-1';
+    const followingId2 = 'test-following-2';
+    const followingId3 = 'test-following-3';
+    const followingId4 = 'test-following-4';
 
     beforeAll(async () => {
         // テストに必要なユーザーを作成
         await userRepository.create({ userId: followerId, password: 'password', name: 'Follower User' });
-        await userRepository.create({ userId: followeeId, password: 'password', name: 'Followee User 1' });
-        await userRepository.create({ userId: followeeId2, password: 'password', name: 'Followee User 2' });
-        await userRepository.create({ userId: followeeId3, password: 'password', name: 'Followee User 3' });
-        await userRepository.create({ userId: followeeId4, password: 'password', name: 'Followee User 4' });
+        await userRepository.create({ userId: followingId, password: 'password', name: 'following User 1' });
+        await userRepository.create({ userId: followingId2, password: 'password', name: 'following User 2' });
+        await userRepository.create({ userId: followingId3, password: 'password', name: 'following User 3' });
+        await userRepository.create({ userId: followingId4, password: 'password', name: 'following User 4' });
     });
 
     beforeEach(async () => {
         // 存在する可能性のあるフォロー関係を削除
-        const followees = await followRepository.getFollowees(followerId);
-        for (const followee of followees) {
-            await followRepository.delete(followee, followerId);
+        const followings = await followRepository.getFollowings(followerId);
+        for (const following of followings) {
+            await followRepository.delete(following, followerId);
         }
     });
 
     
     it('create', async () => {
-        await followRepository.create({ followee: followeeId, follower: followerId });
-        const exists = await followRepository.exists(followeeId, followerId);
+        await followRepository.create({ following: followingId, follower: followerId });
+        const exists = await followRepository.exists(followingId, followerId);
         expect(exists).toBe(true);
     });
 
     it('delete', async () => {
-        await followRepository.create({ followee: followeeId, follower: followerId });
-        await followRepository.delete(followeeId, followerId);
-        const exists = await followRepository.exists(followeeId, followerId);
+        await followRepository.create({ following: followingId, follower: followerId });
+        await followRepository.delete(followingId, followerId);
+        const exists = await followRepository.exists(followingId, followerId);
         expect(exists).toBe(false);
     });
 
-    it('getFollowees', async () => {
-        await followRepository.create({ followee: followeeId, follower: followerId });
-        await followRepository.create({ followee: followeeId2, follower: followerId });
-        await followRepository.create({ followee: followeeId3, follower: followerId });
-        const followees = await followRepository.getFollowees(followerId);
-        expect(followees).toHaveLength(3);
-        expect(followees).toEqual(expect.arrayContaining([followeeId, followeeId2, followeeId3]));
+    it('getfollowings', async () => {
+        await followRepository.create({ following: followingId, follower: followerId });
+        await followRepository.create({ following: followingId2, follower: followerId });
+        await followRepository.create({ following: followingId3, follower: followerId });
+        const followings = await followRepository.getFollowings(followerId);
+        expect(followings).toHaveLength(3);
+        expect(followings).toEqual(expect.arrayContaining([followingId, followingId2, followingId3]));
     });
 
     it('getFollowers', async () => {
-        await followRepository.create({ followee: followeeId, follower: followerId });
-        await followRepository.create({ followee: followeeId2, follower: followerId });
-        await followRepository.create({ followee: followeeId3, follower: followerId });
-        const followers = await followRepository.getFollowers(followeeId);
+        await followRepository.create({ following: followingId, follower: followerId });
+        await followRepository.create({ following: followingId2, follower: followerId });
+        await followRepository.create({ following: followingId3, follower: followerId });
+        const followers = await followRepository.getFollowers(followingId);
         expect(followers).toHaveLength(1);
         expect(followers).toEqual(expect.arrayContaining([followerId]));
     });
 
     it('exists', async () => {
-        await followRepository.create({ followee: followeeId, follower: followerId });
-        const exists = await followRepository.exists(followeeId, followerId);
+        await followRepository.create({ following: followingId, follower: followerId });
+        const exists = await followRepository.exists(followingId, followerId);
         expect(exists).toBe(true);
-        const notExists = await followRepository.exists(followeeId2, followerId);
+        const notExists = await followRepository.exists(followingId2, followerId);
         expect(notExists).toBe(false);
     });
 });

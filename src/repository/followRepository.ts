@@ -1,7 +1,7 @@
 import { Database, Follow } from '../database/database';
 
 export type FollowCreateInput = {
-    followee: string;
+    following: string;
     follower: string;
 }
 
@@ -14,15 +14,15 @@ export class FollowRepository {
 
     public async create(follow: FollowCreateInput): Promise<Follow> {
         return await Follow.create({
-            followee: follow.followee,
+            following: follow.following,
             follower: follow.follower
         });
     }
 
-    public async delete(followee: string, follower: string): Promise<boolean> {
+    public async delete(following: string, follower: string): Promise<boolean> {
         const follow = await Follow.findOne({
             where: {
-                followee,
+                following,
                 follower
             }
         });
@@ -31,29 +31,29 @@ export class FollowRepository {
         return true;
     }
 
-    public async exists(followee: string, follower: string): Promise<boolean> {
+    public async exists(following: string, follower: string): Promise<boolean> {
         const follow = await Follow.findOne({
             where: {
-                followee,
+                following,
                 follower
             }
         });
         return follow !== null;
     }
 
-    public async getFollowees(userId: string): Promise<string[]> {
+    public async getFollowings(userId: string): Promise<string[]> {
         const follows = await Follow.findAll({
             where: {
                 follower: userId
             }
         });
-        return follows.map(follow => follow.followee);
+        return follows.map(follow => follow.following);
     }
 
     public async getFollowers(userId: string): Promise<string[]> {
         const follows = await Follow.findAll({
             where: {
-                followee: userId
+                following: userId
             }
         });
         return follows.map(follow => follow.follower);

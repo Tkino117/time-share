@@ -9,7 +9,7 @@ export class User extends Model {
 
 export class Follow extends Model {
     public id!: number;
-    public followee!: string;
+    public following!: string;
     public follower!: string;
 }
 
@@ -69,7 +69,7 @@ export class Database {
                 autoIncrement: true,
                 allowNull: false
             },
-            followee: {
+            following: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 references: {
@@ -93,7 +93,7 @@ export class Database {
             indexes: [
                 {
                     unique: true,
-                    fields: ['followee', 'follower']
+                    fields: ['following', 'follower']
                 }
             ]
         });
