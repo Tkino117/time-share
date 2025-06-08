@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "ts-node src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
     "@types/uuid": "^10.0.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
     "uuid": "^11.1.0"
