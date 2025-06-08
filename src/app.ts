@@ -37,8 +37,7 @@ async function initExpress(app: express.Express) {
     // ログ出力
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         console.log(`${req.method} ${req.path}`);
-        console.log(req.body);
-        console.log();
+        console.log(`body: ${JSON.stringify(req.body)}`);
         next();
     });
 
@@ -52,20 +51,24 @@ async function main() {
 
     const app = await initExpress(express());
 
-    // 認証
-    const publicPaths = ['/api/login', '/api/register', '/api/logout', '/api/sample'];
+    // 認証ミドルウェア
+    const publicPaths = ['/api/login', '/api/register', '/api/logout'];
     app.use(async (req: Request, res: Response, next: NextFunction) => {
+        console.log('auth info:');
         if(publicPaths.includes(req.path)) {
+            console.log('    access to: public path\n');
             return next();
         }
+        console.log(`    access to: private path`);
+        console.log(`    sessionId: ${req.session.sessionId}`);
         if(req.session.sessionId) {
-            console.log('sessionId', req.session.sessionId);
             const userId = await userService.authorize(req.session.sessionId);
             if (userId) {
-                console.log('authorized access');
+                console.log('    authorized\n');
                 return next();
             }
             else {
+                console.log('    unauthorized\n');
                 res.status(401).json({
                     success: false,
                     message: 'Unauthorized'
@@ -73,6 +76,7 @@ async function main() {
             }
         }
         else {
+            console.log('    unauthorized\n');
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
