@@ -7,20 +7,14 @@ import cors from 'cors';
 import { InvalidPasswordError, UserAlreadyExistsError, UserNotFoundError } from './service/errors';
 import path from 'path';
 
+// セッションの型定義
 declare module 'express-session' {
     interface SessionData {
         sessionId: string;
     }
 }
 
-const app = express();
-const port = 3000;
-
-
-async function main() {
-    const sessionManager = new SessionManager();
-    const userService = new UserService(new UserRepository(), sessionManager);
-
+async function initExpress(app: express.Express) {
     // 静的ファイルの配信設定
     app.use(express.static(path.join(__dirname, '../public')));
 
@@ -30,6 +24,7 @@ async function main() {
         credentials: true
     }));
 
+    // json のパース
     app.use(express.json());
 
     // cookie の設定。デフォルトの session を利用する
@@ -47,8 +42,18 @@ async function main() {
         next();
     });
 
+    return app;
+}
+
+const port = 3000;
+async function main() {
+    const sessionManager = new SessionManager();
+    const userService = new UserService(new UserRepository(), sessionManager);
+
+    const app = await initExpress(express());
+
     // 認証
-    const publicPaths = ['/api/login', '/api/register', '/api/logout'];
+    const publicPaths = ['/api/login', '/api/register', '/api/logout', '/api/sample'];
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         if(publicPaths.includes(req.path)) {
             return next();
