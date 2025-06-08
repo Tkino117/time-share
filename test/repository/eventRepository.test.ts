@@ -7,7 +7,7 @@ describe('EventRepository', () => {
     const userId = 'test-user-1';
 
     beforeAll(async () => {
-        await userRepository.create(userId, 'password', 'User 1');
+        await userRepository.create({ userId, password: 'password', name: 'User 1' });
     });
 
     beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('EventRepository', () => {
     });
 
     it('create', async () => {
-        const event = await eventRepository.create(userId, 'Event 1', new Date(), new Date());
+        const event = await eventRepository.create({ userId, name: 'Event 1', startTime: new Date(), endTime: new Date() });
         expect(event).toBeDefined();
         expect(event.userId).toBe(userId);
         expect(event.name).toBe('Event 1');
@@ -29,15 +29,15 @@ describe('EventRepository', () => {
     });
 
     it('delete', async () => {
-        const event = await eventRepository.create(userId, 'Event 1', new Date(), new Date());
+        const event = await eventRepository.create({ userId, name: 'Event 1', startTime: new Date(), endTime: new Date() });
         await eventRepository.delete(event.id);
         const exists = await eventRepository.get(event.id);
         expect(exists).toBeNull();
     });
 
     it('update', async () => {
-        const event = await eventRepository.create(userId, 'Event 1', new Date(), new Date());
-        await eventRepository.update(event.id, 'Event 2', new Date(), new Date(), true);
+        const event = await eventRepository.create({ userId, name: 'Event 1', startTime: new Date(), endTime: new Date() });
+        await eventRepository.update(event.id, { name: 'Event 2', isDone: true });
         const updatedEvent = await eventRepository.get(event.id);
         expect(updatedEvent).toBeDefined();
         expect(updatedEvent?.name).toBe('Event 2');
@@ -45,7 +45,7 @@ describe('EventRepository', () => {
     });
 
     it('get', async () => {
-        const event = await eventRepository.create(userId, 'Event 1', new Date(), new Date());
+        const event = await eventRepository.create({ userId, name: 'Event 1', startTime: new Date(), endTime: new Date() });
         const retrievedEvent = await eventRepository.get(event.id);
         expect(retrievedEvent).toBeDefined();
         expect(retrievedEvent?.id).toBe(event.id);
@@ -53,9 +53,9 @@ describe('EventRepository', () => {
     });
 
     it('getByUserId', async () => {
-        const event1 = await eventRepository.create(userId, 'Event 1', new Date(), new Date());
-        const event2 = await eventRepository.create(userId, 'Event 2', new Date(), new Date());
-        const event3 = await eventRepository.create(userId, 'Event 3', new Date(), new Date());
+        const event1 = await eventRepository.create({ userId, name: 'Event 1', startTime: new Date(), endTime: new Date() });
+        const event2 = await eventRepository.create({ userId, name: 'Event 2', startTime: new Date(), endTime: new Date() });
+        const event3 = await eventRepository.create({ userId, name: 'Event 3', startTime: new Date(), endTime: new Date() });
         const events = await eventRepository.getByUserId(userId);
         expect(events).toHaveLength(3);
     });

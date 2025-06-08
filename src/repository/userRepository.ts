@@ -1,5 +1,16 @@
 import { Database, User } from '../database/database';
 
+export type UserCreateInput = {
+    userId: string;
+    password: string;
+    name: string;
+}
+
+export type UserUpdateInput = {
+    name?: string;
+    password?: string;
+}
+
 export class UserRepository {
     private db: Database;
     
@@ -8,11 +19,11 @@ export class UserRepository {
     }
 
     // 新規ユーザーを作成する
-    public async create(userId: string, password: string, name: string): Promise<User> {
+    public async create(user: UserCreateInput): Promise<User> {
         return await User.create({
-            userId,
-            password,
-            name
+            userId: user.userId,
+            password: user.password,
+            name: user.name
         });
     }
 
@@ -24,11 +35,11 @@ export class UserRepository {
         return true;
     }
 
-    // ユーザー情報を更新する
-    public async update(userId: string, name: string): Promise<User | null> {
+    // ユーザー情報を更新する : !note! パスワードを更新できるようにしたい
+    public async update(userId: string, updateData: UserUpdateInput): Promise<User | null> {
         const user = await User.findByPk(userId);
         if (!user) return null;
-        await user.update({ name });
+        await user.update(updateData);
         return user;
     }
 

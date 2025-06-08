@@ -1,5 +1,19 @@
 import { Database , Event, User } from '../database/database';
 
+export type EventCreateInput = {
+    userId: string;
+    name: string;
+    startTime: Date;
+    endTime: Date;
+}
+
+export type EventUpdateInput = {
+    name?: string;
+    startTime?: Date;
+    endTime?: Date;
+    isDone?: boolean;
+}
+
 export class EventRepository {
     private db: Database;
 
@@ -7,12 +21,12 @@ export class EventRepository {
         this.db = Database.getInstance();
     }
 
-    public async create(userId: string, name: string, startTime: Date, endTime: Date): Promise<Event> {
+    public async create(event: EventCreateInput): Promise<Event> {
         return await Event.create({
-            userId,
-            name,
-            startTime,
-            endTime,
+            userId: event.userId,
+            name: event.name,
+            startTime: event.startTime,
+            endTime: event.endTime,
             isDone: false
         });
     }
@@ -24,14 +38,7 @@ export class EventRepository {
         return true;
     }
 
-    public async update(id: number, name?: string, startTime?: Date, endTime?: Date, isDone?: boolean): Promise<Event | null> {
-        const updateData: any = {};
-        
-        if (name !== undefined) updateData.name = name;
-        if (startTime !== undefined) updateData.startTime = startTime;
-        if (endTime !== undefined) updateData.endTime = endTime;
-        if (isDone !== undefined) updateData.isDone = isDone;
-
+    public async update(id: number, updateData: EventUpdateInput): Promise<Event | null> {
         const event = await Event.findByPk(id);
         if (!event) return null;
         await event.update(updateData);

@@ -20,7 +20,7 @@ describe('UserRepository', () => {
         const password = 'password123';
         const name = 'テストユーザー1';
         
-        const createdUser = await userRepository.create(userId, password, name);
+        const createdUser = await userRepository.create({ userId, password, name });
         expect(createdUser).toBeDefined();
         expect(createdUser.userId).toBe(userId);
         expect(createdUser.password).toBe(password);
@@ -38,7 +38,7 @@ describe('UserRepository', () => {
         const password = 'password123';
         const name = 'テストユーザー1';
         
-        await userRepository.create(userId, password, name);
+        await userRepository.create({ userId, password, name });
         const deleted = await userRepository.delete(userId);
         expect(deleted).toBe(true);
         
@@ -52,8 +52,8 @@ describe('UserRepository', () => {
         const name = 'テストユーザー1';
         const newName = '更新されたユーザー';
         
-        await userRepository.create(userId, password, name);
-        const updated = await userRepository.update(userId, newName);
+        await userRepository.create({ userId, password, name });
+        const updated = await userRepository.update(userId, { name: newName });
         expect(updated).toBeDefined();
         expect(updated?.name).toBe(newName);
         
@@ -68,7 +68,7 @@ describe('UserRepository', () => {
         const name = 'テストユーザー1';
         
         expect(await userRepository.exists(userId)).toBe(false);
-        await userRepository.create(userId, password, name);
+        await userRepository.create({ userId, password, name });
         expect(await userRepository.exists(userId)).toBe(true);
     });
 
@@ -77,7 +77,7 @@ describe('UserRepository', () => {
         const password = 'password123';
         const name = 'テストユーザー1';
         
-        await userRepository.create(userId, password, name);
+        await userRepository.create({ userId, password, name });
         const user = await userRepository.getWithoutPassword(userId);
         expect(user).toBeDefined();
         expect(user?.userId).toBe(userId);

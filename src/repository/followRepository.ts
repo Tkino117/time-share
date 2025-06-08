@@ -1,5 +1,10 @@
 import { Database, Follow } from '../database/database';
 
+export type FollowCreateInput = {
+    followee: string;
+    follower: string;
+}
+
 export class FollowRepository {
     private db: Database;
 
@@ -7,10 +12,10 @@ export class FollowRepository {
         this.db = Database.getInstance();
     }
 
-    public async create(followee: string, follower: string): Promise<Follow> {
+    public async create(follow: FollowCreateInput): Promise<Follow> {
         return await Follow.create({
-            followee,
-            follower
+            followee: follow.followee,
+            follower: follow.follower
         });
     }
 

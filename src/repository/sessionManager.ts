@@ -8,6 +8,7 @@ export interface Session {
 }
 
 export class SessionManager {
+    // <sessionId, Session>
     private sessions: Map<string, Session> = new Map();
     private defaultTimeout: number = 1000 * 60 * 60 * 24;
     public createSession(userId: string, startTime: Date, endTime: Date | null = null): Session {

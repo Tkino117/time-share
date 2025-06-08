@@ -12,11 +12,11 @@ describe('FollowRepository', () => {
 
     beforeAll(async () => {
         // テストに必要なユーザーを作成
-        await userRepository.create(followerId, 'password', 'Follower User');
-        await userRepository.create(followeeId, 'password', 'Followee User 1');
-        await userRepository.create(followeeId2, 'password', 'Followee User 2');
-        await userRepository.create(followeeId3, 'password', 'Followee User 3');
-        await userRepository.create(followeeId4, 'password', 'Followee User 4');
+        await userRepository.create({ userId: followerId, password: 'password', name: 'Follower User' });
+        await userRepository.create({ userId: followeeId, password: 'password', name: 'Followee User 1' });
+        await userRepository.create({ userId: followeeId2, password: 'password', name: 'Followee User 2' });
+        await userRepository.create({ userId: followeeId3, password: 'password', name: 'Followee User 3' });
+        await userRepository.create({ userId: followeeId4, password: 'password', name: 'Followee User 4' });
     });
 
     beforeEach(async () => {
@@ -29,38 +29,38 @@ describe('FollowRepository', () => {
 
     
     it('create', async () => {
-        await followRepository.create(followeeId, followerId);
+        await followRepository.create({ followee: followeeId, follower: followerId });
         const exists = await followRepository.exists(followeeId, followerId);
         expect(exists).toBe(true);
     });
 
     it('delete', async () => {
-        await followRepository.create(followeeId, followerId);
+        await followRepository.create({ followee: followeeId, follower: followerId });
         await followRepository.delete(followeeId, followerId);
         const exists = await followRepository.exists(followeeId, followerId);
         expect(exists).toBe(false);
     });
 
     it('getFollowees', async () => {
-        await followRepository.create(followeeId, followerId);
-        await followRepository.create(followeeId2, followerId);
-        await followRepository.create(followeeId3, followerId);
+        await followRepository.create({ followee: followeeId, follower: followerId });
+        await followRepository.create({ followee: followeeId2, follower: followerId });
+        await followRepository.create({ followee: followeeId3, follower: followerId });
         const followees = await followRepository.getFollowees(followerId);
         expect(followees).toHaveLength(3);
         expect(followees).toEqual(expect.arrayContaining([followeeId, followeeId2, followeeId3]));
     });
 
     it('getFollowers', async () => {
-        await followRepository.create(followeeId, followerId);
-        await followRepository.create(followeeId2, followerId);
-        await followRepository.create(followeeId3, followerId);
+        await followRepository.create({ followee: followeeId, follower: followerId });
+        await followRepository.create({ followee: followeeId2, follower: followerId });
+        await followRepository.create({ followee: followeeId3, follower: followerId });
         const followers = await followRepository.getFollowers(followeeId);
         expect(followers).toHaveLength(1);
         expect(followers).toEqual(expect.arrayContaining([followerId]));
     });
 
     it('exists', async () => {
-        await followRepository.create(followeeId, followerId);
+        await followRepository.create({ followee: followeeId, follower: followerId });
         const exists = await followRepository.exists(followeeId, followerId);
         expect(exists).toBe(true);
         const notExists = await followRepository.exists(followeeId2, followerId);
