@@ -60,4 +60,11 @@ export class UserService {
         const user = await this.userRepository.get(session.userId);
         return user;
     }
+
+    // セッションを検証してユーザーIDを返す
+    public async authorize(sessionId: string): Promise<string | null> {
+        const session = this.sessionManager.getSession(sessionId);
+        if (!session) return null;
+        return session.userId;
+    }
 }

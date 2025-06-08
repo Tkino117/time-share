@@ -1,0 +1,110 @@
+<html>
+    <body>
+        <h2> ユーザー処理 </h2>
+        <div>
+            <input type="text" id="login-userId" placeholder="userId" />
+            <input type="password" id="login-password" placeholder="password" />
+            <button id="loginButton"> ログイン </button>
+            <button id="logoutButton"> ログアウト </button>
+        </div>
+        <div>
+            <input type="text" id="register-userId" placeholder="userId" />
+            <input type="password" id="register-password" placeholder="password" />
+            <input type="text" id="register-name" placeholder="name" />
+            <button id="registerButton"> 新規登録 </button>
+        </div>
+        <h2> テスト </h2>
+        <div>
+            <button id="testButton1"> サンプル api </button>
+        </div>
+        <h2> log </h2>
+        <button id="clearLogButton"> ログクリア </button>
+        <div id="log"></div>
+        <script>
+            const urlBase = 'http://localhost:3000';
+            document.getElementById('loginButton').addEventListener('click', login);
+            document.getElementById('logoutButton').addEventListener('click', logout);
+            document.getElementById('registerButton').addEventListener('click', register);
+            document.getElementById('testButton1').addEventListener('click', test1);
+            document.getElementById('clearLogButton').addEventListener('click', clearLog);
+
+            async function test1() {
+                const response = await get('/api/sample');
+                const result = await response.json();
+                log(result.message);
+            }
+
+            async function login() {
+                const userId = document.getElementById('login-userId').value;
+                const password = document.getElementById('login-password').value;
+                const response = await post('/api/login', { userId, password });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            async function register() {
+                const userId = document.getElementById('register-userId').value;
+                const password = document.getElementById('register-password').value;
+                const name = document.getElementById('register-name').value;
+                const response = await post('/api/register', { userId, password, name });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            async function logout() {
+                const response = await post('/api/logout', {});
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            async function clearLog() {
+                const log = document.getElementById('log');
+                log.innerHTML = '';
+            }
+
+            // -------------------------- utility functions --------------------------------
+            async function post(endpoint, data) {
+                const response = await fetch(urlBase + endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                return response;
+            }
+
+            async function get(endpoint) {
+                const response = await fetch(urlBase + endpoint, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                return response;
+            }
+
+            async function log(message) {
+                const log = document.getElementById('log');
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = message;
+                messageDiv.style.marginBottom = '5px';
+                log.appendChild(messageDiv);
+            }
+        </script>
+    </body>
+</html>
