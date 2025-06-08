@@ -9,8 +9,8 @@ export class User extends Model {
 
 export class Follow extends Model {
     public id!: number;
-    public following!: string;
     public follower!: string;
+    public following!: string;
 }
 
 export class Event extends Model {
@@ -69,6 +69,14 @@ export class Database {
                 autoIncrement: true,
                 allowNull: false
             },
+            follower: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'userId'
+                }
+            },
             following: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -77,14 +85,6 @@ export class Database {
                     key: 'userId'
                 }
             },
-            follower: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                references: {
-                    model: 'users',
-                    key: 'userId'
-                }
-            }
         }, {
             sequelize: this.sequelize,
             modelName: 'Follow',
@@ -93,7 +93,7 @@ export class Database {
             indexes: [
                 {
                     unique: true,
-                    fields: ['following', 'follower']
+                    fields: ['follower', 'following']
                 }
             ]
         });

@@ -1,8 +1,8 @@
 import { Database, Follow } from '../database/database';
 
 export type FollowCreateInput = {
-    following: string;
     follower: string;
+    following: string;
 }
 
 export class FollowRepository {
@@ -14,16 +14,16 @@ export class FollowRepository {
 
     public async create(follow: FollowCreateInput): Promise<Follow> {
         return await Follow.create({
-            following: follow.following,
-            follower: follow.follower
+            follower: follow.follower,
+            following: follow.following
         });
     }
 
-    public async delete(following: string, follower: string): Promise<boolean> {
+    public async delete(follower: string, following: string): Promise<boolean> {
         const follow = await Follow.findOne({
             where: {
-                following,
-                follower
+                follower,
+                following
             }
         });
         if (!follow) return false;
@@ -31,11 +31,11 @@ export class FollowRepository {
         return true;
     }
 
-    public async exists(following: string, follower: string): Promise<boolean> {
+    public async exists(follower: string, following: string): Promise<boolean> {
         const follow = await Follow.findOne({
             where: {
-                following,
-                follower
+                follower,
+                following
             }
         });
         return follow !== null;
