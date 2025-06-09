@@ -1,9 +1,13 @@
 import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/userRepository";
 import { SessionManager } from "../repository/sessionManager";
 import { User } from "../database/database";
-import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError } from "./errors";
+import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
 
 export class UserService {
+    private readonly passwordMinLength = 1;
+    private readonly nameMinLength = 1;
+    private readonly userIdMinLength = 1;
+
     constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager) {
 
     }
@@ -12,13 +16,13 @@ export class UserService {
         if (await this.userRepository.exists(user.userId)) {
             throw new UserAlreadyExistsError(user.userId);
         }
-        if (user.userId.length < 1) {
+        if (user.userId.length < this.userIdMinLength) {
             throw new InvalidUserIdError();
         }
-        if (user.password.length < 1) {
+        if (user.password.length < this.passwordMinLength) {
             throw new InvalidPasswordError();
         }
-        if (user.name.length < 1) {
+        if (user.name.length < this.nameMinLength) {
             throw new InvalidNameError();
         }
         const createdUser = await this.userRepository.create(user);
@@ -36,6 +40,12 @@ export class UserService {
     public async updateUser(userId: string, updateData: UserUpdateInput): Promise<User | null> {
         if (!await this.userRepository.exists(userId)) {
             throw new UserNotFoundError(userId);
+        }
+        if (updateData.password && updateData.password.length < this.passwordMinLength) {
+            throw new InvalidPasswordError();
+        }
+        if (updateData.name && updateData.name.length < this.nameMinLength) {
+            throw new InvalidNameError();
         }
         const updatedUser = await this.userRepository.update(userId, updateData);
         return updatedUser;
@@ -65,7 +75,7 @@ export class UserService {
 
     public async getUserFromSession(sessionId: string): Promise<User | null> {
         const session = this.sessionManager.getSession(sessionId);
-        if (!session) return null;
+        if (!session) throw new UnauthorizedError();
         const user = await this.userRepository.get(session.userId);
         return user;
     }
@@ -73,7 +83,7 @@ export class UserService {
     // セッションを検証してユーザーIDを返す
     public async authorize(sessionId: string): Promise<string | null> {
         const session = this.sessionManager.getSession(sessionId);
-        if (!session) return null;
+        if (!session) throw new UnauthorizedError();
         return session.userId;
     }
 }
