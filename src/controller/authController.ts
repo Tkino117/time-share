@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../service/userService';
 import { InvalidPasswordError, UserNotFoundError } from '../service/errors';
 import { SessionManager } from '../repository/sessionManager';
-import { EmptyResponseData, ServerErrorResponse, SuccessResponse, UnauthorizedResponse, UserResponseData } from '../response';
+import { EmptyResponseData, ErrorResponse, ServerErrorResponse, SuccessResponse, UnauthorizedResponse, UserResponseData } from '../response';
 
 export class AuthController {
     constructor(private userService: UserService, private sessionManager: SessionManager) {
@@ -18,14 +18,14 @@ export class AuthController {
             req.session.sessionId = session.sessionId;
             const user = await this.userService.getUser(userId);
             const data = new UserResponseData(user);
-            new SuccessResponse(data).send(res);
+            new SuccessResponse(data, 'Logged in').send(res);
         }
         catch(error: any) {
             if (error instanceof InvalidPasswordError) {
-                new UnauthorizedResponse('Invalid password').send(res);
+                new ErrorResponse('Invalid password').send(res);
             }
             else if(error instanceof UserNotFoundError) {
-                new UnauthorizedResponse('User not found').send(res);
+                new ErrorResponse('User not found').send(res);
             }
             else {
                 console.error(error);
