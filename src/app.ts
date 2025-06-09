@@ -6,6 +6,7 @@ import { UserRepository } from './repository/userRepository';
 import cors from 'cors';
 import { InvalidPasswordError, UserAlreadyExistsError, UserNotFoundError } from './service/errors';
 import path from 'path';
+import { Router, UserRouter, AuthRouter, EventRouter } from './router';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -164,13 +165,8 @@ async function main() {
         });
     });
 
-    // サンプル api
-    app.get('/api/sample', async (req: Request, res: Response) => {
-        res.json({
-            success: true,
-            message: 'Sample API'
-        });
-    });
+    const router = new Router(new UserRouter(), new AuthRouter(), new EventRouter());
+    app.use('/', router.getRouter());
 
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
