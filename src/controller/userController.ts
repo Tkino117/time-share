@@ -1,6 +1,8 @@
 import { UserAlreadyExistsError } from "../service/errors";
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
+import { CreateResponse, ServerErrorResponse, UserResponseData } from "../response";
+import { ErrorResponse } from "../response/error/ErrorResponse";
 
 export class UserController {
     constructor(private userService: UserService) {
@@ -11,25 +13,17 @@ export class UserController {
         const password: string = req.body.password;
         const name: string = req.body.name;
         try {
-            await this.userService.createUser({ userId, password, name });
-            res.json({
-                success: true,
-                message: 'Register successful'
-            });
+            const user = await this.userService.createUser({ userId, password, name });
+            const data = new UserResponseData(user);
+            new CreateResponse(data, 'Register successful').send(res);
         }
         catch(error: any) {
             if (error instanceof UserAlreadyExistsError) {
-                res.status(400).json({
-                    success: false,
-                    message: 'User already exists'
-                });
+                new ErrorResponse('User already exists').send(res);
             }
             else {
                 console.error(error);
-                res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                });
+                new ServerErrorResponse('Internal server error').send(res);
             }
         }
     }

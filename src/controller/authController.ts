@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../service/userService';
 import { InvalidPasswordError, UserNotFoundError } from '../service/errors';
 import { SessionManager } from '../repository/sessionManager';
+import { EmptyResponseData, ServerErrorResponse, SuccessResponse, UnauthorizedResponse, UserResponseData } from '../response';
 
 export class AuthController {
     constructor(private userService: UserService, private sessionManager: SessionManager) {
@@ -15,32 +16,20 @@ export class AuthController {
             await this.userService.login(userId, password);
             const session = this.sessionManager.createSession(userId, new Date());
             req.session.sessionId = session.sessionId;
-            res.json({
-                success: true,
-                message: 'Login successful',
-                sessionId: session.sessionId,
-                userId: userId
-            });
+            const user = await this.userService.getUser(userId);
+            const data = new UserResponseData(user);
+            new SuccessResponse(data).send(res);
         }
         catch(error: any) {
             if (error instanceof InvalidPasswordError) {
-                res.status(401).json({
-                    success: false,
-                    message: 'Invalid password'
-                });
+                new UnauthorizedResponse('Invalid password').send(res);
             }
             else if(error instanceof UserNotFoundError) {
-                res.status(401).json({
-                    success: false,
-                    message: 'User not found'
-                });
+                new UnauthorizedResponse('User not found').send(res);
             }
             else {
                 console.error(error);
-                res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                });
+                new ServerErrorResponse('Internal server error').send(res);
             }
         }
     }
@@ -50,9 +39,6 @@ export class AuthController {
             await this.userService.logout(req.session.sessionId);
             req.session.sessionId = '';
         }
-        res.json({
-            success: true,
-            message: 'Logout successful'
-        });
+        new SuccessResponse(new EmptyResponseData(), 'Logged out').send(res);
     }
 }

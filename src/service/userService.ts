@@ -32,7 +32,7 @@ export class UserService {
         return updatedUser;
     }
 
-    public async getUser(userId: string): Promise<User | null> {
+    public async getUser(userId: string): Promise<User> {
         const user = await this.userRepository.get(userId);
         if (!user) {
             throw new UserNotFoundError(userId);

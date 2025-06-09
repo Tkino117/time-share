@@ -3,6 +3,7 @@ import { UserRouter } from "./userRouter";
 import { AuthRouter } from "./authRouter";
 import { EventRouter } from "./eventRouter";
 import { Request, Response } from 'express';
+import { EmptyResponseData, SuccessResponse } from '../response';
 export * from './userRouter';
 export * from './authRouter';
 export * from './eventRouter';
@@ -20,10 +21,7 @@ export class Router extends AbstractRouter {
         this.router.use('/api/auth', this.authRouter.getRouter());
         this.router.use('/api/events', this.eventRouter.getRouter());
         this.router.get('/api/sample', async (req: Request, res: Response) => {
-            res.json({
-                success: true,
-                message: 'Sample API'
-            });
+            new SuccessResponse(new EmptyResponseData(), 'Sample API').send(res);
         });
     }
 }

@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "ts-node src/app.ts"
+    "start": "ts-node src/app.ts",
+    "test:data": "ts-node src/response/data/test.ts"
   },
   "keywords": [],
   "author": "",
