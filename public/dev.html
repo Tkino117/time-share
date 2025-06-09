@@ -51,7 +51,7 @@
                 const userId = document.getElementById('register-userId').value;
                 const password = document.getElementById('register-password').value;
                 const name = document.getElementById('register-name').value;
-                const response = await post('/api/register', { userId, password, name });
+                const response = await post('/api/users', { userId, password, name });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);

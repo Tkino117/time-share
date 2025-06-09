@@ -1,13 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
-import { UserService } from './service/userService';
-import { SessionManager } from './repository/sessionManager';
-import { UserRepository } from './repository/userRepository';
 import cors from 'cors';
-import { InvalidPasswordError, UserAlreadyExistsError, UserNotFoundError } from './service/errors';
 import path from 'path';
 import { Router, UserRouter, AuthRouter, EventRouter } from './router';
-import { AuthController } from './controller/authController';
+import { AuthController, UserController, EventController } from './controller';
+import { UserService, EventService } from './service';
+import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -48,17 +46,26 @@ async function initExpress(app: express.Express) {
 
 const port = 3000;
 async function main() {
+    // 依存性注入
+    const userRepository = new UserRepository();
+    const eventRepository = new EventRepository();
+    const followRepository = new FollowRepository();
     const sessionManager = new SessionManager();
-    const userService = new UserService(new UserRepository(), sessionManager);
+    const userService = new UserService(userRepository, sessionManager);
+    const eventService = new EventService(eventRepository, userRepository, sessionManager);
     const authController = new AuthController(userService, sessionManager);
+    const userController = new UserController(userService);
+    const eventController = new EventController(eventService);
     const authRouter = new AuthRouter(authController);
-    const userRouter = new UserRouter();
-    const eventRouter = new EventRouter();
+    const userRouter = new UserRouter(userController);
+    const eventRouter = new EventRouter(eventController);
+    const router = new Router(userRouter, authRouter, eventRouter);
 
+    // 初期化
     const app = await initExpress(express());
 
     // 認証ミドルウェア
-    const publicPaths = ['/api/auth/login', '/api/register', '/api/auth/logout'];
+    const publicPaths = ['/api/auth/login', '/api/users', '/api/auth/logout'];
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         console.log('auth info:');
         if(publicPaths.includes(req.path)) {
@@ -90,36 +97,6 @@ async function main() {
         }
     });
 
-    // 新規登録
-    app.post('/api/register', async (req: Request, res: Response) => {
-        const userId: string = req.body.userId;
-        const password: string = req.body.password;
-        const name: string = req.body.name;
-        try {
-            await userService.createUser({ userId, password, name });
-            res.json({
-                success: true,
-                message: 'Register successful'
-            });
-        }
-        catch(error: any) {
-            if (error instanceof UserAlreadyExistsError) {
-                res.status(400).json({
-                    success: false,
-                    message: 'User already exists'
-                });
-            }
-            else {
-                console.error(error);
-                res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                });
-            }
-        }
-    });
-
-    const router = new Router(userRouter, authRouter, eventRouter);
     app.use('/', router.getRouter());
 
     app.listen(port, () => {
