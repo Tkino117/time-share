@@ -1,4 +1,4 @@
-import { UserAlreadyExistsError } from "../service/errors";
+import { InvalidNameError, InvalidPasswordError, InvalidUserIdError, UserAlreadyExistsError } from "../service/errors";
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
 import { CreateResponse, ServerErrorResponse, UserResponseData } from "../response";
@@ -20,6 +20,15 @@ export class UserController {
         catch(error: any) {
             if (error instanceof UserAlreadyExistsError) {
                 new ErrorResponse('User already exists').send(res);
+            }
+            else if (error instanceof InvalidPasswordError) {
+                new ErrorResponse('Password is too short').send(res);
+            }
+            else if (error instanceof InvalidUserIdError) {
+                new ErrorResponse('User id is empty').send(res);
+            }
+            else if (error instanceof InvalidNameError) {
+                new ErrorResponse('Name is empty').send(res);
             }
             else {
                 console.error(error);

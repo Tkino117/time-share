@@ -18,3 +18,17 @@ export class InvalidPasswordError extends Error {
         this.name = 'InvalidPasswordError';
     }
 }
+
+export class InvalidUserIdError extends Error {
+    constructor() {
+        super('Invalid user id');
+        this.name = 'InvalidUserIdError';
+    }
+}
+
+export class InvalidNameError extends Error {
+    constructor() {
+        super('Invalid name');
+        this.name = 'InvalidNameError';
+    }
+}

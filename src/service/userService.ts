@@ -1,7 +1,7 @@
 import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/userRepository";
 import { SessionManager } from "../repository/sessionManager";
 import { User } from "../database/database";
-import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError } from "./errors";
+import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError } from "./errors";
 
 export class UserService {
     constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager) {
@@ -11,6 +11,15 @@ export class UserService {
     public async createUser(user: UserCreateInput): Promise<User> {
         if (await this.userRepository.exists(user.userId)) {
             throw new UserAlreadyExistsError(user.userId);
+        }
+        if (user.userId.length < 1) {
+            throw new InvalidUserIdError();
+        }
+        if (user.password.length < 1) {
+            throw new InvalidPasswordError();
+        }
+        if (user.name.length < 1) {
+            throw new InvalidNameError();
         }
         const createdUser = await this.userRepository.create(user);
         return createdUser;

@@ -65,7 +65,7 @@
                 const response = await post('/api/auth/logout', {});
                 const result = await response.json();
                 if(result.success) {
-                    log(result.data.message);
+                    log(result.message);
                 }
                 else {
                     log(result.message);
