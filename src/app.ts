@@ -7,6 +7,7 @@ import cors from 'cors';
 import { InvalidPasswordError, UserAlreadyExistsError, UserNotFoundError } from './service/errors';
 import path from 'path';
 import { Router, UserRouter, AuthRouter, EventRouter } from './router';
+import { AuthController } from './controller/authController';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -49,11 +50,15 @@ const port = 3000;
 async function main() {
     const sessionManager = new SessionManager();
     const userService = new UserService(new UserRepository(), sessionManager);
+    const authController = new AuthController(userService, sessionManager);
+    const authRouter = new AuthRouter(authController);
+    const userRouter = new UserRouter();
+    const eventRouter = new EventRouter();
 
     const app = await initExpress(express());
 
     // 認証ミドルウェア
-    const publicPaths = ['/api/login', '/api/register', '/api/logout'];
+    const publicPaths = ['/api/auth/login', '/api/register', '/api/auth/logout'];
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         console.log('auth info:');
         if(publicPaths.includes(req.path)) {
@@ -114,58 +119,7 @@ async function main() {
         }
     });
 
-
-    // ログイン処理
-    app.post('/api/login', async (req: Request, res: Response) => {
-        const userId: string = req.body.userId;
-        const password: string = req.body.password;
-        try {
-            await userService.login(userId, password);
-            const session = sessionManager.createSession(userId, new Date());
-            req.session.sessionId = session.sessionId;
-            res.json({
-                success: true,
-                message: 'Login successful',
-                sessionId: session.sessionId,
-                userId: userId
-            });
-        }
-        catch(error: any) {
-            if (error instanceof InvalidPasswordError) {
-                res.status(401).json({
-                    success: false,
-                    message: 'Invalid password'
-                });
-            }
-            else if(error instanceof UserNotFoundError) {
-                res.status(401).json({
-                    success: false,
-                    message: 'User not found'
-                });
-            }
-            else {
-                console.error(error);
-                res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                });
-            }
-        }
-    });
-
-    // ログアウト処理
-    app.post('/api/logout', async (req: Request, res: Response) => {
-        if(req.session.sessionId) {
-            await userService.logout(req.session.sessionId);
-            req.session.sessionId = '';
-        }
-        res.json({
-            success: true,
-            message: 'Logout successful'
-        });
-    });
-
-    const router = new Router(new UserRouter(), new AuthRouter(), new EventRouter());
+    const router = new Router(userRouter, authRouter, eventRouter);
     app.use('/', router.getRouter());
 
     app.listen(port, () => {
