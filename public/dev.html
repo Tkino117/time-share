@@ -21,6 +21,7 @@
         </div>
         <div>
             <button id="deleteButton"> 削除 </button>
+            <button id="findAllUsersButton"> 全ユーザー取得 </button>
         </div>
         <h2> テスト </h2>
         <div>
@@ -38,6 +39,7 @@
             document.getElementById('deleteButton').addEventListener('click', deleteUser);
             document.getElementById('testButton1').addEventListener('click', test1);
             document.getElementById('clearLogButton').addEventListener('click', clearLog);
+            document.getElementById('findAllUsersButton').addEventListener('click', findAllUsers);
 
             async function test1() {
                 const response = await get('/api/sample');
@@ -119,6 +121,16 @@
                     log(result.message);
                 }
             }
+
+            async function findAllUsers() {
+                const response = await get('/api/dev/users');
+                const result = await response.json();
+                log(result.length + ' users:');
+                for(const user of result) {
+                    log('id: ' + user.userId + ', password: ' + user.password + ', name: ' + user.name);
+                }
+            }
+
             async function clearLog() {
                 const log = document.getElementById('log');
                 log.innerHTML = '';

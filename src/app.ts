@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import path from 'path';
-import { Router, UserRouter, AuthRouter, EventRouter } from './router';
+import { Router, UserRouter, AuthRouter, EventRouter, DevRouter } from './router';
 import { AuthController, UserController, EventController } from './controller';
 import { UserService, EventService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
@@ -59,13 +59,15 @@ async function main() {
     const authRouter = new AuthRouter(authController);
     const userRouter = new UserRouter(userController);
     const eventRouter = new EventRouter(eventController);
-    const router = new Router(userRouter, authRouter, eventRouter);
+    const devRouter = new DevRouter(userService);
+    const router = new Router(userRouter, authRouter, eventRouter, devRouter);
 
     // 初期化
     const app = await initExpress(express());
 
     // 認証ミドルウェア
-    const publicPaths = ['/api/auth/login', '/api/users', '/api/auth/logout'];
+    const publicPaths = ['/api/auth/login', '/api/users',
+         '/api/auth/logout', '/api/dev/users'];
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         console.log('auth info:');
         if(publicPaths.includes(req.path)) {

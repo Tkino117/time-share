@@ -98,4 +98,8 @@ export class UserService {
         if (!session) throw new UnauthorizedError();
         return session.userId;
     }
+
+    public async findAll(): Promise<User[]> {
+        return await this.userRepository.findAll();
+    }
 }
