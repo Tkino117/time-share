@@ -31,7 +31,10 @@
         <button id="clearLogButton"> ログクリア </button>
         <div id="log"></div>
         <script>
+            // URLを取得（localhostか本番かを自動で判定させてる）
             const urlBase = getApiUrl();
+
+            // ボタンにイベントリスナーを設定
             document.getElementById('loginButton').addEventListener('click', login);
             document.getElementById('logoutButton').addEventListener('click', logout);
             document.getElementById('registerButton').addEventListener('click', register);
@@ -41,12 +44,15 @@
             document.getElementById('clearLogButton').addEventListener('click', clearLog);
             document.getElementById('findAllUsersButton').addEventListener('click', findAllUsers);
 
+            // -------------------- ボタンごとの処理 --------------------------------
+            // サンプルボタン
             async function test1() {
                 const response = await get('/api/sample');
                 const result = await response.json();
                 log(result.message);
             }
 
+            // ログインボタン
             async function login() {
                 const userId = document.getElementById('login-userId').value;
                 const password = document.getElementById('login-password').value;
@@ -60,6 +66,7 @@
                 }
             }
 
+            // 新規登録ボタン
             async function register() {
                 const userId = document.getElementById('register-userId').value;
                 const password = document.getElementById('register-password').value;
@@ -74,6 +81,7 @@
                 }
             }
 
+            // ログアウトボタン
             async function logout() {
                 const response = await post('/api/auth/logout', {});
                 const result = await response.json();
@@ -85,6 +93,7 @@
                 }
             }
 
+            // 更新ボタン
             async function updateUser() {
                 // まず自分のユーザーidを知る
                 const preUserId = await getMyUserId();
@@ -107,6 +116,7 @@
                 }
             }
 
+            // 削除ボタン
             async function deleteUser() {
                 const preUserId = await getMyUserId();
                 if (!preUserId) {
@@ -122,6 +132,7 @@
                 }
             }
 
+            // 全ユーザー取得ボタン
             async function findAllUsers() {
                 const response = await get('/api/dev/users');
                 const result = await response.json();
@@ -131,12 +142,14 @@
                 }
             }
 
+            // ログクリアボタン
             async function clearLog() {
                 const log = document.getElementById('log');
                 log.innerHTML = '';
             }
 
-            // -------------------------- utility functions --------------------------------
+            // -------------------------- ユーティリティ関数 --------------------------------
+            // 自分のユーザーidを取得（ユーザーIDを取得する専用のAPIを用意している）
             async function getMyUserId() {
                 const response = await get('/api/users/me');
                 const result = await response.json();
@@ -149,6 +162,8 @@
                     return undefined;
                 }
             }
+
+            // POSTリクエスト
             async function post(endpoint, data) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'POST',
@@ -161,6 +176,7 @@
                 return response;
             }
 
+            // GETリクエスト
             async function get(endpoint) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'GET',
@@ -169,6 +185,7 @@
                 return response;
             }
 
+            // PUTリクエスト
             async function put(endpoint, data) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'PUT',
@@ -181,6 +198,7 @@
                 return response;
             }
 
+            // DELETEリクエスト
             async function del(endpoint) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'DELETE',
@@ -189,6 +207,7 @@
                 return response;
             }
 
+            // ログを表示
             async function log(message) {
                 const log = document.getElementById('log');
                 const messageDiv = document.createElement('div');
@@ -197,6 +216,7 @@
                 log.appendChild(messageDiv);
             }
 
+            // URLを取得
             function getApiUrl() {
                 const hostname = window.location.hostname;
                 if (hostname === 'localhost' || hostname === '127.0.0.1') {
