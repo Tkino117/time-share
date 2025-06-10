@@ -57,4 +57,12 @@ export class SessionManager {
     public findAllSessions(): Session[] {
         return Array.from(this.sessions.values());
     }
+
+    public getUserId(sessionId: string): string | undefined {
+        const session = this.sessions.get(sessionId);
+        if (session === undefined) {
+            return undefined;
+        }
+        return session.userId;
+    }
 }

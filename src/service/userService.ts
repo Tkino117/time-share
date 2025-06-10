@@ -37,9 +37,18 @@ export class UserService {
         return deleted;
     }
 
-    public async updateUser(userId: string, updateData: UserUpdateInput): Promise<User | null> {
+    public async updateUser(userId: string, updateData: UserUpdateInput): Promise<User> {
         if (!await this.userRepository.exists(userId)) {
             throw new UserNotFoundError(userId);
+        }
+        if (updateData.userId && updateData.userId.length < this.userIdMinLength) {
+            throw new InvalidUserIdError();
+        }
+        if (updateData.userId && await this.userRepository.exists(updateData.userId)) {
+            throw new UserAlreadyExistsError(updateData.userId);
+        }
+        if (updateData.userId && updateData.userId === userId) {
+            throw new InvalidUserIdError();
         }
         if (updateData.password && updateData.password.length < this.passwordMinLength) {
             throw new InvalidPasswordError();
@@ -48,6 +57,9 @@ export class UserService {
             throw new InvalidNameError();
         }
         const updatedUser = await this.userRepository.update(userId, updateData);
+        if (!updatedUser) {
+            throw new UserNotFoundError(userId);
+        }
         return updatedUser;
     }
 

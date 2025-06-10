@@ -7,8 +7,9 @@ export type UserCreateInput = {
 }
 
 export type UserUpdateInput = {
-    name?: string;
+    userId?: string;
     password?: string;
+    name?: string;
 }
 
 export class UserRepository {

@@ -13,6 +13,15 @@
             <input type="text" id="register-name" placeholder="name" />
             <button id="registerButton"> 新規登録 </button>
         </div>
+        <div>
+            <input type="text" id="update-userId" placeholder="userId" />
+            <input type="password" id="update-password" placeholder="password" />
+            <input type="text" id="update-name" placeholder="name" />
+            <button id="updateButton"> 更新 </button>
+        </div>
+        <div>
+            <button id="deleteButton"> 削除 </button>
+        </div>
         <h2> テスト </h2>
         <div>
             <button id="testButton1"> サンプル api </button>
@@ -25,6 +34,8 @@
             document.getElementById('loginButton').addEventListener('click', login);
             document.getElementById('logoutButton').addEventListener('click', logout);
             document.getElementById('registerButton').addEventListener('click', register);
+            document.getElementById('updateButton').addEventListener('click', updateUser);
+            document.getElementById('deleteButton').addEventListener('click', deleteUser);
             document.getElementById('testButton1').addEventListener('click', test1);
             document.getElementById('clearLogButton').addEventListener('click', clearLog);
 
@@ -72,12 +83,60 @@
                 }
             }
 
+            async function updateUser() {
+                // まず自分のユーザーidを知る
+                const preUserId = await getMyUserId();
+                if (!preUserId) {
+                    return;
+                }
+                let userId = document.getElementById('update-userId').value;
+                let password = document.getElementById('update-password').value;
+                let name = document.getElementById('update-name').value;
+                if (userId === '') userId = undefined;
+                if (password === '') password = undefined;
+                if (name === '') name = undefined;
+                const response = await put('/api/users/' + preUserId, { userId, password, name });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            async function deleteUser() {
+                const preUserId = await getMyUserId();
+                if (!preUserId) {
+                    return;
+                }
+                const response = await del('/api/users/' + preUserId);
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
             async function clearLog() {
                 const log = document.getElementById('log');
                 log.innerHTML = '';
             }
 
             // -------------------------- utility functions --------------------------------
+            async function getMyUserId() {
+                const response = await get('/api/users/me');
+                const result = await response.json();
+                if (result.success) {
+                    return result.data.userId;
+                }
+                else {
+                    log(result.message);
+                    log('自分のユーザーidを知ることに失敗しました');
+                    return undefined;
+                }
+            }
             async function post(endpoint, data) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'POST',
@@ -93,6 +152,26 @@
             async function get(endpoint) {
                 const response = await fetch(urlBase + endpoint, {
                     method: 'GET',
+                    credentials: 'include'
+                });
+                return response;
+            }
+
+            async function put(endpoint, data) {
+                const response = await fetch(urlBase + endpoint, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                return response;
+            }
+
+            async function del(endpoint) {
+                const response = await fetch(urlBase + endpoint, {
+                    method: 'DELETE',
                     credentials: 'include'
                 });
                 return response;

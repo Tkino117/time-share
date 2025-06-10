@@ -35,10 +35,16 @@ export class AuthController {
     }
 
     async logout(req: Request, res: Response) {
+        try {
         if(req.session.sessionId) {
             await this.userService.logout(req.session.sessionId);
             req.session.sessionId = '';
+            }
+            new SuccessResponse(new EmptyResponseData(), 'Logged out').send(res);
         }
-        new SuccessResponse(new EmptyResponseData(), 'Logged out').send(res);
+        catch(error: any) {
+            console.error(error);
+            new ServerErrorResponse('Internal server error').send(res);
+        }
     }
 }
