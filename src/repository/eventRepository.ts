@@ -1,10 +1,10 @@
 import { Database , Event, User } from '../database/database';
 
 export type EventCreateInput = {
-    userId: string;
-    name: string;
-    startTime: Date;
-    endTime: Date;
+    userId?: string;
+    name?: string;
+    startTime?: Date;
+    endTime?: Date;
 }
 
 export type EventUpdateInput = {

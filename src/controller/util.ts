@@ -47,6 +47,12 @@ export function handleError(error: any, res: Response) {
     else if (error instanceof errors.FollowNotFoundError) {
         new responses.NotFoundResponse('Not following').send(res);
     }
+    else if (error instanceof errors.InvalidEventNameError) {
+        new responses.ErrorResponse('Invalid event name').send(res);
+    }
+    else if (error instanceof errors.AuthError) {
+        new responses.UnauthorizedResponse('Unauthorized').send(res);
+    }
     else {
         console.error(error);
         new responses.ServerErrorResponse('Internal server error').send(res);

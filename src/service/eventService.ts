@@ -2,7 +2,7 @@ import { Event } from "../database/database";
 import { EventRepository, EventCreateInput, EventUpdateInput } from "../repository/eventRepository";
 import { UserRepository } from "../repository/userRepository";
 import { SessionManager } from "../repository/sessionManager";
-import { UserNotFoundError, InvalidTimeRangeError, TimeConflictError, EventNotFoundError } from "./errors";
+import { UserNotFoundError, InvalidTimeRangeError, TimeConflictError, EventNotFoundError, InvalidEventNameError, InvalidUserIdError } from "./errors";
 
 export class EventService {
     constructor(private readonly eventRepository: EventRepository,
@@ -11,6 +11,18 @@ export class EventService {
     }
 
     public async createEvent(event: EventCreateInput): Promise<Event> {
+        if (!event.userId) {
+            throw new InvalidUserIdError();
+        }
+        if (!event.name) {
+            throw new InvalidEventNameError();
+        }
+        if (!event.startTime) {
+            throw new InvalidTimeRangeError();
+        }
+        if (!event.endTime) {
+            throw new InvalidTimeRangeError();
+        }
         if (!await this.userRepository.exists(event.userId)) {
             throw new UserNotFoundError(event.userId);
         }

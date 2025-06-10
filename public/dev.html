@@ -20,13 +20,21 @@
             <button id="updateButton"> 更新 </button>
             <button id="deleteButton"> ユーザー削除 </button>
         </div>
-        <h2> フォロー </h2>
+        <h2> フォロー・イベント </h2>
         <div>
             <input type="text" id="follow-userId" placeholder="userId" />
             <button id="followButton"> フォロー </button>
             <button id="unfollowButton"> フォロー解除 </button>
             <button id="getFollowingsButton"> フォロー一覧 </button>
             <button id="getFollowersButton"> フォロワー一覧 </button>
+        </div>
+        <div>
+            <input type="text" id="event-name" placeholder="event-name" />
+            <input type="datetime-local" id="event-startTime" />
+            <span> - </span>
+            <input type="datetime-local" id="event-endTime" />
+            <button id="createEventButton"> イベント作成 </button>
+            <button id="getMyEventsButton"> 自分のイベント一覧 </button>
         </div>
         <h2> 開発ツール</h2>
         <div>
@@ -55,7 +63,8 @@
             document.getElementById('unfollowButton').addEventListener('click', unfollowUser);
             document.getElementById('getFollowingsButton').addEventListener('click', getFollowings);
             document.getElementById('getFollowersButton').addEventListener('click', getFollowers);
-            
+            document.getElementById('createEventButton').addEventListener('click', createEvent);
+            document.getElementById('getMyEventsButton').addEventListener('click', getMyEvents);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -203,6 +212,36 @@
                     log(result.data.users.length + ' followers:');
                     for(const user of result.data.users) {
                         log('id: ' + user.userId + ', name: ' + user.name);
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // イベント作成ボタン
+            async function createEvent() {
+                const name = document.getElementById('event-name').value;
+                const startTime = document.getElementById('event-startTime').value;
+                const endTime = document.getElementById('event-endTime').value;
+                const response = await post('/api/events', { name, startTime, endTime });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 自分のイベント一覧ボタン
+            async function getMyEvents() {
+                const response = await get('/api/users/me/events');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.events.length + ' events:');
+                    for(const event of result.data.events) {
+                        log('id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
                     }
                 }
                 else {

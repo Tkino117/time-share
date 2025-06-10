@@ -1,13 +1,14 @@
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
-import { CreateResponse, EmptyResponseData, SuccessResponse, UserResponseData, UsersResponseData } from "../response";
+import { CreateResponse, EmptyResponseData, EventsResponseData, SuccessResponse, UserResponseData, UsersResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
 import { FollowService } from "../service/followService";
+import { EventService } from "../service/eventService";
 
 export class UserController {
-    constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager) {
+    constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService) {
     }
 
     async createUser(req: Request, res: Response) {
@@ -76,18 +77,15 @@ export class UserController {
     }
 
     async getMyUser(req: Request, res: Response) {
-        if (!req.session.sessionId) {
-            new ErrorResponse('Session not found').send(res);
-            return;
+        try {
+            const userId = await auth(req, res, this.sessionManager);
+            const user = await this.userService.getUser(userId);
+            const data = new UserResponseData(user);
+            new SuccessResponse(data, 'Get my user successful').send(res);
         }
-        const userId = await this.sessionManager.getUserId(req.session.sessionId);
-        if (!userId) {
-            new ErrorResponse('Session not found').send(res);
-            return;
+        catch(error: any) {
+            handleError(error, res);
         }
-        const user = await this.userService.getUser(userId);
-        const data = new UserResponseData(user);
-        new SuccessResponse(data, 'Get my user successful').send(res);
     }
 
     async followUser(req: Request, res: Response) {
@@ -139,4 +137,17 @@ export class UserController {
             handleError(error, res);
         }
     }
+    
+    async getMyEvents(req: Request, res: Response) {
+        try {
+            const userId = await auth(req, res, this.sessionManager);
+            const events = await this.eventService.getEventsByUserId(userId);
+            const data = new EventsResponseData(events);
+            new SuccessResponse(data, 'Events retrieved successfully').send(res);
+        }
+        catch(error: any) {
+            handleError(error, res);
+        }
+    }
+
 }

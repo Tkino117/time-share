@@ -5,6 +5,13 @@ export class EventNotFoundError extends Error {
     }
 }
 
+export class InvalidEventNameError extends Error {
+    constructor() {
+        super('Event name is required');
+        this.name = 'InvalidEventNameError';
+    }
+}
+
 export class InvalidTimeRangeError extends Error {
     constructor() {
         super('Start time must be before end time');

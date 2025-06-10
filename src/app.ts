@@ -62,8 +62,8 @@ async function main() {
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
         const followService = new FollowService(followRepository, userRepository, eventRepository);
         const authController = new AuthController(userService, sessionManager);
-        const userController = new UserController(userService, followService, sessionManager);
-        const eventController = new EventController(eventService);
+        const userController = new UserController(userService, followService, sessionManager, eventService);
+        const eventController = new EventController(eventService, sessionManager);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
