@@ -28,12 +28,11 @@ export class Database {
 
     private constructor() {
         const dbPath = path.resolve(__dirname, '../../database.sqlite');
-        console.log('データベースファイルのパス:', dbPath);
         
         this.sequelize = new Sequelize({
             dialect: 'sqlite',
             storage: dbPath,
-            logging: console.log // デバッグ用にログを有効化
+            logging: false
         });
 
         this.initUserModel();

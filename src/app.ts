@@ -51,7 +51,7 @@ async function main() {
         // データベースの初期化
         const database = Database.getInstance();
         await database.connect();
-        console.log('データベース接続が完了しました');
+        await database.init();
 
         // 依存性注入
         const userRepository = new UserRepository();
