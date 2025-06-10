@@ -1,11 +1,9 @@
-import { FollowAlreadyExistsError, FollowNotFoundError, InvalidNameError, InvalidPasswordError, InvalidUserIdError, UserAlreadyExistsError, UserNotFoundError } from "../service/errors";
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
-import { CreateResponse, EmptyResponseData, ServerErrorResponse, SuccessResponse, UserResponseData } from "../response";
+import { CreateResponse, EmptyResponseData, SuccessResponse, UserResponseData, UsersResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
-import { ForbiddenResponse } from "../response/error/ForbiddenResponse";
-import { checkSession, handleError } from "./util";
+import { auth, checkSession, handleError } from "./util";
 import { FollowService } from "../service/followService";
 
 export class UserController {
@@ -93,17 +91,9 @@ export class UserController {
     }
 
     async followUser(req: Request, res: Response) {
-        if (!req.session.sessionId) {
-            new ErrorResponse('Session not found').send(res);
-            return;
-        }
-        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
-        if (!userId) {
-            new ErrorResponse('User not found').send(res);
-            return;
-        }
         const followingId: string = req.params.userId;
         try {
+            const userId = await auth(req, res, this.sessionManager);
             await this.followService.followUser(userId, followingId);
             new SuccessResponse(new EmptyResponseData(), 'Follow user successful').send(res);
         }
@@ -113,17 +103,9 @@ export class UserController {
     }
 
     async unfollowUser(req: Request, res: Response) {
-        if (!req.session.sessionId) {
-            new ErrorResponse('Session not found').send(res);
-            return;
-        }
-        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
-        if (!userId) {
-            new ErrorResponse('User not found').send(res);
-            return;
-        }
         const followingId: string = req.params.userId;
         try {
+            const userId = await auth(req, res, this.sessionManager);
             await this.followService.unfollowUser(userId, followingId);
             new SuccessResponse(new EmptyResponseData(), 'Unfollow user successful').send(res);
         }
@@ -133,10 +115,28 @@ export class UserController {
     }
 
     async getFollowings(req: Request, res: Response) {
-        if (!req.session.sessionId) {
-            new ErrorResponse('Session not found').send(res);
-            return;
+        try {
+            const userId = await auth(req, res, this.sessionManager);
+            const followings = await this.followService.getFollowings(userId);
+            const users = await Promise.all(followings.map(following => this.userService.getUser(following)));
+            const data = new UsersResponseData(users);
+            new SuccessResponse(data, 'Get followings successful').send(res);
         }
-        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
+        catch(error: any) {
+            handleError(error, res);
+        }
+    }
+
+    async getFollowers(req: Request, res: Response) {
+        try {
+            const userId = await auth(req, res, this.sessionManager);
+            const followers = await this.followService.getFollowers(userId);
+            const users = await Promise.all(followers.map(follower => this.userService.getUser(follower)));
+            const data = new UsersResponseData(users);
+            new SuccessResponse(data, 'Get followers successful').send(res);
+        }
+        catch(error: any) {
+            handleError(error, res);
+        }
     }
 }

@@ -28,10 +28,14 @@
             <button id="followButton"> フォロー </button>
             <button id="unfollowButton"> フォロー解除 </button>
         </div>
+        <div>
+            <button id="getFollowingsButton"> フォロー一覧 </button>
+            <button id="getFollowersButton"> フォロワー一覧 </button>
+        </div>
         <h2> テスト </h2>
         <div>
-            <button id="testButton1"> 認証入りサンプルAPI </button>
-            <button id="testButton2"> 開発用デモ追加 </button>
+            <button id="testButton1"> サンプルAPI </button>
+            <button id="testButton2"> 開発用デモ </button>
         </div>
         <h2> log </h2>
         <button id="clearLogButton"> ログクリア </button>
@@ -52,6 +56,9 @@
             document.getElementById('findAllUsersButton').addEventListener('click', findAllUsers);
             document.getElementById('followButton').addEventListener('click', followUser);
             document.getElementById('unfollowButton').addEventListener('click', unfollowUser);
+            document.getElementById('getFollowingsButton').addEventListener('click', getFollowings);
+            document.getElementById('getFollowersButton').addEventListener('click', getFollowers);
+            
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -170,6 +177,36 @@
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // フォロー一覧ボタン
+            async function getFollowings() {
+                const response = await get('/api/users/me/followings');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.users.length + ' followings:');
+                    for(const user of result.data.users) {
+                        log('id: ' + user.userId + ', name: ' + user.name);
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // フォロワー一覧ボタン
+            async function getFollowers() {
+                const response = await get('/api/users/me/followers');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.users.length + ' followers:');
+                    for(const user of result.data.users) {
+                        log('id: ' + user.userId + ', name: ' + user.name);
+                    }
                 }
                 else {
                     log(result.message);

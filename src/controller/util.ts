@@ -3,6 +3,7 @@ import { ForbiddenResponse } from "../response/error/ForbiddenResponse";
 import { SessionManager } from "../repository";
 import * as errors from "../service/errors";
 import * as responses from "../response";
+
 // req のセッションIDが userId のセッションであるかを確認する
 export function checkSession(req: Request, res: Response, sessionManager: SessionManager, userId: string) {
     if (req.session.sessionId && sessionManager.getSession(req.session.sessionId)?.userId !== userId) {
@@ -50,4 +51,15 @@ export function handleError(error: any, res: Response) {
         console.error(error);
         new responses.ServerErrorResponse('Internal server error').send(res);
     }
+}
+
+export async function auth(req: Request, res: Response, sessionManager: SessionManager): Promise<string> {
+    if (!req.session.sessionId) {
+        throw new errors.UnauthorizedError();
+    }
+    const userId: string | undefined = await sessionManager.getUserId(req.session.sessionId);
+    if (!userId) {
+        throw new errors.UnauthorizedError();
+    }
+    return userId;
 }
