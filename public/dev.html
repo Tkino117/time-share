@@ -13,28 +13,46 @@
             <input type="text" id="register-name" placeholder="name" />
             <button id="registerButton"> 新規登録 </button>
         </div>
+        <h2> フォロー </h2>
+        <div>
+            <input type="text" id="follow-userId" placeholder="userId" />
+            <button id="followButton"> フォロー </button>
+            <button id="unfollowButton"> フォロー解除 </button>
+        </div>
+        <div>
+            <button id="getFollowingsButton"> フォロー一覧 </button>
+            <button id="getFollowersButton"> フォロワー一覧 </button>
+        </div>
+        <h2> イベント </h2>
+        <div>
+            <input type="text" id="create-event-name" placeholder="event-name" />
+            <input type="datetime-local" id="create-event-startTime" />
+            <span> - </span>
+            <input type="datetime-local" id="create-event-endTime" />
+            <button id="createEventButton"> イベント作成 </button>
+        </div>
+        <div>
+            <input type="text" id="update-event-id" placeholder="event-id" />
+            <input type="text" id="update-event-name" placeholder="event-name" />
+            <input type="datetime-local" id="update-event-startTime" />
+            <span> - </span>
+            <input type="datetime-local" id="update-event-endTime" />
+            <button id="updateEventButton"> イベント更新 </button>
+        </div>
+        <div>
+            <input type="text" id="delete-event-id" placeholder="event-id" />
+            <button id="deleteEventButton"> イベント削除 </button>
+        </div>
+        <div>
+            <button id="getMyEventsButton"> 自分のイベント一覧 </button>
+        </div>
+        <h2> 設定 </h2>
         <div>
             <input type="text" id="update-userId" placeholder="userId" />
             <input type="password" id="update-password" placeholder="password" />
             <input type="text" id="update-name" placeholder="name" />
             <button id="updateButton"> 更新 </button>
             <button id="deleteButton"> ユーザー削除 </button>
-        </div>
-        <h2> フォロー・イベント </h2>
-        <div>
-            <input type="text" id="follow-userId" placeholder="userId" />
-            <button id="followButton"> フォロー </button>
-            <button id="unfollowButton"> フォロー解除 </button>
-            <button id="getFollowingsButton"> フォロー一覧 </button>
-            <button id="getFollowersButton"> フォロワー一覧 </button>
-        </div>
-        <div>
-            <input type="text" id="event-name" placeholder="event-name" />
-            <input type="datetime-local" id="event-startTime" />
-            <span> - </span>
-            <input type="datetime-local" id="event-endTime" />
-            <button id="createEventButton"> イベント作成 </button>
-            <button id="getMyEventsButton"> 自分のイベント一覧 </button>
         </div>
         <h2> 開発ツール</h2>
         <div>
@@ -65,6 +83,9 @@
             document.getElementById('getFollowersButton').addEventListener('click', getFollowers);
             document.getElementById('createEventButton').addEventListener('click', createEvent);
             document.getElementById('getMyEventsButton').addEventListener('click', getMyEvents);
+            document.getElementById('updateEventButton').addEventListener('click', updateEvent);
+            document.getElementById('deleteEventButton').addEventListener('click', deleteEvent);
+
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -221,9 +242,9 @@
 
             // イベント作成ボタン
             async function createEvent() {
-                const name = document.getElementById('event-name').value;
-                const startTime = document.getElementById('event-startTime').value;
-                const endTime = document.getElementById('event-endTime').value;
+                const name = document.getElementById('create-event-name').value;
+                const startTime = document.getElementById('create-event-startTime').value;
+                const endTime = document.getElementById('create-event-endTime').value;
                 const response = await post('/api/events', { name, startTime, endTime });
                 const result = await response.json();
                 if(result.success) {
@@ -243,6 +264,35 @@
                     for(const event of result.data.events) {
                         log('id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
                     }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // イベント更新ボタン
+            async function updateEvent() {
+                const eventId = document.getElementById('update-event-id').value;
+                const name = document.getElementById('update-event-name').value;
+                const startTime = document.getElementById('update-event-startTime').value;
+                const endTime = document.getElementById('update-event-endTime').value;
+                const response = await put('/api/events/' + eventId, { name, startTime, endTime });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // イベント削除ボタン
+            async function deleteEvent() {
+                const eventId = document.getElementById('delete-event-id').value;
+                const response = await del('/api/events/' + eventId);
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
                 }
                 else {
                     log(result.message);
