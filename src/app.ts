@@ -44,7 +44,7 @@ async function initExpress(app: express.Express) {
     return app;
 }
 
-const port = 3000;
+const port = 3500;
 async function main() {
     // 依存性注入
     const userRepository = new UserRepository();

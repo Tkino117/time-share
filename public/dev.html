@@ -31,7 +31,7 @@
         <button id="clearLogButton"> ログクリア </button>
         <div id="log"></div>
         <script>
-            const urlBase = 'http://localhost:3000';
+            const urlBase = getApiUrl();
             document.getElementById('loginButton').addEventListener('click', login);
             document.getElementById('logoutButton').addEventListener('click', logout);
             document.getElementById('registerButton').addEventListener('click', register);
@@ -195,6 +195,15 @@
                 messageDiv.textContent = message;
                 messageDiv.style.marginBottom = '5px';
                 log.appendChild(messageDiv);
+            }
+
+            function getApiUrl() {
+                const hostname = window.location.hostname;
+                if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                    return 'http://localhost:3500';
+                } else {
+                    return 'https://tkino117.dev/time-share';
+                }
             }
         </script>
     </body>
