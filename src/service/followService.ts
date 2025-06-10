@@ -19,6 +19,9 @@ export class FollowService {
         if (await this.followRepository.exists(followerId, followingId)) {
             throw new FollowAlreadyExistsError(followerId, followingId);
         }
+        if (followerId === followingId) {
+            throw new FollowAlreadyExistsError(followerId, followingId);
+        }
         await this.followRepository.create({ follower: followerId, following: followingId });
     }
 

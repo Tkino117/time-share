@@ -14,5 +14,7 @@ export class UserRouter extends AbstractRouter {
         this.router.get('/:userId', async (req: Request, res: Response) => this.userController.getUser(req, res));
         this.router.put('/:userId', async (req: Request, res: Response) => this.userController.updateUser(req, res, req.params.userId));
         this.router.delete('/:userId', async (req: Request, res: Response) => this.userController.deleteUser(req, res));
+        this.router.post('/:userId/follow', async (req: Request, res: Response) => this.userController.followUser(req, res));
+        this.router.post('/:userId/unfollow', async (req: Request, res: Response) => this.userController.unfollowUser(req, res));
     }
 }

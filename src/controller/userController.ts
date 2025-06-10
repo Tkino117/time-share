@@ -1,4 +1,4 @@
-import { InvalidNameError, InvalidPasswordError, InvalidUserIdError, UserAlreadyExistsError, UserNotFoundError } from "../service/errors";
+import { FollowAlreadyExistsError, FollowNotFoundError, InvalidNameError, InvalidPasswordError, InvalidUserIdError, UserAlreadyExistsError, UserNotFoundError } from "../service/errors";
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
 import { CreateResponse, EmptyResponseData, ServerErrorResponse, SuccessResponse, UserResponseData } from "../response";
@@ -6,9 +6,10 @@ import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { ForbiddenResponse } from "../response/error/ForbiddenResponse";
 import { checkSession } from "./util";
+import { FollowService } from "../service/followService";
 
 export class UserController {
-    constructor(private userService: UserService, private sessionManager: SessionManager) {
+    constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager) {
     }
 
     async createUser(req: Request, res: Response) {
@@ -134,5 +135,63 @@ export class UserController {
         const user = await this.userService.getUser(userId);
         const data = new UserResponseData(user);
         new SuccessResponse(data, 'Get my user successful').send(res);
+    }
+
+    async followUser(req: Request, res: Response) {
+        if (!req.session.sessionId) {
+            new ErrorResponse('Session not found').send(res);
+            return;
+        }
+        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
+        if (!userId) {
+            new ErrorResponse('User not found').send(res);
+            return;
+        }
+        const followingId: string = req.params.userId;
+        try {
+            await this.followService.followUser(userId, followingId);
+            new SuccessResponse(new EmptyResponseData(), 'Follow user successful').send(res);
+        }
+        catch(error: any) {
+            if (error instanceof UserNotFoundError) {
+                new ErrorResponse('User not found').send(res);
+            }
+            else if (error instanceof FollowAlreadyExistsError) {
+                new ErrorResponse('Already following').send(res);
+            }
+            else {
+                console.error(error);
+                new ServerErrorResponse('Internal server error').send(res);
+            }
+        }
+    }
+
+    async unfollowUser(req: Request, res: Response) {
+        if (!req.session.sessionId) {
+            new ErrorResponse('Session not found').send(res);
+            return;
+        }
+        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
+        if (!userId) {
+            new ErrorResponse('User not found').send(res);
+            return;
+        }
+        const followingId: string = req.params.userId;
+        try {
+            await this.followService.unfollowUser(userId, followingId);
+            new SuccessResponse(new EmptyResponseData(), 'Unfollow user successful').send(res);
+        }
+        catch(error: any) {
+            if (error instanceof UserNotFoundError) {
+                new ErrorResponse('User not found').send(res);
+            }
+            else if (error instanceof FollowNotFoundError) {
+                new ErrorResponse('Not following').send(res);
+            }
+            else {
+                console.error(error);
+                new ServerErrorResponse('Internal server error').send(res);
+            }   
+        }
     }
 }

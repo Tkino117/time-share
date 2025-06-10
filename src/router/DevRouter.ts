@@ -17,5 +17,11 @@ export class DevRouter extends AbstractRouter {
             });
             res.json(usersData);
         });
+        this.router.post('/demo-dev', async (req, res) => {
+            const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a' });
+            const demo2 = await this.userService.createUser({ userId: 'b', password: 'b', name: 'b' });
+            const demo3 = await this.userService.createUser({ userId: 'c', password: 'c', name: 'c' });
+            res.json({ success: true, message: 'Demo users created' });
+        });
     }
 }

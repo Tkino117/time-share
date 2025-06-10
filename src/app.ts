@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { Router, UserRouter, AuthRouter, EventRouter, DevRouter } from './router';
 import { AuthController, UserController, EventController } from './controller';
-import { UserService, EventService } from './service';
+import { UserService, EventService, FollowService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
 import { Database } from './database/database';
 
@@ -60,8 +60,9 @@ async function main() {
         const sessionManager = new SessionManager();
         const userService = new UserService(userRepository, sessionManager);
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
+        const followService = new FollowService(followRepository, userRepository, eventRepository);
         const authController = new AuthController(userService, sessionManager);
-        const userController = new UserController(userService, sessionManager);
+        const userController = new UserController(userService, followService, sessionManager);
         const eventController = new EventController(eventService);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
@@ -74,7 +75,7 @@ async function main() {
 
         // 認証ミドルウェア
         const publicPaths = ['/api/auth/login', '/api/users',
-             '/api/auth/logout', '/api/dev/users'];
+             '/api/auth/logout', '/api/dev/users', '/api/dev/demo-dev'];
         app.use(async (req: Request, res: Response, next: NextFunction) => {
             console.log('auth info:');
             if(publicPaths.includes(req.path)) {

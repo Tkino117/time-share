@@ -23,9 +23,15 @@
             <button id="deleteButton"> 削除 </button>
             <button id="findAllUsersButton"> 全ユーザー取得 </button>
         </div>
+        <div>
+            <input type="text" id="follow-userId" placeholder="userId" />
+            <button id="followButton"> フォロー </button>
+            <button id="unfollowButton"> フォロー解除 </button>
+        </div>
         <h2> テスト </h2>
         <div>
             <button id="testButton1"> サンプル api </button>
+            <button id="testButton2"> 開発用デモ追加 </button>
         </div>
         <h2> log </h2>
         <button id="clearLogButton"> ログクリア </button>
@@ -41,9 +47,11 @@
             document.getElementById('updateButton').addEventListener('click', updateUser);
             document.getElementById('deleteButton').addEventListener('click', deleteUser);
             document.getElementById('testButton1').addEventListener('click', test1);
+            document.getElementById('testButton2').addEventListener('click', test2);
             document.getElementById('clearLogButton').addEventListener('click', clearLog);
             document.getElementById('findAllUsersButton').addEventListener('click', findAllUsers);
-
+            document.getElementById('followButton').addEventListener('click', followUser);
+            document.getElementById('unfollowButton').addEventListener('click', unfollowUser);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -142,10 +150,48 @@
                 }
             }
 
+            // フォローボタン
+            async function followUser() {
+                const followingId = document.getElementById('follow-userId').value;
+                const response = await post('/api/users/' + followingId + '/follow');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // フォロー解除ボタン
+            async function unfollowUser() {
+                const followingId = document.getElementById('follow-userId').value;
+                const response = await post('/api/users/' + followingId + '/unfollow');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
             // ログクリアボタン
             async function clearLog() {
                 const log = document.getElementById('log');
                 log.innerHTML = '';
+            }
+
+            // デモ追加ボタン
+            async function test2() {
+                const response = await post('/api/dev/demo-dev');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
             }
 
             // -------------------------- ユーティリティ関数 --------------------------------
