@@ -3,6 +3,7 @@ import { UserService } from '../service/userService';
 import { InvalidPasswordError, UserNotFoundError } from '../service/errors';
 import { SessionManager } from '../repository/sessionManager';
 import { EmptyResponseData, ErrorResponse, ServerErrorResponse, SuccessResponse, UnauthorizedResponse, UserResponseData } from '../response';
+import { handleError } from './util';
 
 export class AuthController {
     constructor(private userService: UserService, private sessionManager: SessionManager) {
@@ -21,16 +22,7 @@ export class AuthController {
             new SuccessResponse(data, 'Logged in').send(res);
         }
         catch(error: any) {
-            if (error instanceof InvalidPasswordError) {
-                new ErrorResponse('Invalid password').send(res);
-            }
-            else if(error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -43,8 +35,7 @@ export class AuthController {
             new SuccessResponse(new EmptyResponseData(), 'Logged out').send(res);
         }
         catch(error: any) {
-            console.error(error);
-            new ServerErrorResponse('Internal server error').send(res);
+            handleError(error, res);
         }
     }
 }

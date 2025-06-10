@@ -5,7 +5,7 @@ import { CreateResponse, EmptyResponseData, ServerErrorResponse, SuccessResponse
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { ForbiddenResponse } from "../response/error/ForbiddenResponse";
-import { checkSession } from "./util";
+import { checkSession, handleError } from "./util";
 import { FollowService } from "../service/followService";
 
 export class UserController {
@@ -30,22 +30,7 @@ export class UserController {
             new CreateResponse(data, 'Register successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserAlreadyExistsError) {
-                new ErrorResponse('User already exists').send(res);
-            }
-            else if (error instanceof InvalidPasswordError) {
-                new ErrorResponse('Password is too short').send(res);
-            }
-            else if (error instanceof InvalidUserIdError) {
-                new ErrorResponse('User id is empty').send(res);
-            }
-            else if (error instanceof InvalidNameError) {
-                new ErrorResponse('Name is empty').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -57,13 +42,7 @@ export class UserController {
             new SuccessResponse(data, 'Get user successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -80,25 +59,7 @@ export class UserController {
             new SuccessResponse(data, 'Update user successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else if (error instanceof InvalidUserIdError) {
-                new ErrorResponse('User id is invalid').send(res);
-            }
-            else if (error instanceof UserAlreadyExistsError) {
-                new ErrorResponse('User id already exists').send(res);
-            }
-            else if (error instanceof InvalidPasswordError) {
-                new ErrorResponse('Password is too short').send(res);
-            }
-            else if (error instanceof InvalidNameError) {
-                new ErrorResponse('Name is empty').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -112,13 +73,7 @@ export class UserController {
             new SuccessResponse(new EmptyResponseData(), 'Delete user successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -153,16 +108,7 @@ export class UserController {
             new SuccessResponse(new EmptyResponseData(), 'Follow user successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else if (error instanceof FollowAlreadyExistsError) {
-                new ErrorResponse('Already following').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }
+            handleError(error, res);
         }
     }
 
@@ -182,16 +128,15 @@ export class UserController {
             new SuccessResponse(new EmptyResponseData(), 'Unfollow user successful').send(res);
         }
         catch(error: any) {
-            if (error instanceof UserNotFoundError) {
-                new ErrorResponse('User not found').send(res);
-            }
-            else if (error instanceof FollowNotFoundError) {
-                new ErrorResponse('Not following').send(res);
-            }
-            else {
-                console.error(error);
-                new ServerErrorResponse('Internal server error').send(res);
-            }   
+            handleError(error, res);
         }
+    }
+
+    async getFollowings(req: Request, res: Response) {
+        if (!req.session.sessionId) {
+            new ErrorResponse('Session not found').send(res);
+            return;
+        }
+        const userId: string | undefined = await this.sessionManager.getUserId(req.session.sessionId);
     }
 }
