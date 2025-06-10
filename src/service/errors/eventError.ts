@@ -5,6 +5,13 @@ export class EventNotFoundError extends Error {
     }
 }
 
+export class InvalidEventIdError extends Error {
+    constructor(eventId: number) {
+        super(`Invalid event ID: ${eventId}`);
+        this.name = 'InvalidEventIdError';
+    }
+}
+
 export class InvalidEventNameError extends Error {
     constructor() {
         super('Event name is required');

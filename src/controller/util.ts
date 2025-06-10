@@ -35,6 +35,9 @@ export function handleError(error: any, res: Response) {
     else if (error instanceof errors.EventNotFoundError) {
         new responses.NotFoundResponse('Event not found').send(res);
     }
+    else if (error instanceof errors.InvalidEventIdError) {
+        new responses.ErrorResponse('Invalid event ID').send(res);
+    }
     else if (error instanceof errors.InvalidTimeRangeError) {
         new responses.ErrorResponse('Invalid time range').send(res);
     }

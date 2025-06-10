@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { auth, handleError } from "./util";
 import { SessionManager } from "../repository/sessionManager";
 import { EmptyResponseData, EventResponseData, SuccessResponse } from "../response";
-import { AuthError } from "../service/errors";
+import { AuthError, InvalidEventIdError } from "../service/errors";
 
 export class EventController {
     constructor(private eventService: EventService, private sessionManager: SessionManager) {
@@ -33,7 +33,11 @@ export class EventController {
     async getEvent(req: Request, res: Response) {
         try {
             const userId = await auth(req, res, this.sessionManager);
-            const event = await this.eventService.getEvent(parseInt(req.params.eventId));
+            const eventId = parseInt(req.params.eventId);
+            if (isNaN(eventId)) {
+                throw new InvalidEventIdError(eventId);
+            }
+            const event = await this.eventService.getEvent(eventId);
             if (event.userId !== userId) {
                 throw new AuthError();
             }
@@ -49,6 +53,9 @@ export class EventController {
         try {
             const userId = await auth(req, res, this.sessionManager);
             const eventId = parseInt(req.params.eventId);
+            if (isNaN(eventId)) {
+                throw new InvalidEventIdError(eventId);
+            }
             const name = req.body.name;
             const startTime = req.body.startTime ? new Date(req.body.startTime) : undefined;
             const endTime = req.body.endTime ? new Date(req.body.endTime) : undefined;
@@ -69,6 +76,9 @@ export class EventController {
         try {
             const userId = await auth(req, res, this.sessionManager);
             const eventId = parseInt(req.params.eventId);
+            if (isNaN(eventId)) {
+                throw new InvalidEventIdError(eventId);
+            }
             const event = await this.eventService.getEvent(eventId);
             if (event.userId !== userId) {
                 throw new AuthError();
