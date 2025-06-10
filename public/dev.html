@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h2> ユーザー処理 </h2>
+        <h2> ログイン・新規登録・編集 </h2>
         <div>
             <input type="text" id="login-userId" placeholder="userId" />
             <input type="password" id="login-password" placeholder="password" />
@@ -18,22 +18,19 @@
             <input type="password" id="update-password" placeholder="password" />
             <input type="text" id="update-name" placeholder="name" />
             <button id="updateButton"> 更新 </button>
+            <button id="deleteButton"> ユーザー削除 </button>
         </div>
-        <div>
-            <button id="deleteButton"> 削除 </button>
-            <button id="findAllUsersButton"> 全ユーザー取得 </button>
-        </div>
+        <h2> フォロー </h2>
         <div>
             <input type="text" id="follow-userId" placeholder="userId" />
             <button id="followButton"> フォロー </button>
             <button id="unfollowButton"> フォロー解除 </button>
-        </div>
-        <div>
             <button id="getFollowingsButton"> フォロー一覧 </button>
             <button id="getFollowersButton"> フォロワー一覧 </button>
         </div>
-        <h2> テスト </h2>
+        <h2> 開発ツール</h2>
         <div>
+            <button id="findAllUsersButton"> 全ユーザー取得 </button>
             <button id="testButton1"> サンプルAPI </button>
             <button id="testButton2"> 開発用デモ </button>
         </div>
