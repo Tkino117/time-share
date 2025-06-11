@@ -1,6 +1,6 @@
 import { UserService } from "../service/userService";
 import { Request, Response } from "express";
-import { CreateResponse, EmptyResponseData, EventsResponseData, SuccessResponse, UserResponseData, UsersResponseData } from "../response";
+import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
@@ -144,6 +144,24 @@ export class UserController {
             const events = await this.eventService.getEventsByUserId(userId);
             const data = new EventsResponseData(events);
             new SuccessResponse(data, 'Events retrieved successfully').send(res);
+        }
+        catch(error: any) {
+            handleError(error, res);
+        }
+    }
+
+    async getFeed(req: Request, res: Response) {
+        try {
+            const userId = await auth(req, res, this.sessionManager);
+            const followings = await this.followService.getFollowings(userId);
+            const userEvents: UserEventsResponseData[] = [];
+            for (const following of followings) {
+                const user = await this.userService.getUser(following);
+                const events = await this.eventService.getEventsByUserId(following);
+                userEvents.push(new UserEventsResponseData(user, events));
+            }
+            const data = new FeedResponseData(userEvents);
+            new SuccessResponse(data, 'Feed retrieved successfully').send(res);
         }
         catch(error: any) {
             handleError(error, res);

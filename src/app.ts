@@ -67,7 +67,7 @@ async function main() {
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
-        const devRouter = new DevRouter(userService);
+        const devRouter = new DevRouter(userService, eventService, followService);
         const router = new Router(userRouter, authRouter, eventRouter, devRouter);
 
         // 初期化

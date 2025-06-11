@@ -87,3 +87,36 @@ export class EventsResponseData extends AbstractResponseData {
         };
     }
 }
+
+export class UserEventsResponseData extends AbstractResponseData {
+    user: UserResponseData;
+    events: EventsResponseData;
+
+    constructor(user: User, events: Event[]) {
+        super();
+        this.user = new UserResponseData(user);
+        this.events = new EventsResponseData(events);
+    }
+
+    toJSON(): any {
+        return {
+            user: this.user.toJSON(),
+            events: this.events.toJSON()
+        };
+    }
+}
+
+export class FeedResponseData extends AbstractResponseData {
+    userEvents: UserEventsResponseData[];
+
+    constructor(userEvents: UserEventsResponseData[]) {
+        super();
+        this.userEvents = userEvents;
+    }
+
+    toJSON(): any {
+        return {
+            userEvents: this.userEvents.map(userEvent => userEvent.toJSON())
+        };
+    }
+}

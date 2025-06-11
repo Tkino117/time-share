@@ -19,5 +19,6 @@ export class UserRouter extends AbstractRouter {
         this.router.get('/:userId/followings', async (req: Request, res: Response) => this.userController.getFollowings(req, res));
         this.router.get('/:userId/followers', async (req: Request, res: Response) => this.userController.getFollowers(req, res));
         this.router.get('/me/events', async (req: Request, res: Response) => this.userController.getMyEvents(req, res));
+        this.router.get('/me/feed', async (req: Request, res: Response) => this.userController.getFeed(req, res));
     }
 }

@@ -45,6 +45,7 @@
         </div>
         <div>
             <button id="getMyEventsButton"> 自分のイベント一覧 </button>
+            <button id="getFeedButton"> フィード </button>
         </div>
         <h2> 設定 </h2>
         <div>
@@ -85,7 +86,7 @@
             document.getElementById('getMyEventsButton').addEventListener('click', getMyEvents);
             document.getElementById('updateEventButton').addEventListener('click', updateEvent);
             document.getElementById('deleteEventButton').addEventListener('click', deleteEvent);
-
+            document.getElementById('getFeedButton').addEventListener('click', getFeed);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -180,7 +181,7 @@
                 const result = await response.json();
                 log(result.length + ' users:');
                 for(const user of result) {
-                    log('id: ' + user.userId + ', password: ' + user.password + ', name: ' + user.name);
+                    log('    id: ' + user.userId + ', password: ' + user.password + ', name: ' + user.name);
                 }
             }
 
@@ -217,7 +218,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' followings:');
                     for(const user of result.data.users) {
-                        log('id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name);
                     }
                 }
                 else {
@@ -232,7 +233,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' followers:');
                     for(const user of result.data.users) {
-                        log('id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name);
                     }
                 }
                 else {
@@ -262,7 +263,7 @@
                 if(result.success) {
                     log(result.data.events.length + ' events:');
                     for(const event of result.data.events) {
-                        log('id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
+                        log('    id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
                     }
                 }
                 else {
@@ -293,6 +294,25 @@
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // フィードボタン
+            async function getFeed() {
+                const response = await get('/api/users/me/feed');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.userEvents.length + ' userEvents:');
+                    for(const userEvent of result.data.userEvents) {
+                        log('    user: ' + userEvent.user.userId + ', name: ' + userEvent.user.name);
+                        log('    ' + userEvent.events.events.length + ' events:');
+                        for(const event of userEvent.events.events) {
+                            log('        id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
+                        }
+                    }
                 }
                 else {
                     log(result.message);
@@ -381,6 +401,7 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.textContent = message;
                 messageDiv.style.marginBottom = '5px';
+                messageDiv.style.whiteSpace = 'pre-wrap';
                 log.appendChild(messageDiv);
             }
 
