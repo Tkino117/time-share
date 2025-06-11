@@ -1,5 +1,5 @@
 import { AbstractRouter } from "./AbstractRouter";
-import { UserController } from "../controller/userController";
+import { UserController } from "../controller/UserController";
 import { Request, Response } from "express";
 
 export class UserRouter extends AbstractRouter {

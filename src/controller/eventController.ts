@@ -1,7 +1,7 @@
-import { EventService } from "../service/eventService";
+import { EventService } from "../service/EventService";
 import { Request, Response } from "express";
 import { auth, handleError } from "./util";
-import { SessionManager } from "../repository/sessionManager";
+import { SessionManager } from "../repository/SessionManager";
 import { EmptyResponseData, EventResponseData, SuccessResponse } from "../response";
 import { AuthError, InvalidEventIdError } from "../service/errors";
 

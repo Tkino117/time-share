@@ -1,6 +1,6 @@
-import { UserService } from "../../src/service/userService";
-import { UserRepository } from "../../src/repository/userRepository";
-import { SessionManager } from "../../src/repository/sessionManager";
+import { UserService } from "../../src/service/UserService";
+import { UserRepository } from "../../src/repository/UserRepository";
+import { SessionManager } from "../../src/repository/SessionManager";
 import { User } from "../../src/database/database";
 import { UserNotFoundError, InvalidPasswordError } from "../../src/service/errors";
 

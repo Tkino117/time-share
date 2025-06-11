@@ -1,3 +1,3 @@
-export * from './userService';
-export * from './eventService';
-export * from './followService';
+export * from './UserService';
+export * from './EventService';
+export * from './FollowService';

@@ -1,11 +1,11 @@
-import { UserService } from "../service/userService";
+import { UserService } from "../service/UserService";
 import { Request, Response } from "express";
 import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
-import { FollowService } from "../service/followService";
-import { EventService } from "../service/eventService";
+import { FollowService } from "../service/FollowService";
+import { EventService } from "../service/EventService";
 
 export class UserController {
     constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService) {

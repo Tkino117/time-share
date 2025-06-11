@@ -1,6 +1,6 @@
-import { UserRepository } from "../repository/userRepository";
-import { FollowRepository } from "../repository/followRepository";
-import { EventRepository } from "../repository/eventRepository";
+import { UserRepository } from "../repository/UserRepository";
+import { FollowRepository } from "../repository/FollowRepository";
+import { EventRepository } from "../repository/EventRepository";
 import { UserNotFoundError, FollowAlreadyExistsError, FollowNotFoundError } from "./errors";
 import { Event } from "../database/database";
 

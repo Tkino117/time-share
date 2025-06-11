@@ -1,7 +1,7 @@
 import { Event } from "../database/database";
-import { EventRepository, EventCreateInput, EventUpdateInput } from "../repository/eventRepository";
-import { UserRepository } from "../repository/userRepository";
-import { SessionManager } from "../repository/sessionManager";
+import { EventRepository, EventCreateInput, EventUpdateInput } from "../repository/EventRepository";
+import { UserRepository } from "../repository/UserRepository";
+import { SessionManager } from "../repository/SessionManager";
 import { UserNotFoundError, InvalidTimeRangeError, TimeConflictError, EventNotFoundError, InvalidEventNameError, InvalidUserIdError } from "./errors";
 
 export class EventService {

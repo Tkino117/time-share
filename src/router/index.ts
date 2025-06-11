@@ -1,13 +1,13 @@
 import { AbstractRouter } from "./AbstractRouter";
-import { UserRouter } from "./userRouter";
-import { AuthRouter } from "./authRouter";
-import { EventRouter } from "./eventRouter";
+import { UserRouter } from "./UserRouter";
+import { AuthRouter } from "./AuthRouter";
+import { EventRouter } from "./EventRouter";
 import { DevRouter } from "./DevRouter";
 import { Request, Response } from 'express';
 import { EmptyResponseData, SuccessResponse } from '../response';
-export * from './userRouter';
-export * from './authRouter';
-export * from './eventRouter';
+export * from './UserRouter';
+export * from './AuthRouter';
+export * from './EventRouter';
 export * from './DevRouter';
 
 export class Router extends AbstractRouter {
