@@ -1,3 +1,3 @@
-export * from './aAuthController';
-export * from './aUserController';
-export * from './aEventController';
+export * from './AuthController';
+export * from './UserController';
+export * from './EventController';

@@ -1,5 +1,5 @@
 import { AbstractRouter } from "./AbstractRouter";
-import { EventController } from "../controller/aEventController";
+import { EventController } from "../controller/EventController";
 
 export class EventRouter extends AbstractRouter {
     constructor(private eventController: EventController) {
