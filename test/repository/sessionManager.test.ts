@@ -1,4 +1,4 @@
-import { SessionManager } from "../../src/repository/SessionManager";
+import { SessionManager } from "../../src/repository/aSessionManager";
 
 describe('SessionManager', () => {
     const sessionManager = new SessionManager();

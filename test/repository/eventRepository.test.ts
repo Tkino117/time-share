@@ -1,5 +1,5 @@
-import { EventRepository } from "../../src/repository/EventRepository";
-import { UserRepository } from "../../src/repository/UserRepository";
+import { EventRepository } from "../../src/repository/aEventRepository";
+import { UserRepository } from "../../src/repository/aUserRepository";
 
 describe('EventRepository', () => {
     const eventRepository = new EventRepository();

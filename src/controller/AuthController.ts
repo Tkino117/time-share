@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../service/UserService';
 import { InvalidPasswordError, UserNotFoundError } from '../service/errors';
-import { SessionManager } from '../repository/SessionManager';
+import { SessionManager } from '../repository/aSessionManager';
 import { EmptyResponseData, ErrorResponse, ServerErrorResponse, SuccessResponse, UnauthorizedResponse, UserResponseData } from '../response';
 import { handleError } from './util';
 

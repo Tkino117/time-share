@@ -1,7 +1,7 @@
 import { FollowService } from "../../src/service/FollowService";
-import { FollowRepository } from "../../src/repository/FollowRepository";
-import { UserRepository } from "../../src/repository/UserRepository";
-import { EventRepository } from "../../src/repository/EventRepository";
+import { FollowRepository } from "../../src/repository/aFollowRepository";
+import { UserRepository } from "../../src/repository/aUserRepository";
+import { EventRepository } from "../../src/repository/aEventRepository";
 import { FollowAlreadyExistsError, UserNotFoundError } from "../../src/service/errors";
 import { Event } from "../../src/database/database";
 
