@@ -77,7 +77,8 @@ export class Database {
                 references: {
                     model: 'users',
                     key: 'userId'
-                }
+                },
+                onDelete: 'CASCADE'
             },
             following: {
                 type: DataTypes.STRING,
@@ -85,7 +86,8 @@ export class Database {
                 references: {
                     model: 'users',
                     key: 'userId'
-                }
+                },
+                onDelete: 'CASCADE'
             },
         }, {
             sequelize: this.sequelize,
@@ -115,7 +117,8 @@ export class Database {
                 references: {
                     model: 'users',
                     key: 'userId'
-                }
+                },
+                onDelete: 'CASCADE'
             },
             name: {
                 type: DataTypes.STRING,

@@ -69,6 +69,10 @@ export class UserController {
                 return;
             }
             await this.userService.deleteUser(userId);
+            if(req.session.sessionId) {
+                this.sessionManager.deleteSession(req.session.sessionId);
+                req.session.sessionId = '';
+            }
             new SuccessResponse(new EmptyResponseData(), 'Delete user successful').send(res);
         }
         catch(error: any) {
