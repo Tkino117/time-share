@@ -1,5 +1,5 @@
-import { FollowRepository } from "../../src/repository/aFollowRepository";
-import { UserRepository } from "../../src/repository/aUserRepository";
+import { FollowRepository } from "../../src/repository/FollowRepository";
+import { UserRepository } from "../../src/repository/UserRepository";
 
 describe('FollowRepository', () => {
     const followRepository = new FollowRepository();

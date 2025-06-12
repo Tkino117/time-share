@@ -1,5 +1,5 @@
-import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/aUserRepository";
-import { SessionManager } from "../repository/aSessionManager";
+import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/UserRepository";
+import { SessionManager } from "../repository/SessionManager";
 import { User } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
 

@@ -1,4 +1,4 @@
-import { UserRepository } from "../../src/repository/aUserRepository";
+import { UserRepository } from "../../src/repository/UserRepository";
 
 describe('UserRepository', () => {
     const userRepository = new UserRepository();

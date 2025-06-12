@@ -1,7 +1,7 @@
 import { EventService } from "../../src/service/EventService";
-import { EventRepository } from "../../src/repository/aEventRepository";
-import { UserRepository } from "../../src/repository/aUserRepository";
-import { SessionManager } from "../../src/repository/aSessionManager";
+import { EventRepository } from "../../src/repository/EventRepository";
+import { UserRepository } from "../../src/repository/UserRepository";
+import { SessionManager } from "../../src/repository/SessionManager";
 import { UserNotFoundError, InvalidTimeRangeError, TimeConflictError } from "../../src/service/errors";
 import { Event } from "../../src/database/database";
 

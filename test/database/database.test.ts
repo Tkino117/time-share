@@ -1,5 +1,5 @@
 import { Database, User, Follow, Event } from '../../src/database/database';
-import { UserRepository } from '../../src/repository/aUserRepository';
+import { UserRepository } from '../../src/repository/UserRepository';
 
 describe('Database', () => {
     let userRepository: UserRepository = new UserRepository();
