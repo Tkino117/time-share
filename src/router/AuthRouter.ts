@@ -1,5 +1,5 @@
 import { AbstractRouter } from "./AbstractRouter";
-import { AuthController } from "../controller/AuthController";
+import { AuthController } from "../controller/aAuthController";
 
 export class AuthRouter extends AbstractRouter {
     constructor(private authController: AuthController) {
