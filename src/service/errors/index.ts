@@ -1,4 +1,4 @@
 export * from './UserError';
 export * from './EventError';
-export * from './FollowError';
+export * from './aFollowError';
 export * from './AuthError';
