@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeShare-HomePage</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    header {
+      padding-bottom: 40px;
+    }
+
+    body {
+      background: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+    }
+
+    /* 角を丸めた四角のスタイル */
+    .rounded-box {
+      border-radius: 15px;
+      padding: 0 0px 0px 0px;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* カスタムボタン */
+    .custom-btn {
+      border-radius: 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ボタン画像のサイズ調整 */
+    .btn img {
+      height: 2rem;
+      width: auto;
+    }
+
+    .site-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    #logout-btn{
+      position: fixed;
+      right: 35px;
+      top: 35px;
+    }
+
+    #logout-btn button {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+      font-size: 0.8rem;
+    }
+
+    #logout-btn button:hover {
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    .logo-img {
+      height: 2.5rem; /* 画像の高さ（調整可能） */
+      width: auto;
+      border-color: #20b2aa;
+    }
+
+    /* ボタンが均等に並ぶように */
+    .btn-group {
+      display: flex;
+      width: 100%;
+    }
+
+    .btn-group > .btn {
+      flex: 1; /* 各ボタンを均等に広げる */
+      margin: 0; /* ボタン同士の隙間をゼロに */
+      padding: 0.8rem 0; /* 高さ調整 */
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-group > .btn:not(:last-child)::after {/* ボタン同士の隙間に白いラインを入れる*/
+      content: "";
+      position: absolute;
+      top: 0%;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: white;
+    }
+
+    /* ホバー時のボタン色 */
+    .custom-btn:hover,
+    .btn-group > .btn:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+
+    #container {
+      background: #00ced1;
+      font-size: 1em;
+      border-bottom: 2px #5f9ea0;
+      padding: 10px 0;
+      
+    }
+
+    /* 左上端と右上端を丸める */
+    .rounded-left {
+      border-top-left-radius: 15px !important;
+    }
+    .rounded-right {
+      border-top-right-radius: 15px !important;
+    }
+
+    .timeline-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* 中央寄せ */
+      width: 100%;
+    }
+    #today-date{
+      font-weight: bold;
+      font-size: 20px;
+      
+    }
+
+    .label {
+      margin-right: 10px;
+      font-weight: bold;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .timeline {
+      position: relative;
+      width: 80%;
+      aspect-ratio: 5 / 1;
+      
+      background-color: white;
+    }
+    .timeline.has-placeholder-image {
+      background-image: url('https://i.ibb.co/Lzn1192z/image.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none; /* 画像表示中は枠線を非表示にする */
+    }
+    
+    .event {
+      position: absolute;
+      height: 100%;
+      background-color: #00ced1;
+      color: white;
+      text-align: center;
+      font-size: 15px;
+      overflow: hidden;
+      border: 2px solid #00ced1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #eventForm {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* 横方向に中央寄せ */
+    }
+    #title {
+      width: 100px;
+    }
+    #eventForm input, #eventForm select {
+      margin-left: -8px;
+    }
+    #eventForm button{
+      margin-left: 2px;
+    }
+
+    #create-event-btn{
+      background-color: #26B2B4;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+    }
+    #submit:hover{
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    .modal-content {
+      background-color: #f5f5f5;
+    }
+    .modal-header {
+      background-color: #00ced1;
+      color: white;
+    }
+    .modal-footer {
+      background-color: #f5f5f5;
+    }
+
+    #deleteEventBtn {
+      background-color: #26B2B4;
+      color: white;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #deleteEventBtn:hover {
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 最上部のタイトル部分 -->
+  <header>
+    <div id="container">
+      <br>
+      <div class="d-flex justify-content-center align-items-center px-3 position-relative">
+        <h1 class="site-title d-flex align-items-center m-0">
+          <img src="https://i.ibb.co/JbLxZxR/MN-logo.png" alt="Logo" class="logo-img me-2">
+          <span>TimeShare</span>
+        </h1>
+        <!-- ログアウトボタンを右端に配置 -->
+        <div id="logout-btn">
+          <button class="btn btn-light fw-bold">ログアウト</button>
+        </div>
+      </div>
+      <br>
+    </div>
+  </header>
+
+  <!-- 角を丸めた四角の部分 -->
+  <section class="container">
+    <div class="rounded-box">
+      <!-- ボタン5つを横幅いっぱいに並べる -->
+      <div class="btn-group mb-3" role="group" aria-label="Button group">
+        <button type="button" class="btn custom-btn rounded-left">Home</button>
+        <button type="button" class="btn custom-btn">Month</button>
+        <button type="button" class="btn custom-btn">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3PHRX8hdk5Q9c62vmqphCIyplTwCCXVFugJhXccY5FaCty3E3aklUrCGV6GMn9eor4E4ZSSXUWJUOqQ-hLGrG40WRBxDKzO90ZwtTVepXQAuuIL559SK1AfuwI4OVHu9HCi-VrFS1yYCFLrA8_K4R3ugIYZSFpi9w6aae_cQLK7iM=/life066.png?errorImage=false" alt="Search Icon">
+        </button>
+        <button type="button" class="btn custom-btn">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3Pq3ey490QjMMuaR0711Mn9OMm9wiVe-yYovmqKwIFCS9J5cye3YKxAXIjGTbe17l_ZCJ7Fa0RHgSdevCZcIf3gdWODrRmVVV3CWSqalTTZdHzE-G845rxiiRDSH0WQWwmznJ6l0q3REQjmLOKVTFDrZiNQswKhLmK7vSYwMk3NIQ=/fashion019.png?errorImage=false" alt="Icon">
+        </button>
+        <button type="button" class="btn custom-btn rounded-right">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG_jRZ0Zb60sd3AdQXUaXUW9122ucsGpRMMXHaqnPy2bQqyO6pEGE6UKGDpSIaVI1d1Cd2wgAddavfGZVPCCx8zRoTj5b248QHvoPxkP7eKfMBWJ5LmDxWFhHULbVDmVM5fUcb3kUwkAVk57ntBG1Mvgjbg_R3Db5E_fOsHDcAuW84stYQqwZ_wC_EmQc31DiFg==/16_2_330.png?errorImage=false" alt="Notification Icon">
+        </button>
+      </div>
+
+      <!-- ユーザー名と説明文 -->
+      <p>　　ようこそ！ <span id="username"></span> さん</p>
+      <p>　　これはスケジュールを共有するSNSです。</p>
+      <br>
+      <p>　　今日のイベントをスケジュールに追加しましょう。</p>
+      
+      <p>　　　<span id="today-date" ></span> </p>
+
+      <!-- タイムライン表示エリア -->
+      <div class="timeline-wrapper">
+        <div class="timeline has-placeholder-image" id="timeline"></div>
+      </div>
+      <br>
+
+      <!-- イベント追加フォーム -->
+      <form id="eventForm">
+        <span class="label">　イベント名:</span>
+        <input type="text" id="title" required>
+        <span class="label">　時間:</span>
+        <select id="startHour" required></select>
+        <span class="label">:</span>
+        <select id="startMinute" required></select>
+        <span class="label">〜</span>
+        <select id="endHour" required></select>
+        <span class="label">:</span>
+        <select id="endMinute" required></select>
+        <button type="submit" id="create-event-btn">追加</button>
+      </form>
+
+      <!-- イベント詳細表示用モーダル -->
+      <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="eventDetailModalLabel">イベント詳細</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p id="eventDetailText"></p><hr> <h6>背景色を変更:</h6>
+              <div id="colorOptions" class="d-flex flex-wrap justify-content-around mt-2">
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #30898c" data-color="#30898c"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #40999A" data-color="#40999A"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #26B2B4" data-color="#26B2B4"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #00ced1" data-color="#00ced1"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #4DDBDE" data-color="#4DDBDE"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #80E7E9" data-color="#80E7E9"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #99EEF0;" data-color="#99EEF0"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #c6f5f6;" data-color="#c6f5f6"></button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+              <button type="button" id="deleteEventBtn" class="btn btn-danger">削除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <br>
+    </div>
+  </section>
+
+  
+<!-- Bootstrap JSと依存ライブラリ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const today = new Date();
+
+  // 曜日を含めた日付表示のオプションを設定
+  const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+
+  // toLocaleDateString() を使用して日付と曜日を整形
+  const formattedDate = today.toLocaleDateString('ja-JP', options);
+
+  document.getElementById("today-date").textContent = formattedDate;
+</script>
+
+<script>
+  // イベントフォームとタイムラインの取得
+  const form = document.getElementById("eventForm");
+  const timeline = document.getElementById("timeline");
+  // Bootstrapのモーダル要素取得
+  const eventDetailModal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+  const eventDetailText = document.getElementById('eventDetailText');
+  const deleteEventBtn = document.getElementById('deleteEventBtn');
+  const colorOptionsContainer = document.getElementById('colorOptions');
+  let currentEvent = null; // モーダルで操作中のイベントを記憶
+
+  // 24時間を3時間ずつ8つのセグメントに分けたときの背景色
+  const eventColors = [
+    '#30898c', // 00:00 - 02:59
+    '#40999A', // 03:00 - 05:59
+    '#00ced1', // 06:00 - 08:59
+    '#80E7E9', // 09:00 - 11:59
+    '#4DDBDE', // 12:00 - 14:59
+    '#26B2B4', // 15:00 - 17:59
+    '#40999A', // 18:00 - 20:59
+    '#30898c'  // 21:00 - 23:59
+  ];
+
+  // 時間の選択肢を生成する関数
+  function populateTimeOptions(hourSelectId, minuteSelectId) {
+    const hourSelect = document.getElementById(hourSelectId);
+    const minuteSelect = document.getElementById(minuteSelectId);
+
+    // 時 (00-23)
+    for (let i = 0; i < 24; i++) {
+      const option = document.createElement("option");
+      option.value = String(i).padStart(2, '0'); // 2桁表示 (例: 01, 02)
+      option.textContent = String(i).padStart(2, '0');
+      hourSelect.appendChild(option);
+    }
+
+    // 分 (00-59)
+    for (let i = 0; i < 60; i++) {
+      const option = document.createElement("option");
+      option.value = String(i).padStart(2, '0'); // 2桁表示
+      option.textContent = String(i).padStart(2, '0');
+      minuteSelect.appendChild(option);
+    }
+  }
+
+  // 開始時間と終了時間の選択肢を生成
+  populateTimeOptions('startHour', 'startMinute');
+  populateTimeOptions('endHour', 'endMinute');
+
+
+  // 時間を分に変換する関数
+  function toMinutes(t) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  // 中央時刻に基づいてイベントの背景色を取得する関数
+  function getEventColorByMidpoint(startMinutes, endMinutes) {
+    const midMinutes = (startMinutes + endMinutes) / 2; // イベントの中央時刻（分）
+    const segmentIndex = Math.floor(midMinutes / (3 * 60)); // 3時間ごとのセグメントインデックスを計算
+
+    // インデックスが配列の範囲内に収まるように調整
+    return eventColors[Math.min(segmentIndex, eventColors.length - 1)];
+  }
+
+  const base_url = "https://tkino117.dev/time-share"; // APIのベースURLを定義
+  // const base_url = "http://localhost:3500";
+
+  // イベント追加フォームの送信イベント
+  form.addEventListener("submit", async function(e) { // asyncを追加
+    e.preventDefault();
+    // 入力値取得
+    const title = document.getElementById("title").value;
+    const startHour = document.getElementById("startHour").value;
+    const startMinute = document.getElementById("startMinute").value;
+    const endHour = document.getElementById("endHour").value;
+    const endMinute = document.getElementById("endMinute").value;
+
+    // 選択された時と分を結合してHH:MM形式の文字列を生成
+    const start = `${startHour}:${startMinute}`;
+    const end = `${endHour}:${endMinute}`;
+
+    // 時間の計算
+    const startMinutes = toMinutes(start);
+    const endMinutes = toMinutes(end);
+    const duration = endMinutes - startMinutes;
+
+    // 開始時刻が終了時刻より後の場合、または継続時間が0以下の場合にエラーメッセージを表示
+    if (duration <= 0) {
+      alert("終了時刻は開始時刻より後に設定してください。");
+      return; // イベントの追加を中断
+    }
+
+    // 既存のイベントとの重複をチェック
+    const existingEvents = timeline.querySelectorAll('.event'); // 現在タイムラインに表示されているすべてのイベントを取得
+    let overlap = false; // 重複があるかどうかのフラグ
+
+    for (const existingEventDiv of existingEvents) { // forEachからfor...ofに変更してreturnできるようにする
+      const existingStart = existingEventDiv.dataset.start; // 既存イベントの開始時刻(時)
+      const existingEnd = existingEventDiv.dataset.end;     // 既存イベントの終了時刻(時)
+
+      const existingStartMinutes = toMinutes(existingStart); // 既存イベントの開始時刻（分）
+      const existingEndMinutes = toMinutes(existingEnd);     // 既存イベントの終了時刻（分）
+
+      // 重複チェックのロジック
+      if ((startMinutes < existingEndMinutes) && (endMinutes > existingStartMinutes)) {
+        overlap = true; // 重複フラグをtrueに
+        alert(`このイベントは既存のイベント「${existingEventDiv.dataset.title}」（${existingStart}〜${existingEnd}）と時間が重複しています。`);
+        break; // ループを中断
+      }
+    }
+    if (overlap) {
+      return; // 重複があった場合は、イベントの追加処理を中断
+    }
+
+    // API設計書に合わせたISO 8601形式のUTC時刻を生成
+    // 現在の日付（ローカルタイムゾーン）を使用し、選択された時間と組み合わせる
+    // toISOString() を使ってUTCに変換する
+    const todayDateTime = new Date();
+    todayDateTime.setHours(parseInt(startHour, 10));
+    todayDateTime.setMinutes(parseInt(startMinute, 10));
+    todayDateTime.setSeconds(0);
+    todayDateTime.setMilliseconds(0);
+    const startTimeISO = todayDateTime.toISOString();
+
+    todayDateTime.setHours(parseInt(endHour, 10));
+    todayDateTime.setMinutes(parseInt(endMinute, 10));
+    const endTimeISO = todayDateTime.toISOString();
+
+    // サーバーに送るデータを作成
+    const payload = {
+      "name": title,
+      "startTime": startTimeISO,
+      "endTime": endTimeISO
+    };
+
+    try {
+      // APIにPOSTリクエストを送信
+      const res = await fetch(base_url + "/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload),
+        credentials: 'include' // Cookie（セッションID）を送る
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        console.log("イベントが正常に作成されました:", result.data);
+
+        // API成功時のみ、ローカルにイベントを追加
+        // プレースホルダー画像がある場合、それを削除
+        if (timeline.classList.contains('has-placeholder-image')) {
+          timeline.classList.remove('has-placeholder-image'); // クラスを削除
+          timeline.style.backgroundImage = 'none'; // 背景画像を削除
+        }
+
+        // 中央時刻に基づいて背景色を決定
+        const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+        // パーセント計算で表示位置・幅を設定
+        const startPercent = (startMinutes / 1440) * 100;
+        const widthPercent = (duration / 1440) * 100;
+
+        // イベントdiv作成
+        const eventDiv = document.createElement("div");
+        eventDiv.className = "event";
+        eventDiv.style.left = `${startPercent}%`;
+        eventDiv.style.width = `${widthPercent}%`;
+        eventDiv.textContent = title;
+        // ここで自動計算された背景色を設定
+        eventDiv.style.backgroundColor = calculatedColor;
+        eventDiv.style.borderColor = calculatedColor;
+
+        // datasetに情報保存（詳細表示用）
+        eventDiv.dataset.id = result.data.id; // サーバーから返されたIDを保存
+        eventDiv.dataset.title = title;
+        eventDiv.dataset.start = start;
+        eventDiv.dataset.end = end;
+        eventDiv.dataset.color = calculatedColor; // 設定した色も保存
+
+        // イベントクリック時に詳細モーダルを表示
+        eventDiv.addEventListener('click', function() {
+          const eventDetails = `${title}; ${start}~${end}`;
+          eventDetailText.textContent = eventDetails;
+          currentEvent = eventDiv;
+          eventDetailModal.show();
+        });
+
+        timeline.appendChild(eventDiv);
+        form.reset(); // フォームをリセット
+
+      } else {
+        alert(`イベント作成に失敗しました: ${result.message}`);
+        console.error("イベント作成失敗:", result.message);
+      }
+
+    } catch (err) {
+      // 通信エラー発生時の処理
+      console.error("通信エラーが発生しました:", err);
+      alert("イベント作成中にエラーが発生しました。ネットワーク接続を確認してください。");
+    }
+  });
+
+  // モーダルの削除ボタン処理
+  deleteEventBtn.addEventListener('click', function() {
+    if (currentEvent) {
+      // TODO: ここにイベント削除API呼び出しを追加
+      currentEvent.remove();
+      eventDetailModal.hide();
+
+      // もしイベントが一つもなくなったら、プレースホルダー画像を再表示
+      if (timeline.children.length === 0) {
+        timeline.classList.add('has-placeholder-image'); // クラスを再追加
+        timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
+      }
+
+    }
+  });
+
+  // タイムラインにおけるイベントの背景色を変更する
+  colorOptionsContainer.addEventListener('click', function(event) {
+    const clickedButton = event.target.closest('.color-option');
+    if (clickedButton && currentEvent) {
+      const selectedColor = clickedButton.dataset.color; // data-color属性から色を取得
+      currentEvent.style.backgroundColor = selectedColor; // イベントの背景色を変更
+      currentEvent.style.borderColor = selectedColor; // イベントの枠線の色も変更
+      currentEvent.dataset.color = selectedColor; // イベントのデータ属性も更新
+    }
+  });
+
+  //セッションストレージからユーザー名取得、なければ「ゲスト」
+  const username = sessionStorage.getItem("username") || "ゲスト";
+  document.getElementById("username").textContent = username;
+
+  // ログアウトボタンがクリックされた時に実行される処理
+  document.getElementById('logout-btn').addEventListener('click', function() {
+  
+
+
+    // サーバーにログアウトをリクエスト（POSTメソッドで送る）
+    fetch(base_url + "/api/auth/logout", {
+      method: 'POST',        // リクエストメソッドはPOST
+      credentials: 'include' // Cookie（セッションID）を送る
+    })
+      .then(response => response.json())  // サーバーからのレスポンスをJSONとして処理
+      .then(data => {
+        if (data.success) {
+          // 成功したらログインページに遷移
+          window.location.href = 'TimeShare_WelcomePage.html';  // ウェルカム画面へ
+        } else {
+          // もし失敗したら、エラーメッセージを表示
+          alert('ログアウトに失敗しました');
+        }
+      })
+      .catch(error => {
+        // エラーが発生した場合、コンソールにエラーメッセージを表示
+        console.error('ログアウト中にエラーが発生しました:', error);
+        alert('ログアウトに失敗しました。再度試してください。');
+      });
+  });
+</script>
+
+</body>
+</html>

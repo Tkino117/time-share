@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeShare-LoginPage</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+    }
+
+    header {
+      margin-bottom: 5.9rem;
+    }
+
+    /* カスタムボタン */
+    .custom-btn {
+      border-radius: 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ボタン画像のサイズ調整 */
+    .btn img {
+      height: 3rem;
+      width: auto;
+    }
+
+    .site-title {
+      text-align: center;
+      font-size: 3.5rem;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .logo-img {
+      height: 3.5rem; /* 画像の高さ（調整可能） */
+      width: auto;
+    }
+
+    /* ボタンが均等に並ぶように */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    .btn-group > .btn {
+      position: relative;
+      flex: 1; /* 各ボタンを均等に広げる */
+      margin: 0; /* ボタン同士の隙間をゼロに */
+      padding: 0.8rem 0; /* 高さ調整 */
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-group > .btn:not(:last-child)::after {/* ボタン同士の隙間に白いラインを入れる*/
+      content: "";
+      position: absolute;
+      top: 0%;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: white;
+    }
+
+    /* ホバー時のボタン色 */
+    .custom-btn:hover,
+    .btn-group > .btn:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+
+    #container {
+      background: #00ced1;
+      font-size: 1em;
+      border-bottom: 2px #5f9ea0;
+      padding: 10px 0;
+    }
+
+    /* ボタン上下の角を丸める */
+    .rounded {
+      border-top-left-radius: 15px !important;
+      border-bottom-left-radius: 15px !important;
+      border-top-right-radius: 15px !important;
+      border-bottom-right-radius: 15px !important;
+    }
+
+    /* スマホ対応*/
+    @media (max-width: 576px) {
+      .btn-group {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn-group > .btn {
+        border-radius: 15px !important;
+      }
+
+      .btn-group > .btn:not(:last-child) {
+        border-bottom: 1px solid white;
+      }
+
+      .btn-group > .btn:not(:last-child)::after {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 最上部のタイトル部分 -->
+  <header>
+    <div id="container">
+      <div class="site-title d-flex align-items-center justify-content-center py-5">
+        <img src="https://i.ibb.co/JbLxZxR/MN-logo.png" alt="Logo" class="logo-img me-2">
+        <span>TimeShare</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mt-5" style="max-width: 500px;">
+    <form>
+      <div class="mb-3 text-start">
+        <label for="id-input" class="form-label fw-bold">ID</label>
+        <input type="text" class="form-control" id="userid-input">
+      </div>
+      <!-- パスワード伏せ字 -->
+      <div class="mb-3 text-start">
+        <label for="password-input" class="form-label fw-bold">PassWord</label>
+        <input type="password" class="form-control" id="password-input">
+      </div>
+    </form>
+  </div>
+  <br>
+
+  <!-- ログインボタン -->
+  <section class="container my-5">  
+    <div class="btn-group mb-3" role="group" aria-label="Button group">
+      <button type="button" class="btn custom-btn rounded" id="register-btn">ログイン</button>
+    </div>
+  </section>
+
+
+  <!-- Bootstrap JSと依存ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/*
+  ユーザー登録用の関数。
+  登録ボタンがクリックされると呼ばれる。
+
+  1. フォームからユーザー名、ユーザーID、パスワードの値を取得。
+  2. それらをJSON形式でまとめてAPIにPOSTリクエストを送信。
+  3. サーバーからのレスポンスを受け取り、
+     - 登録成功なら「登録成功！」のメッセージを表示
+     - 登録失敗ならエラーメッセージに応じて適切なアラートを表示
+  4. 通信エラーがあった場合はエラーメッセージをコンソールに表示し、ユーザーにも通知する。
+*/
+
+const base_url = "https://tkino117.dev/time-share";
+// const base_url = "http://localhost:3500";
+
+async function handleUserRegister() {
+  // ID、パスワードの入力値を取得
+  const userId = document.getElementById("userid-input").value;
+  const password = document.getElementById("password-input").value;
+
+  // サーバーに送るデータを作成
+  const payload = {
+    "userId": userId,
+    "password": password,
+  };
+
+  try {
+    // APIにPOSTリクエストを送信
+    const res = await fetch(base_url + "/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    // レスポンスをJSONで受け取る
+    const result = await res.json();
+    if (result.success) {
+      window.location.href = "TimeShare_HomePage.html";
+    } else {
+      alert("ユーザーIDまたはパスワードが間違っています");
+    }
+  } catch (err) {
+    // 通信エラー発生時の処理
+    console.error("通信エラー:", err);
+    alert("通信エラーが発生しました");
+  }
+}
+
+// 登録ボタンがクリックされたら上記関数を呼ぶようにイベント登録
+document.getElementById("register-btn").addEventListener("click", handleUserRegister);
+</script>
+</body>
+</html>
