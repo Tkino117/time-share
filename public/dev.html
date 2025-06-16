@@ -1,4 +1,7 @@
 <html>
+    <head>
+        <script type="module" src="util.js"></script>
+    </head>
     <body>
         <h2> ログイン・新規登録・編集 </h2>
         <div>
@@ -64,10 +67,10 @@
         <h2> log </h2>
         <button id="clearLogButton"> ログクリア </button>
         <div id="log"></div>
-        <script>
-            // URLを取得（localhostか本番かを自動で判定させてる）
-            const urlBase = getApiUrl();
+        <script type="module">          
+            import { getMyUserId, post, get, put, del, log, getApiUrl } from './util.js';
 
+            const urlBase = getApiUrl();
             // ボタンにイベントリスナーを設定
             document.getElementById('loginButton').addEventListener('click', login);
             document.getElementById('logoutButton').addEventListener('click', logout);
@@ -334,84 +337,6 @@
                 }
                 else {
                     log(result.message);
-                }
-            }
-
-            // -------------------------- ユーティリティ関数 --------------------------------
-            // 自分のユーザーidを取得（ユーザーIDを取得する専用のAPIを用意している）
-            async function getMyUserId() {
-                const response = await get('/api/users/me');
-                const result = await response.json();
-                if (result.success) {
-                    return result.data.userId;
-                }
-                else {
-                    log(result.message);
-                    return undefined;
-                }
-            }
-
-            // POSTリクエスト
-            async function post(endpoint, data) {
-                const response = await fetch(urlBase + endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(data)
-                });
-                return response;
-            }
-
-            // GETリクエスト
-            async function get(endpoint) {
-                const response = await fetch(urlBase + endpoint, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                return response;
-            }
-
-            // PUTリクエスト
-            async function put(endpoint, data) {
-                const response = await fetch(urlBase + endpoint, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(data)
-                });
-                return response;
-            }
-
-            // DELETEリクエスト
-            async function del(endpoint) {
-                const response = await fetch(urlBase + endpoint, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                return response;
-            }
-
-            // ログを表示
-            async function log(message) {
-                const log = document.getElementById('log');
-                const messageDiv = document.createElement('div');
-                messageDiv.textContent = message;
-                messageDiv.style.marginBottom = '5px';
-                messageDiv.style.whiteSpace = 'pre-wrap';
-                log.appendChild(messageDiv);
-            }
-
-            // URLを取得
-            function getApiUrl() {
-                const hostname = window.location.hostname;
-                if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                    return 'http://localhost:3500';
-                } else {
-                    return 'https://tkino117.dev/time-share';
                 }
             }
         </script>
