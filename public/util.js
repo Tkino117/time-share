@@ -56,7 +56,7 @@ export async function del(endpoint) {
     return response;
 }
 
-// ログを表示
+// ログを表示（dev.htmlでのみ使用）
 export async function log(message) {
     const log = document.getElementById('log');
     const messageDiv = document.createElement('div');

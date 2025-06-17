@@ -1,72 +1,97 @@
 <html>
     <head>
         <script type="module" src="util.js"></script>
+        <style>
+            .container {
+                display: flex;
+                width: 100%;
+            }
+            .main-content {
+                width: 65%;
+                padding: 20px;
+            }
+            .log-section {
+                width: 35%;
+                padding: 20px;
+                border-left: 1px solid #ccc;
+            }
+            #log {
+                white-space: pre-wrap;
+                font-family: monospace;
+            }
+        </style>
     </head>
     <body>
-        <h2> ログイン・新規登録・編集 </h2>
-        <div>
-            <input type="text" id="login-userId" placeholder="userId" />
-            <input type="password" id="login-password" placeholder="password" />
-            <button id="loginButton"> ログイン </button>
-            <button id="logoutButton"> ログアウト </button>
+        <div class="container">
+            <div class="main-content">
+                <h2> ログイン・新規登録・編集 </h2>
+                <div>
+                    <input type="text" id="login-userId" placeholder="userId" />
+                    <input type="password" id="login-password" placeholder="password" />
+                    <button id="loginButton"> ログイン </button>
+                    <button id="logoutButton"> ログアウト </button>
+                </div>
+                <div>
+                    <input type="text" id="register-userId" placeholder="userId" />
+                    <input type="password" id="register-password" placeholder="password" />
+                    <input type="text" id="register-name" placeholder="name" />
+                    <button id="registerButton"> 新規登録 </button>
+                </div>
+                <h2> フォロー </h2>
+                <div>
+                    <input type="text" id="follow-userId" placeholder="userId" />
+                    <button id="followButton"> フォロー </button>
+                    <button id="unfollowButton"> フォロー解除 </button>
+                </div>
+                <div>
+                    <button id="getFollowingsButton"> フォロー一覧 </button>
+                    <button id="getFollowersButton"> フォロワー一覧 </button>
+                </div>
+                <h2> イベント </h2>
+                <div>
+                    <input type="text" id="create-event-name" placeholder="event-name" />
+                    <input type="datetime-local" id="create-event-startTime" />
+                    <span> - </span>
+                    <input type="datetime-local" id="create-event-endTime" />
+                    <button id="createEventButton"> イベント作成 </button>
+                </div>
+                <div>
+                    <input type="text" id="update-event-id" placeholder="event-id" />
+                    <input type="text" id="update-event-name" placeholder="event-name" />
+                    <input type="datetime-local" id="update-event-startTime" />
+                    <span> - </span>
+                    <input type="datetime-local" id="update-event-endTime" />
+                    <button id="updateEventButton"> イベント更新 </button>
+                </div>
+                <div>
+                    <input type="text" id="delete-event-id" placeholder="event-id" />
+                    <button id="deleteEventButton"> イベント削除 </button>
+                </div>
+                <div>
+                    <button id="getMyEventsButton"> 自分のイベント一覧 </button>
+                    <button id="getFeedButton"> フィード </button>
+                </div>
+                <h2> 設定 </h2>
+                <div>
+                    <input type="text" id="update-userId" placeholder="userId" />
+                    <input type="password" id="update-password" placeholder="password" />
+                    <input type="text" id="update-name" placeholder="name" />
+                    <button id="updateButton"> 更新 </button>
+                    <button id="deleteButton"> ユーザー削除 </button>
+                </div>
+                <h2> 開発ツール</h2>
+                <div>
+                    <button id="findAllUsersButton"> 全ユーザー取得 </button>
+                    <button id="testButton1"> サンプルAPI </button>
+                    <button id="testButton2"> 開発用デモ </button>
+                </div>
+            </div>
+            <div class="log-section">
+                <h2> log </h2>
+                <button id="clearLogButton"> ログクリア </button>
+                <div id="log"></div>
+            </div>
         </div>
-        <div>
-            <input type="text" id="register-userId" placeholder="userId" />
-            <input type="password" id="register-password" placeholder="password" />
-            <input type="text" id="register-name" placeholder="name" />
-            <button id="registerButton"> 新規登録 </button>
-        </div>
-        <h2> フォロー </h2>
-        <div>
-            <input type="text" id="follow-userId" placeholder="userId" />
-            <button id="followButton"> フォロー </button>
-            <button id="unfollowButton"> フォロー解除 </button>
-        </div>
-        <div>
-            <button id="getFollowingsButton"> フォロー一覧 </button>
-            <button id="getFollowersButton"> フォロワー一覧 </button>
-        </div>
-        <h2> イベント </h2>
-        <div>
-            <input type="text" id="create-event-name" placeholder="event-name" />
-            <input type="datetime-local" id="create-event-startTime" />
-            <span> - </span>
-            <input type="datetime-local" id="create-event-endTime" />
-            <button id="createEventButton"> イベント作成 </button>
-        </div>
-        <div>
-            <input type="text" id="update-event-id" placeholder="event-id" />
-            <input type="text" id="update-event-name" placeholder="event-name" />
-            <input type="datetime-local" id="update-event-startTime" />
-            <span> - </span>
-            <input type="datetime-local" id="update-event-endTime" />
-            <button id="updateEventButton"> イベント更新 </button>
-        </div>
-        <div>
-            <input type="text" id="delete-event-id" placeholder="event-id" />
-            <button id="deleteEventButton"> イベント削除 </button>
-        </div>
-        <div>
-            <button id="getMyEventsButton"> 自分のイベント一覧 </button>
-            <button id="getFeedButton"> フィード </button>
-        </div>
-        <h2> 設定 </h2>
-        <div>
-            <input type="text" id="update-userId" placeholder="userId" />
-            <input type="password" id="update-password" placeholder="password" />
-            <input type="text" id="update-name" placeholder="name" />
-            <button id="updateButton"> 更新 </button>
-            <button id="deleteButton"> ユーザー削除 </button>
-        </div>
-        <h2> 開発ツール</h2>
-        <div>
-            <button id="findAllUsersButton"> 全ユーザー取得 </button>
-            <button id="testButton1"> サンプルAPI </button>
-            <button id="testButton2"> 開発用デモ </button>
-        </div>
-        <h2> log </h2>
-        <button id="clearLogButton"> ログクリア </button>
-        <div id="log"></div>
         <script type="module">          
             import { getMyUserId, post, get, put, del, log, getApiUrl } from './util.js';
 
@@ -266,7 +291,7 @@
                 if(result.success) {
                     log(result.data.events.length + ' events:');
                     for(const event of result.data.events) {
-                        log('    id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
+                        log(`    id: ${event.id}, name: ${event.name},\n    startTime: ${event.startTime},\n    endTime: ${event.endTime}`);
                     }
                 }
                 else {
@@ -313,7 +338,7 @@
                         log('    user: ' + userEvent.user.userId + ', name: ' + userEvent.user.name);
                         log('    ' + userEvent.events.events.length + ' events:');
                         for(const event of userEvent.events.events) {
-                            log('        id: ' + event.id + ', name: ' + event.name + ', startTime: ' + event.startTime + ', endTime: ' + event.endTime);
+                            log(`        id: ${event.id}, name: ${event.name},\n        startTime: ${event.startTime},\n        endTime: ${event.endTime}`);
                         }
                     }
                 }
