@@ -183,6 +183,8 @@ async function handleUserRegister() {
 
     const result = await res.json();
     if (result.success) {
+      sessionStorage.setItem("userId", result.data.userId);
+      sessionStorage.setItem("name", result.data.name);
       window.location.href = "TimeShare_HomePage.html";
     } else {
       alert("ユーザーIDまたはパスワードが間違っています");
