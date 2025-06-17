@@ -63,6 +63,14 @@ export class EventRepository {
         });
     }
 
+    public async findAllByType(type: EventType): Promise<Event[]> {
+        return await Event.findAll({
+            where: {
+                type
+            }
+        });
+    }
+
     public async findAll(): Promise<Event[]> {
         return await Event.findAll();
     }

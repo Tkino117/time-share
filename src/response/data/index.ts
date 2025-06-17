@@ -1,4 +1,5 @@
 import { User, Event, EventType } from "../../database/database";
+import { Ranking } from "../../service/RankingService";
 
 export abstract class AbstractResponseData {
     abstract toJSON(): any;
@@ -120,6 +121,41 @@ export class FeedResponseData extends AbstractResponseData {
     toJSON(): any {
         return {
             userEvents: this.userEvents.map(userEvent => userEvent.toJSON())
+        };
+    }
+}
+
+export class RankingResponseData extends AbstractResponseData {
+    ranking: Ranking;
+
+    constructor(ranking: Ranking) {
+        super();
+        this.ranking = ranking;
+    }
+
+    toJSON(): any {
+        return {
+            type: this.ranking.eventType,
+            ranking: this.ranking.ranking.map(item => ({
+                rank: item.rank,
+                user: new UserResponseData(item.user),
+                duration_min: item.duration_min
+            }))
+        };
+    }
+}
+
+export class RankingsResponseData extends AbstractResponseData {
+    rankings: RankingResponseData[];
+
+    constructor(rankings: Ranking[]) {
+        super();
+        this.rankings = rankings.map(ranking => new RankingResponseData(ranking));
+    }
+
+    toJSON(): any {
+        return {
+            rankings: this.rankings.map(ranking => ranking.toJSON())
         };
     }
 }

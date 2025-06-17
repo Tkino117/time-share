@@ -3,6 +3,7 @@ import { ForbiddenResponse } from "../response/error/ForbiddenResponse";
 import { SessionManager } from "../repository";
 import * as errors from "../service/errors";
 import * as responses from "../response";
+import { EventType } from "../database/database";
 
 // req のセッションIDが userId のセッションであるかを確認する
 export function checkSession(req: Request, res: Response, sessionManager: SessionManager, userId: string) {
@@ -75,3 +76,25 @@ export async function auth(req: Request, res: Response, sessionManager: SessionM
     }
     return userId;
 }
+
+
+export function convertType(type: string | undefined): EventType {
+        switch (type) {
+            case 'meal':
+                return EventType.MEAL;
+            case 'sleep':
+                return EventType.SLEEP;
+            case 'work':
+                return EventType.WORK;
+            case 'exercise':
+                return EventType.EXERCISE;
+            case 'study':
+                return EventType.STUDY;
+            case 'other':
+            case '':
+            case undefined:
+                return EventType.OTHER;
+            default:
+                throw new errors.InvalidEventTypeError(type);
+        }
+    }

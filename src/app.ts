@@ -2,9 +2,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import path from 'path';
-import { Router, UserRouter, AuthRouter, EventRouter, DevRouter } from './router';
-import { AuthController, UserController, EventController } from './controller';
-import { UserService, EventService, FollowService } from './service';
+import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter } from './router';
+import { AuthController, UserController, EventController, RankingController } from './controller';
+import { UserService, EventService, FollowService, RankingService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
 import { Database } from './database/database';
 
@@ -61,14 +61,17 @@ async function main() {
         const userService = new UserService(userRepository, sessionManager);
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
         const followService = new FollowService(followRepository, userRepository, eventRepository);
+        const rankingService = new RankingService(eventRepository, userRepository);
         const authController = new AuthController(userService, sessionManager);
         const userController = new UserController(userService, followService, sessionManager, eventService);
         const eventController = new EventController(eventService, sessionManager);
+        const rankingController = new RankingController(rankingService);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
         const devRouter = new DevRouter(userService, eventService, followService);
-        const router = new Router(userRouter, authRouter, eventRouter, devRouter);
+        const rankingRouter = new RankingRouter(rankingController);
+        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter);
 
         // 初期化
         const app = await initExpress(express());
