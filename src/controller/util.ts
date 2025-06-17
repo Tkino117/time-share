@@ -53,6 +53,9 @@ export function handleError(error: any, res: Response) {
     else if (error instanceof errors.InvalidEventNameError) {
         new responses.ErrorResponse('Invalid event name').send(res);
     }
+    else if (error instanceof errors.InvalidEventTypeError) {
+        new responses.ErrorResponse('Invalid event type: ' + error.type).send(res);
+    }
     else if (error instanceof errors.AuthError) {
         new responses.UnauthorizedResponse('Unauthorized').send(res);
     }

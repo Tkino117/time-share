@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { auth, handleError } from "./util";
 import { SessionManager } from "../repository/SessionManager";
 import { EmptyResponseData, EventResponseData, SuccessResponse } from "../response";
-import { AuthError, InvalidEventIdError } from "../service/errors";
+import { AuthError, InvalidEventIdError, InvalidEventTypeError } from "../service/errors";
 import { EventType } from "../database/database";
 
 export class EventController {
@@ -96,7 +96,7 @@ export class EventController {
         }
     }
 
-    private convertType(type: string): EventType {
+    private convertType(type: string | undefined): EventType {
         switch (type) {
             case 'meal':
                 return EventType.MEAL;
@@ -108,8 +108,12 @@ export class EventController {
                 return EventType.EXERCISE;
             case 'study':
                 return EventType.STUDY;
-            default:
+            case 'other':
+            case '':
+            case undefined:
                 return EventType.OTHER;
+            default:
+                throw new InvalidEventTypeError(type);
         }
     }
 }

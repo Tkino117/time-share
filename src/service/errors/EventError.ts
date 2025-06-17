@@ -32,3 +32,10 @@ export class TimeConflictError extends Error {
         this.name = 'TimeConflictError';
     }
 }
+
+export class InvalidEventTypeError extends Error {
+    constructor(public readonly type: string | undefined) {
+        super(`Invalid event type: ${type}`);
+        this.name = 'InvalidEventTypeError';
+    }
+}
