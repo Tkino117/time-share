@@ -1,5 +1,6 @@
 import { AbstractRouter } from "./AbstractRouter";
 import { EventService, FollowService, UserService } from "../service";
+import { EventType } from "../database/database";
 
 export class DevRouter extends AbstractRouter {
     constructor(private userService: UserService, private eventService: EventService, private followService: FollowService) {
@@ -26,16 +27,51 @@ export class DevRouter extends AbstractRouter {
             await this.followService.followUser(demo2.userId, demo3.userId);
             await this.followService.followUser(demo3.userId, demo.userId);
             
-            const event1 = await this.eventService.createEvent(
-                { userId: demo.userId, name: 'event1', startTime: new Date(), endTime: new Date(Date.now() + 10 * 60 * 1000) });
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            yesterday.setHours(0, 0, 0, 0);
+            const beforeYesterday = new Date();
+            beforeYesterday.setDate(beforeYesterday.getDate() - 2);
+            beforeYesterday.setHours(0, 0, 0, 0);
+
+            
+            // おとといのイベント
             const event2 = await this.eventService.createEvent(
-                { userId: demo.userId, name: 'event2', startTime: new Date(Date.now() + 11 * 60 * 1000), endTime: new Date(Date.now() + 20 * 60 * 1000) });
+                { userId: demo2.userId, name: '朝の運動', startTime: new Date(beforeYesterday.getTime() + 6 * 60 * 60 * 1000), endTime: new Date(beforeYesterday.getTime() + 7 * 60 * 60 * 1000), type: EventType.EXERCISE });
             const event3 = await this.eventService.createEvent(
-                { userId: demo2.userId, name: 'event3', startTime: new Date(Date.now()), endTime: new Date(Date.now() + 30 * 60 * 1000) });
+                { userId: demo3.userId, name: '午後の仕事', startTime: new Date(beforeYesterday.getTime() + 13 * 60 * 60 * 1000), endTime: new Date(beforeYesterday.getTime() + 17 * 60 * 60 * 1000), type: EventType.WORK });
+
+            // 昨日のイベント
             const event4 = await this.eventService.createEvent(
-                { userId: demo3.userId, name: 'event4', startTime: new Date(Date.now() + 30 * 60 * 1000), endTime: new Date(Date.now() + 40 * 60 * 1000) });
+                { userId: demo.userId, name: '朝食', startTime: new Date(yesterday.getTime() + 7 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 8 * 60 * 60 * 1000), type: EventType.MEAL });
             const event5 = await this.eventService.createEvent(
-                { userId: demo3.userId, name: 'event5', startTime: new Date(Date.now() + 45 * 60 * 1000), endTime: new Date(Date.now() + 50 * 60 * 1000) });
+                { userId: demo2.userId, name: '昼寝', startTime: new Date(yesterday.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 13 * 60 * 60 * 1000), type: EventType.SLEEP });
+            const event6 = await this.eventService.createEvent(
+                { userId: demo3.userId, name: '夕方の勉強', startTime: new Date(yesterday.getTime() + 16 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 18 * 60 * 60 * 1000), type: EventType.STUDY });
+
+            // 今日のイベント
+            const event7 = await this.eventService.createEvent(
+                { userId: demo.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
+            const event8 = await this.eventService.createEvent(
+                { userId: demo2.userId, name: '午後の会議', startTime: new Date(today.getTime() + 14 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 15 * 60 * 60 * 1000), type: EventType.WORK });
+
+            // 明日のイベント
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const event9 = await this.eventService.createEvent(
+                { userId: demo3.userId, name: '朝の勉強会', startTime: new Date(tomorrow.getTime() + 9 * 60 * 60 * 1000), endTime: new Date(tomorrow.getTime() + 11 * 60 * 60 * 1000), type: EventType.STUDY });
+
+            // 睡眠イベントの追加（全員おとといから昨日）
+            const sleep1 = await this.eventService.createEvent(
+                { userId: demo.userId, name: '睡眠', startTime: new Date(beforeYesterday.getTime() + 23 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 7 * 60 * 60 * 1000), type: EventType.SLEEP });
+            
+            const sleep2 = await this.eventService.createEvent(
+                { userId: demo2.userId, name: '睡眠', startTime: new Date(beforeYesterday.getTime() + 22 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 6 * 60 * 60 * 1000), type: EventType.SLEEP });
+            
+            const sleep3 = await this.eventService.createEvent(
+                { userId: demo3.userId, name: '睡眠', startTime: new Date(beforeYesterday.getTime() + 23 * 60 * 60 * 1000 + 30 * 60 * 1000), endTime: new Date(yesterday.getTime() + 7 * 60 * 60 * 1000 + 30 * 60 * 1000), type: EventType.SLEEP });
 
             res.json({ success: true, message: 'Demo users created' });
         });
