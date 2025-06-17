@@ -1,4 +1,4 @@
-import { User, Event } from "../../database/database";
+import { User, Event, EventType } from "../../database/database";
 
 export abstract class AbstractResponseData {
     abstract toJSON(): any;
@@ -50,6 +50,7 @@ export class EventResponseData extends AbstractResponseData {
     startTime: string;
     endTime: string;
     isDone: boolean;
+    type: EventType;
 
     constructor(event: Event) {
         super();
@@ -59,6 +60,7 @@ export class EventResponseData extends AbstractResponseData {
         this.startTime = event.startTime.toISOString();
         this.endTime = event.endTime.toISOString();
         this.isDone = event.isDone;
+        this.type = event.type;
     }
 
     toJSON(): any {
@@ -68,7 +70,8 @@ export class EventResponseData extends AbstractResponseData {
             name: this.name,
             startTime: this.startTime,
             endTime: this.endTime,
-            isDone: this.isDone
+            isDone: this.isDone,
+            type: this.type
         };
     }
 }

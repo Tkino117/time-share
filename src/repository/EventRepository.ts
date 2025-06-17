@@ -1,10 +1,11 @@
-import { Database , Event, User } from '../database/database';
+import { Database , Event, EventType, User } from '../database/database';
 
 export type EventCreateInput = {
     userId?: string;
     name?: string;
     startTime?: Date;
     endTime?: Date;
+    type?: EventType;
 }
 
 export type EventUpdateInput = {
@@ -12,6 +13,7 @@ export type EventUpdateInput = {
     startTime?: Date;
     endTime?: Date;
     isDone?: boolean;
+    type?: EventType;
 }
 
 export class EventRepository {
@@ -27,7 +29,8 @@ export class EventRepository {
             name: event.name,
             startTime: event.startTime,
             endTime: event.endTime,
-            isDone: false
+            isDone: false,
+            type: event.type
         });
     }
 

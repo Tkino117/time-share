@@ -53,6 +53,14 @@
                     <input type="datetime-local" id="create-event-startTime" />
                     <span> - </span>
                     <input type="datetime-local" id="create-event-endTime" />
+                    <select id="create-event-type">
+                        <option value="meal"> 食事 </option>
+                        <option value="sleep"> 睡眠 </option>
+                        <option value="work"> 仕事 </option>
+                        <option value="exercise"> 運動 </option>
+                        <option value="study"> 勉強 </option>
+                        <option value="other"> その他 </option>
+                    </select>
                     <button id="createEventButton"> イベント作成 </button>
                 </div>
                 <div>
@@ -61,6 +69,14 @@
                     <input type="datetime-local" id="update-event-startTime" />
                     <span> - </span>
                     <input type="datetime-local" id="update-event-endTime" />
+                    <select id="update-event-type">
+                        <option value="meal"> 食事 </option>
+                        <option value="sleep"> 睡眠 </option>
+                        <option value="work"> 仕事 </option>
+                        <option value="exercise"> 運動 </option>
+                        <option value="study"> 勉強 </option>
+                        <option value="other"> その他 </option>
+                    </select>
                     <button id="updateEventButton"> イベント更新 </button>
                 </div>
                 <div>
@@ -274,7 +290,8 @@
                 const name = document.getElementById('create-event-name').value;
                 const startTime = document.getElementById('create-event-startTime').value;
                 const endTime = document.getElementById('create-event-endTime').value;
-                const response = await post('/api/events', { name, startTime, endTime });
+                const type = document.getElementById('create-event-type').value;
+                const response = await post('/api/events', { name, startTime, endTime, type });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
@@ -291,7 +308,7 @@
                 if(result.success) {
                     log(result.data.events.length + ' events:');
                     for(const event of result.data.events) {
-                        log(`    id: ${event.id}, name: ${event.name},\n    startTime: ${event.startTime},\n    endTime: ${event.endTime}`);
+                        log(`    id: ${event.id}, name: ${event.name},\n    startTime: ${event.startTime},\n    endTime: ${event.endTime},\n    type: ${event.type}`);
                     }
                 }
                 else {
@@ -305,7 +322,8 @@
                 const name = document.getElementById('update-event-name').value;
                 const startTime = document.getElementById('update-event-startTime').value;
                 const endTime = document.getElementById('update-event-endTime').value;
-                const response = await put('/api/events/' + eventId, { name, startTime, endTime });
+                const type = document.getElementById('update-event-type').value;
+                const response = await put('/api/events/' + eventId, { name, startTime, endTime, type });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
@@ -338,7 +356,7 @@
                         log('    user: ' + userEvent.user.userId + ', name: ' + userEvent.user.name);
                         log('    ' + userEvent.events.events.length + ' events:');
                         for(const event of userEvent.events.events) {
-                            log(`        id: ${event.id}, name: ${event.name},\n        startTime: ${event.startTime},\n        endTime: ${event.endTime}`);
+                            log(`        id: ${event.id}, name: ${event.name},\n        startTime: ${event.startTime},\n        endTime: ${event.endTime},\n        type: ${event.type}`);
                         }
                     }
                 }

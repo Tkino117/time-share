@@ -1,4 +1,4 @@
-import { Event } from "../database/database";
+import { Event, EventType } from "../database/database";
 import { EventRepository, EventCreateInput, EventUpdateInput } from "../repository/EventRepository";
 import { UserRepository } from "../repository/UserRepository";
 import { SessionManager } from "../repository/SessionManager";
@@ -28,6 +28,9 @@ export class EventService {
         }
         if (event.startTime >= event.endTime) {
             throw new InvalidTimeRangeError();
+        }
+        if (!event.type) {
+            event.type = EventType.OTHER;
         }
         // スケジュールの時間重複チェック
         const events = await this.eventRepository.getByUserId(event.userId);

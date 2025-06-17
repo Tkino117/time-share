@@ -13,6 +13,15 @@ export class Follow extends Model {
     public following!: string;
 }
 
+export enum EventType {
+    MEAL = 'meal',
+    SLEEP = 'sleep',
+    WORK = 'work',
+    EXERCISE = 'exercise',
+    STUDY = 'study',
+    OTHER = 'other'
+}
+
 export class Event extends Model {
     public id!: number;
     public userId!: string;
@@ -20,6 +29,7 @@ export class Event extends Model {
     public startTime!: Date;
     public endTime!: Date;
     public isDone!: boolean;
+    public type!: EventType;
 }
 
 export class Database {
@@ -136,6 +146,11 @@ export class Database {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false
+            },
+            type: {
+                type: DataTypes.ENUM(...Object.values(EventType)),
+                allowNull: false,
+                defaultValue: EventType.OTHER
             }
         }, {
             sequelize: this.sequelize,
