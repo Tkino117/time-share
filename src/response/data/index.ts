@@ -127,10 +127,12 @@ export class FeedResponseData extends AbstractResponseData {
 
 export class RankingResponseData extends AbstractResponseData {
     ranking: Ranking;
+    rankingStartTime: Date;
 
-    constructor(ranking: Ranking) {
+    constructor(ranking: Ranking, rankingStartTime: Date) {
         super();
         this.ranking = ranking;
+        this.rankingStartTime = rankingStartTime;
     }
 
     toJSON(): any {
@@ -140,7 +142,8 @@ export class RankingResponseData extends AbstractResponseData {
                 rank: item.rank,
                 user: new UserResponseData(item.user),
                 duration_min: item.duration_min
-            }))
+            })),
+            rankingStartTime: this.rankingStartTime.toISOString()
         };
     }
 }
@@ -148,9 +151,9 @@ export class RankingResponseData extends AbstractResponseData {
 export class RankingsResponseData extends AbstractResponseData {
     rankings: RankingResponseData[];
 
-    constructor(rankings: Ranking[]) {
+    constructor(rankings: Ranking[], rankingStartTime: Date) {
         super();
-        this.rankings = rankings.map(ranking => new RankingResponseData(ranking));
+        this.rankings = rankings.map(ranking => new RankingResponseData(ranking, rankingStartTime));
     }
 
     toJSON(): any {

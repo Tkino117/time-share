@@ -14,11 +14,13 @@ export class RankingService {
     private rankingCache: Map<EventType, Ranking> = new Map();
     private rankingCacheTime: Map<EventType, number> = new Map();
     private cacheTime: number;
+    private rankingStartTime: Date;
 
-    constructor(private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository, cacheTime_sec: number = 60 * 10) {
-            this.cacheTime = cacheTime_sec * 1000;
-        }
+    constructor(private readonly eventRepository: EventRepository, private readonly userRepository: UserRepository,
+         private readonly cacheTime_sec: number = 60 * 10) {
+        this.cacheTime = this.cacheTime_sec * 1000;
+        this.rankingStartTime = this.updateRankingStartTime();
+    }
 
     public async getRankings(): Promise<Ranking[]> {
         const rankings: Ranking[] = [];
@@ -38,11 +40,12 @@ export class RankingService {
     }
 
     private async culRankingByType(type: EventType): Promise<Ranking> {
+        this.rankingStartTime = this.updateRankingStartTime();
         const events = await this.eventRepository.findAllByType(type);
         const tmpMap = new Map<string, number>();
         events.forEach((event) => {
             const userId = event.userId;
-            if (event.endTime > new Date()) {
+            if (event.endTime > new Date() || event.startTime < this.rankingStartTime) {
                 return;
             }
             const duration_min = (event.endTime.getTime() - event.startTime.getTime()) / 60000;
@@ -67,5 +70,20 @@ export class RankingService {
         this.rankingCache.set(type, ranking);
         this.rankingCacheTime.set(type, Date.now());
         return ranking;
+    }
+
+    public getRankingStartTime(): Date {
+        return this.rankingStartTime;
+    }
+
+    private updateRankingStartTime(): Date {
+        // 前回の日曜日の開始時刻を設定
+        const today = new Date();
+        const day = today.getDay();
+        const diff = day === 0 ? 7 : day; // 日曜日からの差分を計算
+        const rankingStartTime = new Date(today);
+        rankingStartTime.setDate(today.getDate() - diff);
+        rankingStartTime.setHours(0, 0, 0, 0);
+        return rankingStartTime;
     }
 }
