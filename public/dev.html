@@ -87,6 +87,10 @@
                     <button id="getMyEventsButton"> 自分のイベント一覧 </button>
                     <button id="getFeedButton"> フィード </button>
                 </div>
+                <h2> ランキング </h2>
+                <div>
+                    <button id="getRankingsButton"> ランキング一覧 </button>
+                </div>
                 <h2> 設定 </h2>
                 <div>
                     <input type="text" id="update-userId" placeholder="userId" />
@@ -131,6 +135,7 @@
             document.getElementById('updateEventButton').addEventListener('click', updateEvent);
             document.getElementById('deleteEventButton').addEventListener('click', deleteEvent);
             document.getElementById('getFeedButton').addEventListener('click', getFeed);
+            document.getElementById('getRankingsButton').addEventListener('click', getRankings);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -380,6 +385,22 @@
                 }
                 else {
                     log(result.message);
+                }
+            }
+
+            // ランキング一覧ボタン
+            async function getRankings() {
+                const response = await get('/api/rankings');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.rankings.length + ' rankings:');
+                    for(const ranking of result.data.rankings) {
+                        log('    type: ' + ranking.type);
+                        log('    ranking: ' + ranking.ranking.length + ' rankings:');
+                        for(const item of ranking.ranking) {
+                            log('        rank: ' + item.rank + ', user: ' + item.user.userId + ', name: ' + item.user.name + ', duration_min: ' + item.duration_min);
+                        }
+                    }
                 }
             }
         </script>

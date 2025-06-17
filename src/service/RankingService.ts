@@ -12,11 +12,13 @@ export class Ranking {
 
 export class RankingService {
     private rankingCache: Map<EventType, Ranking> = new Map();
-    private updateTime: number = 1000 * 60 * 10; // 10 minutes
     private rankingCacheTime: Map<EventType, number> = new Map();
+    private cacheTime: number;
 
     constructor(private readonly eventRepository: EventRepository,
-        private readonly userRepository: UserRepository) {}
+        private readonly userRepository: UserRepository, cacheTime_sec: number = 60 * 10) {
+            this.cacheTime = cacheTime_sec * 1000;
+        }
 
     public async getRankings(): Promise<Ranking[]> {
         const rankings: Ranking[] = [];
@@ -29,7 +31,7 @@ export class RankingService {
 
     public async getRankingByType(type: EventType): Promise<Ranking> {
         const now = Date.now();
-        if (this.rankingCacheTime.has(type) && now - this.rankingCacheTime.get(type)! < this.updateTime) {
+        if (this.rankingCacheTime.has(type) && now - this.rankingCacheTime.get(type)! < this.cacheTime) {
             return this.rankingCache.get(type)!;
         }
         return await this.culRankingByType(type);
