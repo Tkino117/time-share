@@ -20,8 +20,8 @@ export class DevRouter extends AbstractRouter {
         });
         this.router.post('/demo-dev', async (req, res) => {
             const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a' });
-            const demo2 = await this.userService.createUser({ userId: 'b', password: 'b', name: 'b' });
-            const demo3 = await this.userService.createUser({ userId: 'c', password: 'c', name: 'c' });
+            const demo2 = await this.userService.createUser({ userId: 'bob', password: 'b', name: 'cocos' });
+            const demo3 = await this.userService.createUser({ userId: 'coco', password: 'c', name: 'ボ' });
             await this.followService.followUser(demo.userId, demo2.userId);
             await this.followService.followUser(demo.userId, demo3.userId);
             await this.followService.followUser(demo2.userId, demo3.userId);
