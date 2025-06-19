@@ -94,12 +94,17 @@ export class UserService {
         return user;
     }
 
-    public async searchUser(query: string): Promise<User[]> {
+    public async searchUser(query: string, myUserId: string): Promise<User[]> {
         if (query == '') {
             // !note! あとでエラーをつくる
             throw new Error('query is empty');
         }
         const users = await this.userRepository.search(query);
+        for (const user of users) {
+            if (user.userId === myUserId) {
+                users.splice(users.indexOf(user), 1);
+            }
+        }
         return users;
     }
 

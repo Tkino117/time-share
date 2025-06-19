@@ -174,8 +174,9 @@ export class UserController {
 
     async searchUser(req: Request, res: Response) {
         try {
+            const userId = await auth(req, res, this.sessionManager);
             const query = req.query.query as string || '';
-            const users = await this.userService.searchUser(query);
+            const users = await this.userService.searchUser(query, userId);
             const data = new UsersResponseData(users);
             new SuccessResponse(data, 'Search user successful').send(res);
         }
