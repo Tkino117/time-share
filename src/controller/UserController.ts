@@ -172,4 +172,16 @@ export class UserController {
         }
     }
 
+    async searchUser(req: Request, res: Response) {
+        try {
+            const query = req.query.query as string || '';
+            const users = await this.userService.searchUser(query);
+            const data = new UsersResponseData(users);
+            new SuccessResponse(data, 'Search user successful').send(res);
+        }
+        catch(error: any) {
+            handleError(error, res);
+        }
+    }
+
 }

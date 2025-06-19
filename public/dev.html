@@ -99,6 +99,11 @@
                     <button id="updateButton"> 更新 </button>
                     <button id="deleteButton"> ユーザー削除 </button>
                 </div>
+                <h2> ユーザー検索 </h2>
+                <div>
+                    <input type="text" id="search-userId" placeholder="userId" />
+                    <button id="searchButton"> 検索 </button>
+                </div>
                 <h2> 開発ツール</h2>
                 <div>
                     <button id="findAllUsersButton"> 全ユーザー取得 </button>
@@ -136,6 +141,8 @@
             document.getElementById('deleteEventButton').addEventListener('click', deleteEvent);
             document.getElementById('getFeedButton').addEventListener('click', getFeed);
             document.getElementById('getRankingsButton').addEventListener('click', getRankings);
+            document.getElementById('searchButton').addEventListener('click', searchUser);
+            
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -400,6 +407,22 @@
                         for(const item of ranking.ranking) {
                             log('        rank: ' + item.rank + ', user: ' + item.user.userId + ', name: ' + item.user.name + ', duration_min: ' + item.duration_min);
                         }
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // ユーザー検索ボタン
+            async function searchUser() {
+                const query = document.getElementById('search-userId').value;
+                const response = await get('/api/users/search?query=' + query);
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.users.length + ' users:');
+                    for(const user of result.data.users) {
+                        log('    id: ' + user.userId + ', name: ' + user.name);
                     }
                 }
                 else {

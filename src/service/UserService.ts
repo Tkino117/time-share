@@ -92,6 +92,16 @@ export class UserService {
         return user;
     }
 
+    public async searchUser(query: string): Promise<User[]> {
+        if (query == '') {
+            // !note! あとでエラーをつくる
+            throw new Error('query is empty');
+        }
+        const users = await this.userRepository.search(query);
+        return users;
+    }
+
+
     // セッションを検証してユーザーIDを返す
     public async authorize(sessionId: string): Promise<string | null> {
         const session = this.sessionManager.getSession(sessionId);

@@ -1,4 +1,5 @@
 import { Database, User } from '../database/database';
+import { Op } from 'sequelize';
 
 export type UserCreateInput = {
     userId: string;
@@ -72,6 +73,66 @@ export class UserRepository {
         await User.destroy({
             where: {}
         });
+    }
+
+    public async search(query: string): Promise<User[]> {
+        const results: User[] = [];
+        const seenIds = new Set<string>();
+
+        // 1. 完全一致（userIdとname）
+        const exactMatches = await User.findAll({
+            where: {
+                [Op.or]: [
+                    { userId: query },
+                    { name: query }
+                ]
+            }
+        });
+        results.push(...exactMatches);
+        exactMatches.forEach(user => seenIds.add(user.userId));
+
+        // 2. 先頭一致（userIdとname）
+        const startsWithMatches = await User.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        userId: {
+                            [Op.like]: `${query}%`
+                        }
+                    },
+                    {
+                        name: {
+                            [Op.like]: `${query}%`
+                        }
+                    }
+                ]
+            }
+        });
+        const newStartsWithMatches = startsWithMatches.filter(user => !seenIds.has(user.userId));
+        results.push(...newStartsWithMatches);
+        newStartsWithMatches.forEach(user => seenIds.add(user.userId));
+
+        // 3. 部分一致（userIdとname）
+        const partialMatches = await User.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        userId: {
+                            [Op.like]: `%${query}%`
+                        }
+                    },
+                    {
+                        name: {
+                            [Op.like]: `%${query}%`
+                        }
+                    }
+                ]
+            }
+        });
+        const newPartialMatches = partialMatches.filter(user => !seenIds.has(user.userId));
+        results.push(...newPartialMatches);
+
+        return results;
     }
 }
 
