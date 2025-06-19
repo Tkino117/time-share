@@ -7,17 +7,15 @@ export class UserService {
     private readonly passwordMinLength = 1;
     private readonly nameMinLength = 1;
     private readonly userIdMinLength = 1;
-
+    private readonly userIdMaxLength = 20;
     constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager) {
 
     }
 
     public async createUser(user: UserCreateInput): Promise<User> {
-        if (await this.userRepository.exists(user.userId)) {
-            throw new UserAlreadyExistsError(user.userId);
-        }
-        if (user.userId.length < this.userIdMinLength) {
-            throw new InvalidUserIdError();
+        const validatedUserId = this.validateUserId(user.userId);
+        if (await this.userRepository.exists(validatedUserId)) {
+            throw new UserAlreadyExistsError(validatedUserId);
         }
         if (user.password.length < this.passwordMinLength) {
             throw new InvalidPasswordError();
@@ -38,8 +36,12 @@ export class UserService {
     }
 
     public async updateUser(userId: string, updateData: UserUpdateInput): Promise<User> {
-        if (!await this.userRepository.exists(userId)) {
-            throw new UserNotFoundError(userId);
+        const validatedUserId = this.validateUserId(updateData.userId);
+        if (!await this.userRepository.exists(validatedUserId)) {
+            throw new UserNotFoundError(validatedUserId);
+        }
+        if (updateData.userId && updateData.userId !== userId) {
+            throw new InvalidUserIdError();
         }
         if (updateData.userId && updateData.userId.length < this.userIdMinLength) {
             throw new InvalidUserIdError();
@@ -111,5 +113,26 @@ export class UserService {
 
     public async findAll(): Promise<User[]> {
         return await this.userRepository.findAll();
+    }
+
+    private validateUserId(userId: string | undefined): string {
+        if (!userId) {
+            throw new InvalidUserIdError();
+        }
+        // 前後の半角スペースを切り取る
+        const trimmedUserId = userId.trim();
+        
+        // 半角英数のみであるかチェック
+        const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+        if (!alphanumericRegex.test(trimmedUserId)) {
+            throw new InvalidUserIdError();
+        }
+        if (trimmedUserId.length < this.userIdMinLength) {
+            throw new InvalidUserIdError();
+        }
+        if (trimmedUserId.length > this.userIdMaxLength) {
+            throw new InvalidUserIdError();
+        }
+        return trimmedUserId;
     }
 }
