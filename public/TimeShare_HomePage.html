@@ -255,7 +255,7 @@
       <div class="btn-group mb-3" role="group" aria-label="Button group">
         <button type="button" class="btn custom-btn rounded-left">Home</button>
         <button type="button" class="btn custom-btn">Month</button>
-        <button type="button" class="btn custom-btn">
+        <button type="button" id="searchButton" class="btn custom-btn">
           <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3PHRX8hdk5Q9c62vmqphCIyplTwCCXVFugJhXccY5FaCty3E3aklUrCGV6GMn9eor4E4ZSSXUWJUOqQ-hLGrG40WRBxDKzO90ZwtTVepXQAuuIL559SK1AfuwI4OVHu9HCi-VrFS1yYCFLrA8_K4R3ugIYZSFpi9w6aae_cQLK7iM=/life066.png?errorImage=false" alt="Search Icon">
         </button>
         <button type="button" class="btn custom-btn">
@@ -607,6 +607,12 @@
         console.error('ログアウト中にエラーが発生しました:', error);
         alert('ログアウトに失敗しました。再度試してください。');
       });
+  });
+
+  // 検索ボタンがクリックされた時に実行される処理
+  document.getElementById('searchButton').addEventListener('click', function() {
+    // search.htmlに遷移
+    window.location.href = 'search.html';
   });
 </script>
 
