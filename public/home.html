@@ -53,9 +53,9 @@
     }
 
     #logout-btn{
-      position: fixed;
+      position: absolute;
       right: 35px;
-      top: 35px;
+      top: 5px;
     }
 
     #logout-btn button {
@@ -146,11 +146,17 @@
       font-size: 12px;
     }
 
+    #time{
+      display: block;
+      width: 80%;
+      margin: 0 auto;
+      position: relative;
+    }
+
     .timeline {
       position: relative;
       width: 80%;
       aspect-ratio: 5 / 1;
-      
       background-color: white;
     }
     .timeline.has-placeholder-image {
@@ -181,6 +187,7 @@
       display: flex;
       align-items: center;
       justify-content: center; /* 横方向に中央寄せ */
+      position: relative;
     }
     #title {
       width: 100px;
@@ -198,6 +205,7 @@
       border-radius: 8px;
       border: none;
       font-size: 12px;
+      
     }
     #submit:hover{
       background-color: #40999A;
@@ -225,6 +233,88 @@
     #deleteEventBtn:hover {
       background-color: #40999A;
       border-color: #40999A;
+    }
+
+    #followedUsersListTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #closeBubbleBtn {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white;
+      font-size: 10px;
+      padding: 0.1rem 0.3rem;
+      float: right;
+      margin-right: 15px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    #closeBubbleBtn:hover {
+      background-color: #55585c;
+      border-color: #55585c;
+    }
+
+    .btn-close-ranking {
+      background: none;
+      border: none;
+      color: #6a6d71;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 10px;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .btn-close-ranking:hover {
+      color: #141313; /* ホバー時に少し暗くする */
+    }
+
+    .preset-event-btn {
+      background-color: #26B2B4;
+      border-color: #26B2B4;
+      color: white;
+      font-weight: bold;
+      padding: 0.1rem 0.5rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .preset-event-btn:hover {
+      background-color: #30898c;
+      border-color: #30898c;
+      color: white !important;
+    }
+
+    /* イベント名入力欄の吹き出しスタイル */
+    .title-bubble {
+      display: none; 
+      position: absolute; 
+      background-color: #f8f9fa; /* 背景色 */
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0.1, 0.1, 0.1, 0.1);
+      padding: 0px; 
+      z-index: 1050; 
+      min-width: 250px; 
+      transform: translateX(-50%);
+      max-width: 800px;
+      height: 130px;
+      left: -9999px; 
+      top: -9999px;
+    }
+
+    /* 吹き出し内のタイトルのスタイル調整 */
+    .title-bubble .bubble-content p {
+      font-weight: bold;
+      background-color: #00ced1;
+      color: white;
+      padding: 10px 0;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      text-align: left;
+      margin: 0;
     }
   </style>
 </head>
@@ -273,6 +363,7 @@
       <p>　　今日のイベントをスケジュールに追加しましょう。</p>
       
       <p>　　　<span id="today-date" ></span> </p>
+      <img src="https://i.ibb.co/kgmwFJ2k/image.png"  id="time" alt="時計画像">
 
       <!-- タイムライン表示エリア -->
       <div class="timeline-wrapper">
@@ -284,6 +375,19 @@
       <form id="eventForm">
         <span class="label">　イベント名:</span>
         <input type="text" id="title" required>
+        <div id="titleInputBubble" class="title-bubble">
+          <div class="bubble-content">
+            <p class="d-flex justify-content-between align-items-center">
+              <span class="ms-3">ランキング機能</span>
+              <button type="button" class="btn-close-ranking" aria-label="Close ranking feature">✕</button>
+            </p>
+            <div class="d-flex justify-content-around mt-3">
+              <button type="button" class="btn btn-info preset-event-btn" data-event-name="睡眠">睡眠</button>
+              <button type="button" class="btn btn-info preset-event-btn" data-event-name="筋トレ">筋トレ</button>
+            </div>
+            <button id="closeBubbleBtn" class="btn btn-sm btn-info mt-3">閉じる</button>
+          </div>
+        </div>
         <span class="label">　時間:</span>
         <select id="startHour" required></select>
         <span class="label">:</span>
@@ -294,6 +398,7 @@
         <select id="endMinute" required></select>
         <button type="submit" id="create-event-btn">追加</button>
       </form>
+
 
       <!-- イベント詳細表示用モーダル -->
       <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
@@ -324,39 +429,28 @@
         </div>
       </div>
       <br>
-
+      <br>
+      <p id="followedUsersListTitle">　　フォロー相手のスケジュール一覧</p>
+      <div id="allUserTimelines" class="container mt-4"></div>
+      <br>
+      <br>
+      <br>
       <br>
     </div>
   </section>
+
+<br>
+<br>
 
   
 <!-- Bootstrap JSと依存ライブラリ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-  const today = new Date();
+<script type="module">
+  import { getMyUserId, post, get, put, del, log, getApiUrl } from './util.js';
 
-  // 曜日を含めた日付表示のオプションを設定
-  const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+  const base_url = getApiUrl();
 
-  // toLocaleDateString() を使用して日付と曜日を整形
-  const formattedDate = today.toLocaleDateString('ja-JP', options);
-
-  document.getElementById("today-date").textContent = formattedDate;
-</script>
-
-<script>
-  // イベントフォームとタイムラインの取得
-  const form = document.getElementById("eventForm");
-  const timeline = document.getElementById("timeline");
-  // Bootstrapのモーダル要素取得
-  const eventDetailModal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
-  const eventDetailText = document.getElementById('eventDetailText');
-  const deleteEventBtn = document.getElementById('deleteEventBtn');
-  const colorOptionsContainer = document.getElementById('colorOptions');
-  let currentEvent = null; // モーダルで操作中のイベントを記憶
-
-  // 24時間を3時間ずつ8つのセグメントに分けたときの背景色
   const eventColors = [
     '#30898c', // 00:00 - 02:59
     '#40999A', // 03:00 - 05:59
@@ -390,11 +484,6 @@
     }
   }
 
-  // 開始時間と終了時間の選択肢を生成
-  populateTimeOptions('startHour', 'startMinute');
-  populateTimeOptions('endHour', 'endMinute');
-
-
   // 時間を分に変換する関数
   function toMinutes(t) {
     const [h, m] = t.split(":").map(Number);
@@ -410,203 +499,514 @@
     return eventColors[Math.min(segmentIndex, eventColors.length - 1)];
   }
 
-  const base_url = "https://tkino117.dev/time-share"; // APIのベースURLを定義
-  // const base_url = "http://localhost:3500";
-
-  // イベント追加フォームの送信イベント
-  form.addEventListener("submit", async function(e) { // asyncを追加
-    e.preventDefault();
-    // 入力値取得
-    const title = document.getElementById("title").value;
-    const startHour = document.getElementById("startHour").value;
-    const startMinute = document.getElementById("startMinute").value;
-    const endHour = document.getElementById("endHour").value;
-    const endMinute = document.getElementById("endMinute").value;
-
-    // 選択された時と分を結合してHH:MM形式の文字列を生成
-    const start = `${startHour}:${startMinute}`;
-    const end = `${endHour}:${endMinute}`;
-
-    // 時間の計算
-    const startMinutes = toMinutes(start);
-    const endMinutes = toMinutes(end);
-    const duration = endMinutes - startMinutes;
-
-    // 開始時刻が終了時刻より後の場合、または継続時間が0以下の場合にエラーメッセージを表示
-    if (duration <= 0) {
-      alert("終了時刻は開始時刻より後に設定してください。");
-      return; // イベントの追加を中断
-    }
-
-    // 既存のイベントとの重複をチェック
-    const existingEvents = timeline.querySelectorAll('.event'); // 現在タイムラインに表示されているすべてのイベントを取得
-    let overlap = false; // 重複があるかどうかのフラグ
-
-    for (const existingEventDiv of existingEvents) { // forEachからfor...ofに変更してreturnできるようにする
-      const existingStart = existingEventDiv.dataset.start; // 既存イベントの開始時刻(時)
-      const existingEnd = existingEventDiv.dataset.end;     // 既存イベントの終了時刻(時)
-
-      const existingStartMinutes = toMinutes(existingStart); // 既存イベントの開始時刻（分）
-      const existingEndMinutes = toMinutes(existingEnd);     // 既存イベントの終了時刻（分）
-
-      // 重複チェックのロジック
-      if ((startMinutes < existingEndMinutes) && (endMinutes > existingStartMinutes)) {
-        overlap = true; // 重複フラグをtrueに
-        alert(`このイベントは既存のイベント「${existingEventDiv.dataset.title}」（${existingStart}〜${existingEnd}）と時間が重複しています。`);
-        break; // ループを中断
-      }
-    }
-    if (overlap) {
-      return; // 重複があった場合は、イベントの追加処理を中断
-    }
-
-    // API設計書に合わせたISO 8601形式のUTC時刻を生成
-    // 現在の日付（ローカルタイムゾーン）を使用し、選択された時間と組み合わせる
-    // toISOString() を使ってUTCに変換する
-    const todayDateTime = new Date();
-    todayDateTime.setHours(parseInt(startHour, 10));
-    todayDateTime.setMinutes(parseInt(startMinute, 10));
-    todayDateTime.setSeconds(0);
-    todayDateTime.setMilliseconds(0);
-    const startTimeISO = todayDateTime.toISOString();
-
-    todayDateTime.setHours(parseInt(endHour, 10));
-    todayDateTime.setMinutes(parseInt(endMinute, 10));
-    const endTimeISO = todayDateTime.toISOString();
-
-    // サーバーに送るデータを作成
-    const payload = {
-      "name": title,
-      "startTime": startTimeISO,
-      "endTime": endTimeISO
-    };
-
+  // ページ読み込み時にイベントを取得して表示する関数
+  // この関数はDOM操作を行うため、DOMContentLoaded内で初期化された変数（timeline, eventDetailModalなど）を
+  // 外部スコープから参照するように変更します。
+  async function fetchEvents(loggedInUserId, timeline, eventDetailModal, eventDetailText, currentEventRef) {
     try {
-      // APIにPOSTリクエストを送信
-      const res = await fetch(base_url + "/api/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
+      const response = await fetch(base_url + "/api/users/me/events", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
         credentials: 'include' // Cookie（セッションID）を送る
       });
 
-      const result = await res.json();
+      const result = await response.json();
 
       if (result.success) {
-        console.log("イベントが正常に作成されました:", result.data);
+        console.log("ログインユーザーのイベント取得成功:", result.data.events);
 
-        // API成功時のみ、ローカルにイベントを追加
-        // プレースホルダー画像がある場合、それを削除
-        if (timeline.classList.contains('has-placeholder-image')) {
-          timeline.classList.remove('has-placeholder-image'); // クラスを削除
-          timeline.style.backgroundImage = 'none'; // 背景画像を削除
+        // 既存のイベントをクリア（重複表示を防ぐため）
+        timeline.innerHTML = '';
+
+        // プレースホルダー画像を削除
+        if (timeline.classList.contains('has-placeholder-image') && result.data.events.length > 0) {
+          timeline.classList.remove('has-placeholder-image');
+          timeline.style.backgroundImage = 'none';
+        } else if (result.data.events.length === 0) {
+          // イベントが一つもなければ、プレースホルダー画像を再表示
+          timeline.classList.add('has-placeholder-image');
+          timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
         }
 
-        // 中央時刻に基づいて背景色を決定
-        const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+        // 取得したイベントをタイムラインに描画
+        result.data.events.forEach(eventData => {
+          const startTime = new Date(eventData.startTime);
+          const endTime = new Date(eventData.endTime);
 
-        // パーセント計算で表示位置・幅を設定
-        const startPercent = (startMinutes / 1440) * 100;
-        const widthPercent = (duration / 1440) * 100;
+          const start = `${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}`;
+          const end = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
 
-        // イベントdiv作成
-        const eventDiv = document.createElement("div");
-        eventDiv.className = "event";
-        eventDiv.style.left = `${startPercent}%`;
-        eventDiv.style.width = `${widthPercent}%`;
-        eventDiv.textContent = title;
-        // ここで自動計算された背景色を設定
-        eventDiv.style.backgroundColor = calculatedColor;
-        eventDiv.style.borderColor = calculatedColor;
+          const startMinutes = toMinutes(start);
+          const endMinutes = toMinutes(end);
+          const duration = endMinutes - startMinutes;
 
-        // datasetに情報保存（詳細表示用）
-        eventDiv.dataset.id = result.data.id; // サーバーから返されたIDを保存
-        eventDiv.dataset.title = title;
-        eventDiv.dataset.start = start;
-        eventDiv.dataset.end = end;
-        eventDiv.dataset.color = calculatedColor; // 設定した色も保存
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
 
-        // イベントクリック時に詳細モーダルを表示
-        eventDiv.addEventListener('click', function() {
-          const eventDetails = `${title}; ${start}~${end}`;
-          eventDetailText.textContent = eventDetails;
-          currentEvent = eventDiv;
-          eventDetailModal.show();
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = eventData.name;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          // datasetに情報保存（詳細表示用）
+          eventDiv.dataset.id = eventData.id;
+          eventDiv.dataset.title = eventData.name;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = loggedInUserId; // ログインユーザーのイベントなので、ログインユーザーIDをセット
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${eventData.name}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            // currentEventRefはオブジェクトなので直接プロパティを更新
+            currentEventRef.current = eventDiv;
+            eventDetailModal.show();
+          });
+
+          timeline.appendChild(eventDiv);
         });
 
-        timeline.appendChild(eventDiv);
-        form.reset(); // フォームをリセット
+      } else {
+        console.error("ログインユーザーのイベント取得失敗:", result.message);
+      }
+    } catch (error) {
+      console.error("ログインユーザーのイベント取得中に通信エラーが発生しました:", error);
+    }
+  }
+
+  // 特定のユーザーのイベントを取得してタイムラインに表示する関数
+  async function fetchAndDisplayUserEvents(userId, username, eventDetailModal, eventDetailText, currentEventRef) {
+    try {
+      const response = await fetch(`${base_url}/api/users/${userId}/events`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include' // Cookie（セッションID）を送る
+      });
+
+      const result = await response.json();
+      const allUserTimelinesContainer = document.getElementById('allUserTimelines');
+
+      // result.success が true で、かつ result.data が配列であり、その配列が空の場合
+      if (result.success && result.data && result.data.length === 0) {
+        console.log(`${username}さんのイベントはありません。タイムラインを表示しません。`);
+        return; // イベントがなければ関数を終了し、何も描画しない
+      }
+
+      if (result.success && result.data) { // イベントデータがある場合のみ実行
+        console.log(`イベント取得成功（${username}）:`, result.data);
+
+        // ユーザーごとのタイムラインセクションを作成
+        const userTimelineSection = document.createElement('div');
+        userTimelineSection.classList.add('user-timeline-section', 'mb-4', 'p-3', 'rounded-box');
+
+        const userHeader = document.createElement('h5');
+        userHeader.textContent = `　${username}さんのスケジュール`;
+        userHeader.classList.add('mb-3', 'ms-2', 'fw-bold');
+        userTimelineSection.appendChild(userHeader);
+
+        const userTimelineWrapper = document.createElement('div');
+        userTimelineWrapper.classList.add('timeline-wrapper');
+
+        const userTimelineDiv = document.createElement('div');
+        userTimelineDiv.classList.add('timeline');
+
+        result.data.forEach(eventData => { // result.data はすでにイベントデータがある前提
+          const startTime = new Date(eventData.startTime);
+          const endTime = new Date(eventData.endTime);
+
+          const start = `${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}`;
+          const end = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
+
+          const startMinutes = toMinutes(start);
+          const endMinutes = toMinutes(end);
+          const duration = endMinutes - startMinutes;
+
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = eventData.name;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          eventDiv.dataset.id = eventData.id;
+          eventDiv.dataset.title = eventData.name;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = eventData.userId;
+          eventDiv.dataset.username = username; // usernameもdatasetに保存
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${eventData.name}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            // currentEventRefはオブジェクトなので直接プロパティを更新
+            currentEventRef.current = eventDiv;
+            eventDetailModal.show();
+          });
+
+          userTimelineDiv.appendChild(eventDiv);
+        });
+
+        userTimelineWrapper.appendChild(userTimelineDiv);
+        userTimelineSection.appendChild(userTimelineWrapper);
+        allUserTimelinesContainer.appendChild(userTimelineSection);
 
       } else {
-        alert(`イベント作成に失敗しました: ${result.message}`);
-        console.error("イベント作成失敗:", result.message);
+        console.error(`イベント取得失敗（${username}）:`, result.message);
+        // イベント取得に失敗した場合は、何も表示しない
+        return;
       }
-
-    } catch (err) {
-      // 通信エラー発生時の処理
-      console.error("通信エラーが発生しました:", err);
-      alert("イベント作成中にエラーが発生しました。ネットワーク接続を確認してください。");
+    } catch (error) {
+      console.error(`イベント取得中に通信エラーが発生しました（${username}）:`, error);
+      // 通信エラーが発生した場合も、何も表示しない
+      return;
     }
-  });
+  }
 
-  // モーダルの削除ボタン処理
-  deleteEventBtn.addEventListener('click', function() {
-    if (currentEvent) {
-      // TODO: ここにイベント削除API呼び出しを追加
-      currentEvent.remove();
-      eventDetailModal.hide();
 
-      // もしイベントが一つもなくなったら、プレースホルダー画像を再表示
-      if (timeline.children.length === 0) {
-        timeline.classList.add('has-placeholder-image'); // クラスを再追加
-        timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
-      }
+  // ページが完全に読み込まれた後に実行される関数
+window.addEventListener('DOMContentLoaded', async () => {
+  // 今日の日付表示
+  const today = new Date();
+  const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+  const formattedDate = today.toLocaleDateString('ja-JP', options);
+  document.getElementById("today-date").textContent = formattedDate;
 
-    }
-  });
+  // 時間選択肢の生成
+  populateTimeOptions('startHour', 'startMinute');
+  populateTimeOptions('endHour', 'endMinute');
 
-  // タイムラインにおけるイベントの背景色を変更する
-  colorOptionsContainer.addEventListener('click', function(event) {
-    const clickedButton = event.target.closest('.color-option');
-    if (clickedButton && currentEvent) {
-      const selectedColor = clickedButton.dataset.color; // data-color属性から色を取得
-      currentEvent.style.backgroundColor = selectedColor; // イベントの背景色を変更
-      currentEvent.style.borderColor = selectedColor; // イベントの枠線の色も変更
-      currentEvent.dataset.color = selectedColor; // イベントのデータ属性も更新
-    }
-  });
+  // DOM要素の取得（DOMContentLoaded内で一度だけ、ここで定義する）
+  const form = document.getElementById("eventForm");
+  const timeline = document.getElementById("timeline");
+
+  // ★★★ ここでモーダル関連の変数を定義する ★★★
+  const eventDetailModal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+  const eventDetailText = document.getElementById('eventDetailText');
+  const deleteEventBtn = document.getElementById('deleteEventBtn');
+  const colorOptionsContainer = document.getElementById('colorOptions');
+  // currentEvent はプリミティブ値なので、オブジェクトでラップして参照渡しにする
+  const currentEventRef = { current: null }; 
+
+  const titleInput = document.getElementById('title');
+  const titleInputBubble = document.getElementById('titleInputBubble');
+  const closeBubbleBtn = document.getElementById('closeBubbleBtn');
+  const presetEventBtns = document.querySelectorAll('.preset-event-btn');
+  // ★★★ ここまで定義する ★★★
+
+  //選択されたプリセットイベントのタイプを一時的に保持
+  let selectedPresetType = null; // デフォルトはnull（プリセットが選択されていない状態）
 
   //セッションストレージからユーザー名取得、なければ「ゲスト」
   const username = sessionStorage.getItem("username") || "ゲスト";
   document.getElementById("username").textContent = username;
 
-  // ログアウトボタンがクリックされた時に実行される処理
-  document.getElementById('logout-btn').addEventListener('click', function() {
-  
+  // ログインユーザーIDの取得
+  const loggedInUserId = sessionStorage.getItem("currentUserId") || "dummyUserId123";
 
+  // 1. まず、ログインユーザー自身のイベントを読み込み表示します
+  // モーダル関連の変数を引数として渡す
+  await fetchEvents(loggedInUserId, timeline, eventDetailModal, eventDetailText, currentEventRef);
 
-    // サーバーにログアウトをリクエスト（POSTメソッドで送る）
-    fetch(base_url + "/api/auth/logout", {
-      method: 'POST',        // リクエストメソッドはPOST
-      credentials: 'include' // Cookie（セッションID）を送る
-    })
-      .then(response => response.json())  // サーバーからのレスポンスをJSONとして処理
-      .then(data => {
-        if (data.success) {
-          // 成功したらログインページに遷移
-          window.location.href = 'TimeShare_WelcomePage.html';  // ウェルカム画面へ
-        } else {
-          // もし失敗したら、エラーメッセージを表示
-          alert('ログアウトに失敗しました');
+  // 2. 次に、フォローしている他のユーザーのイベントを読み込み、それぞれのタイムラインに表示します。
+  const usersToDisplay = [
+    { userId: "dummyUserId456", username: "ボブ" },
+    { userId: "dummyUserId789", username: "チャーリー" } // イベントがないユーザーの例
+  ];
+
+  // 各フォローユーザーのタイムラインを読み込んで表示
+  for (const user of usersToDisplay) {
+    // モーダル関連の変数を引数として渡す
+    await fetchAndDisplayUserEvents(user.userId, user.username, eventDetailModal, eventDetailText, currentEventRef);
+  }
+
+    // イベント追加フォームの送信イベント
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const title = document.getElementById("title").value;
+      const startHour = document.getElementById("startHour").value;
+      const startMinute = document.getElementById("startMinute").value;
+      const endHour = document.getElementById("endHour").value;
+      const endMinute = document.getElementById("endMinute").value;
+
+      const start = `${startHour}:${startMinute}`;
+      const end = `${endHour}:${endMinute}`;
+
+      const startMinutes = toMinutes(start);
+      const endMinutes = toMinutes(end);
+      const duration = endMinutes - startMinutes;
+
+      if (duration <= 0) {
+        alert("終了時刻は開始時刻より後に設定してください。");
+        return;
+      }
+
+      const existingEvents = timeline.querySelectorAll('.event');
+      let overlap = false;
+
+      for (const existingEventDiv of existingEvents) {
+        // 現在のタイムライン（ログインユーザーのタイムライン）に表示されているイベントのみをチェック
+        // 他のユーザーのタイムラインにあるイベントとは重複チェックを行わない
+        if (existingEventDiv.dataset.userId === loggedInUserId) {
+            const existingStart = existingEventDiv.dataset.start;
+            const existingEnd = existingEventDiv.dataset.end;
+
+            const existingStartMinutes = toMinutes(existingStart);
+            const existingEndMinutes = toMinutes(existingEnd);
+
+            if ((startMinutes < existingEndMinutes) && (endMinutes > existingStartMinutes)) {
+                overlap = true;
+                alert(`このイベントは既存のイベント「${existingEventDiv.dataset.title}」（${existingStart}〜${existingEnd}）と時間が重複しています。`);
+                break;
+            }
         }
+      }
+      if (overlap) {
+        return;
+      }
+
+      const todayDateTime = new Date();
+      todayDateTime.setHours(parseInt(startHour, 10));
+      todayDateTime.setMinutes(parseInt(startMinute, 10));
+      todayDateTime.setSeconds(0);
+      todayDateTime.setMilliseconds(0);
+      const startTimeISO = todayDateTime.toISOString();
+
+      todayDateTime.setHours(parseInt(endHour, 10));
+      todayDateTime.setMinutes(parseInt(endMinute, 10));
+      const endTimeISO = todayDateTime.toISOString();
+
+      const payload = {
+        "name": title,
+        "startTime": startTimeISO,
+        "endTime": endTimeISO
+      };
+
+      // プリセットタイプが設定されていれば追加
+      if (selectedPresetType) {
+          payload.type = selectedPresetType;
+      }
+
+      try {
+        const res = await fetch(base_url + "/api/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          credentials: 'include'
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          console.log("イベントが正常に作成されました:", result.data);
+
+          if (timeline.classList.contains('has-placeholder-image')) {
+            timeline.classList.remove('has-placeholder-image');
+            timeline.style.backgroundImage = 'none';
+          }
+
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = title;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          eventDiv.dataset.id = result.data.id;
+          eventDiv.dataset.title = title;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = loggedInUserId; // 新規作成イベントにもログインユーザーIDをセット
+
+          //datasetにtypeを追加する
+          if (selectedPresetType) {
+              eventDiv.dataset.type = selectedPresetType;
+          }
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${title}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            currentEventRef.current = eventDiv; // currentEventRef.current を更新
+            eventDetailModal.show();
+          });
+
+          timeline.appendChild(eventDiv);
+          form.reset();
+          
+          selectedPresetType = null; //プリセットタイプをリセットする
+
+        } else {
+          alert(`イベント作成に失敗しました: ${result.message}`);
+          console.error("イベント作成失敗:", result.message);
+        }
+      } catch (err) {
+        console.error("通信エラーが発生しました:", err);
+        alert("イベント作成中にエラーが発生しました。ネットワーク接続を確認してください。");
+      }
+    });
+
+    // モーダルの削除ボタン処理
+    deleteEventBtn.addEventListener('click', async function() {
+      if (currentEventRef.current) { // currentEventRef.current を参照
+        const eventId = currentEventRef.current.dataset.id;
+        const eventUserId = currentEventRef.current.dataset.userId;
+
+        if (!eventId) {
+          alert("イベントIDが見つかりません。削除できません。");
+          return;
+        }
+
+        // ログインユーザーとイベント作成者が一致するかチェック
+        if (eventUserId !== loggedInUserId) {
+          alert("他のユーザーのイベントは削除できません。");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${base_url}/api/events/${eventId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include'
+          });
+
+          const result = await res.json();
+
+          if (res.ok && result.success) {
+            console.log("イベントが正常に削除されました:", result.message);
+            currentEventRef.current.remove(); // currentEventRef.current を削除
+            eventDetailModal.hide();
+
+            if (currentEventRef.current.parentElement === timeline && timeline.children.length === 0) {
+              timeline.classList.add('has-placeholder-image');
+              timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
+            }
+            currentEventRef.current = null; // 削除後、参照をクリア
+          } else {
+            alert(`イベント削除に失敗しました: ${result.message || '不明なエラー'}`);
+            console.error("イベント削除失敗:", result.message);
+          }
+        } catch (err) {
+          console.error("イベント削除中にネットワークエラーが発生しました:", err);
+          alert("イベント削除中にエラーが発生しました。インターネット接続を確認してください。");
+        }
+      }
+    });
+
+    // タイムラインにおけるイベントの背景色を変更する
+    colorOptionsContainer.addEventListener('click', function(event) {
+      const clickedButton = event.target.closest('.color-option');
+      if (clickedButton && currentEventRef.current) { // currentEventRef.current を参照
+        const selectedColor = clickedButton.dataset.color;
+        currentEventRef.current.style.backgroundColor = selectedColor;
+        currentEventRef.current.style.borderColor = selectedColor;
+        currentEventRef.current.dataset.color = selectedColor;
+      }
+    });
+
+    // ログアウトボタンがクリックされた時に実行される処理
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      fetch(base_url + "/api/auth/logout", {
+        method: 'POST',
+        credentials: 'include'
       })
-      .catch(error => {
-        // エラーが発生した場合、コンソールにエラーメッセージを表示
-        console.error('ログアウト中にエラーが発生しました:', error);
-        alert('ログアウトに失敗しました。再度試してください。');
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = 'TimeShare_WelcomePage.html';
+          } else {
+            alert('ログアウトに失敗しました');
+          }
+        })
+        .catch(error => {
+          console.error('ログアウト中にエラーが発生しました:', error);
+          alert('ログアウトに失敗しました。再度試してください。');
+        });
+    });
+
+
+    // --- 吹き出し関連のコード ---
+
+    // イベント名入力欄がクリックされたら吹き出しを表示
+    titleInput.addEventListener('focus', function() {
+      // 既にプリセットでdisabledになっている場合は、focusしても吹き出しを表示しない
+      if (titleInput.disabled) {
+        return;
+      }
+      const inputRect = titleInput.getBoundingClientRect();
+      const formRect = form.getBoundingClientRect(); // form変数が利用可能であること
+
+      titleInputBubble.style.left = `${inputRect.left + (inputRect.width / 2) - formRect.left}px`;
+      titleInputBubble.style.top = `${inputRect.bottom - formRect.top + 10}px`;
+      titleInputBubble.style.display = 'block';
+    });
+
+    // 吹き出しの閉じるボタンがクリックされたら吹き出しを非表示に
+    closeBubbleBtn.addEventListener('click', function() {
+      event.preventDefault();
+      titleInputBubble.style.display = 'none';
+    });
+
+    // 「ランキング機能」行の閉じるボタン（✕）のクリックイベント
+    document.querySelector('.btn-close-ranking').addEventListener('click', function() {
+      titleInputBubble.style.display = 'none'; // 吹き出しを非表示にする
+    });
+
+    // プリセットイベントボタンのクリックイベントを追加
+    presetEventBtns.forEach(button => {
+      button.addEventListener('click', function() {
+        const eventName = this.dataset.eventName;
+        titleInput.value = eventName;
+        titleInput.disabled = true;
+        titleInputBubble.style.display = 'none';
+
+        if (eventName === "睡眠") {
+          selectedPresetType = "sleep";
+        } else if (eventName === "筋トレ") {
+          selectedPresetType = "training";
+        } else {
+          selectedPresetType = null; // その他のプリセットがあればここに追加、またはnullのまま
+        }
       });
+    });
+
+    // 吹き出しの外側がクリックされたら吹き出しを非表示に
+    document.addEventListener('click', function(event) {
+      // クリックされた要素が入力欄でも吹き出し内でもない場合、
+      // かつクリックされた要素がフォームの直接の子要素ではない場合も考慮
+      if (event.target !== titleInput && !titleInputBubble.contains(event.target) && !form.contains(event.target)) {
+        titleInputBubble.style.display = 'none';
+      }
+    });
+
+    // フォームのリセット時にも吹き出しを非表示に
+    form.addEventListener('reset', function() {
+      titleInputBubble.style.display = 'none';
+      // フォームがリセットされたときには、入力欄を必ず編集可能に戻す
+      titleInput.disabled = false; 
+      selectedPresetType = null;
+    });
+
+    // --- 吹き出し関連のコードここまで ---
+
   });
 
   // 検索ボタンがクリックされた時に実行される処理
@@ -615,6 +1015,5 @@
     window.location.href = 'search.html';
   });
 </script>
-
 </body>
 </html>
