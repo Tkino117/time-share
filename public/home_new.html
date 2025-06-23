@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeShare-HomePage</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    header {
+      padding-bottom: 40px;
+    }
+
+    body {
+      background: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+    }
+
+    /* 角を丸めた四角のスタイル */
+    .rounded-box {
+      border-radius: 15px;
+      padding: 0 0px 0px 0px;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* カスタムボタン */
+    .custom-btn {
+      border-radius: 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ボタン画像のサイズ調整 */
+    .btn img {
+      height: 2rem;
+      width: auto;
+    }
+
+    .site-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    #logout-btn{
+      position: absolute;
+      right: 35px;
+      top: 5px;
+    }
+
+    #logout-btn button {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+      font-size: 0.8rem;
+    }
+
+    #logout-btn button:hover {
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    .logo-img {
+      height: 2.5rem; /* 画像の高さ（調整可能） */
+      width: auto;
+      border-color: #20b2aa;
+    }
+
+    /* ボタンが均等に並ぶように */
+    .btn-group {
+      display: flex;
+      width: 100%;
+    }
+
+    .btn-group > .btn {
+      flex: 1; /* 各ボタンを均等に広げる */
+      margin: 0; /* ボタン同士の隙間をゼロに */
+      padding: 0.8rem 0; /* 高さ調整 */
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-group > .btn:not(:last-child)::after {/* ボタン同士の隙間に白いラインを入れる*/
+      content: "";
+      position: absolute;
+      top: 0%;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: white;
+    }
+
+    /* ホバー時のボタン色 */
+    .custom-btn:hover,
+    .btn-group > .btn:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+
+    #container {
+      background: #00ced1;
+      font-size: 1em;
+      border-bottom: 2px #5f9ea0;
+      padding: 10px 0;
+      
+    }
+
+    /* 左上端と右上端を丸める */
+    .rounded-left {
+      border-top-left-radius: 15px !important;
+    }
+    .rounded-right {
+      border-top-right-radius: 15px !important;
+    }
+
+    .timeline-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* 中央寄せ */
+      width: 100%;
+    }
+    #today-date{
+      font-weight: bold;
+      font-size: 20px;
+      
+    }
+
+    .label {
+      margin-right: 10px;
+      font-weight: bold;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    #time{
+      display: block;
+      width: 80%;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .timeline {
+      position: relative;
+      width: 80%;
+      aspect-ratio: 5 / 1;
+      background-color: white;
+    }
+    .timeline.has-placeholder-image {
+      background-image: url('https://i.ibb.co/Lzn1192z/image.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: none; /* 画像表示中は枠線を非表示にする */
+    }
+    
+    .event {
+      position: absolute;
+      height: 100%;
+      background-color: #00ced1;
+      color: white;
+      text-align: center;
+      font-size: 15px;
+      overflow: hidden;
+      border: 2px solid #00ced1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #eventForm {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* 横方向に中央寄せ */
+      position: relative;
+    }
+    #title {
+      width: 100px;
+    }
+    #eventForm input, #eventForm select {
+      margin-left: -8px;
+    }
+    #eventForm button{
+      margin-left: 2px;
+    }
+
+    #create-event-btn{
+      background-color: #26B2B4;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      
+    }
+    #submit:hover{
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    .modal-content {
+      background-color: #f5f5f5;
+    }
+    .modal-header {
+      background-color: #00ced1;
+      color: white;
+    }
+    .modal-footer {
+      background-color: #f5f5f5;
+    }
+
+    #deleteEventBtn {
+      background-color: #26B2B4;
+      color: white;
+      border-radius: 8px;
+      border: none;
+    }
+
+    #deleteEventBtn:hover {
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    #followedUsersListTitle {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #closeBubbleBtn {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white;
+      font-size: 10px;
+      padding: 0.1rem 0.3rem;
+      float: right;
+      margin-right: 15px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    #closeBubbleBtn:hover {
+      background-color: #55585c;
+      border-color: #55585c;
+    }
+
+    .btn-close-ranking {
+      background: none;
+      border: none;
+      color: #6a6d71;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 10px;
+      transition: color 0.2s ease-in-out;
+    }
+
+    .btn-close-ranking:hover {
+      color: #141313; /* ホバー時に少し暗くする */
+    }
+
+    .preset-event-btn {
+      background-color: #26B2B4;
+      border-color: #26B2B4;
+      color: white;
+      font-weight: bold;
+      padding: 0.1rem 0.5rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .preset-event-btn:hover {
+      background-color: #30898c;
+      border-color: #30898c;
+      color: white !important;
+    }
+
+    /* イベント名入力欄の吹き出しスタイル */
+    .title-bubble {
+      display: none; 
+      position: absolute; 
+      background-color: #f8f9fa; /* 背景色 */
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0.1, 0.1, 0.1, 0.1);
+      padding: 0px; 
+      z-index: 1050; 
+      min-width: 250px; 
+      transform: translateX(-50%);
+      max-width: 800px;
+      height: 130px;
+      left: -9999px; 
+      top: -9999px;
+    }
+
+    /* 吹き出し内のタイトルのスタイル調整 */
+    .title-bubble .bubble-content p {
+      font-weight: bold;
+      background-color: #00ced1;
+      color: white;
+      padding: 10px 0;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      text-align: left;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 最上部のタイトル部分 -->
+  <header>
+    <div id="container">
+      <br>
+      <div class="d-flex justify-content-center align-items-center px-3 position-relative">
+        <h1 class="site-title d-flex align-items-center m-0">
+          <img src="https://i.ibb.co/JbLxZxR/MN-logo.png" alt="Logo" class="logo-img me-2">
+          <span>TimeShare</span>
+        </h1>
+        <!-- ログアウトボタンを右端に配置 -->
+        <div id="logout-btn">
+          <button class="btn btn-light fw-bold">ログアウト</button>
+        </div>
+      </div>
+      <br>
+    </div>
+  </header>
+
+  <!-- 角を丸めた四角の部分 -->
+  <section class="container">
+    <div class="rounded-box">
+      <!-- ボタン5つを横幅いっぱいに並べる -->
+      <div class="btn-group mb-3" role="group" aria-label="Button group">
+        <button type="button" class="btn custom-btn rounded-left">Home</button>
+        <button type="button" class="btn custom-btn">Month</button>
+        <button type="button" class="btn custom-btn">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3PHRX8hdk5Q9c62vmqphCIyplTwCCXVFugJhXccY5FaCty3E3aklUrCGV6GMn9eor4E4ZSSXUWJUOqQ-hLGrG40WRBxDKzO90ZwtTVepXQAuuIL559SK1AfuwI4OVHu9HCi-VrFS1yYCFLrA8_K4R3ugIYZSFpi9w6aae_cQLK7iM=/life066.png?errorImage=false" alt="Search Icon">
+        </button>
+        <button type="button" class="btn custom-btn">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3Pq3ey490QjMMuaR0711Mn9OMm9wiVe-yYovmqKwIFCS9J5cye3YKxAXIjGTbe17l_ZCJ7Fa0RHgSdevCZcIf3gdWODrRmVVV3CWSqalTTZdHzE-G845rxiiRDSH0WQWwmznJ6l0q3REQjmLOKVTFDrZiNQswKhLmK7vSYwMk3NIQ=/fashion019.png?errorImage=false" alt="Icon">
+        </button>
+        <button type="button" class="btn custom-btn rounded-right">
+          <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG_jRZ0Zb60sd3AdQXUaXUW9122ucsGpRMMXHaqnPy2bQqyO6pEGE6UKGDpSIaVI1d1Cd2wgAddavfGZVPCCx8zRoTj5b248QHvoPxkP7eKfMBWJ5LmDxWFhHULbVDmVM5fUcb3kUwkAVk57ntBG1Mvgjbg_R3Db5E_fOsHDcAuW84stYQqwZ_wC_EmQc31DiFg==/16_2_330.png?errorImage=false" alt="Notification Icon">
+        </button>
+      </div>
+
+      <!-- ユーザー名と説明文 -->
+      <p>　　ようこそ！ <span id="username"></span> さん</p>
+      <p>　　これはスケジュールを共有するSNSです。</p>
+      <br>
+      <p>　　今日のイベントをスケジュールに追加しましょう。</p>
+      
+      <p>　　　<span id="today-date" ></span> </p>
+      <img src="https://i.ibb.co/kgmwFJ2k/image.png"  id="time" alt="時計画像">
+
+      <!-- タイムライン表示エリア -->
+      <div class="timeline-wrapper">
+        <div class="timeline has-placeholder-image" id="timeline"></div>
+      </div>
+      <br>
+
+      <!-- イベント追加フォーム -->
+      <form id="eventForm">
+        <span class="label">　イベント名:</span>
+        <input type="text" id="title" required>
+        <div id="titleInputBubble" class="title-bubble">
+          <div class="bubble-content">
+            <p class="d-flex justify-content-between align-items-center">
+              <span class="ms-3">ランキング機能</span>
+              <button type="button" class="btn-close-ranking" aria-label="Close ranking feature">✕</button>
+            </p>
+            <div class="d-flex justify-content-around mt-3">
+              <button type="button" class="btn btn-info preset-event-btn" data-event-name="睡眠">睡眠</button>
+              <button type="button" class="btn btn-info preset-event-btn" data-event-name="筋トレ">筋トレ</button>
+            </div>
+            <button id="closeBubbleBtn" class="btn btn-sm btn-info mt-3">閉じる</button>
+          </div>
+        </div>
+        <span class="label">　時間:</span>
+        <select id="startHour" required></select>
+        <span class="label">:</span>
+        <select id="startMinute" required></select>
+        <span class="label">〜</span>
+        <select id="endHour" required></select>
+        <span class="label">:</span>
+        <select id="endMinute" required></select>
+        <button type="submit" id="create-event-btn">追加</button>
+      </form>
+
+
+      <!-- イベント詳細表示用モーダル -->
+      <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="eventDetailModalLabel">イベント詳細</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p id="eventDetailText"></p><hr> <h6>背景色を変更:</h6>
+              <div id="colorOptions" class="d-flex flex-wrap justify-content-around mt-2">
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #30898c" data-color="#30898c"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #40999A" data-color="#40999A"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #26B2B4" data-color="#26B2B4"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #00ced1" data-color="#00ced1"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #4DDBDE" data-color="#4DDBDE"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #80E7E9" data-color="#80E7E9"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #99EEF0;" data-color="#99EEF0"></button>
+                <button type="button" class="btn btn-sm m-1 color-option" style="background-color: #c6f5f6;" data-color="#c6f5f6"></button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+              <button type="button" id="deleteEventBtn" class="btn btn-danger">削除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <p id="followedUsersListTitle">　　フォロー相手のスケジュール一覧</p>
+      <div id="allUserTimelines" class="container mt-4"></div>
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </section>
+
+<br>
+<br>
+
+  
+<!-- Bootstrap JSと依存ライブラリ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  import { getMyUserId, post, get, put, del, log, getApiUrl } from './util.js';
+
+  const base_url = getApiUrl();
+
+  const eventColors = [
+    '#30898c', // 00:00 - 02:59
+    '#40999A', // 03:00 - 05:59
+    '#00ced1', // 06:00 - 08:59
+    '#80E7E9', // 09:00 - 11:59
+    '#4DDBDE', // 12:00 - 14:59
+    '#26B2B4', // 15:00 - 17:59
+    '#40999A', // 18:00 - 20:59
+    '#30898c'  // 21:00 - 23:59
+  ];
+
+  // 時間の選択肢を生成する関数
+  function populateTimeOptions(hourSelectId, minuteSelectId) {
+    const hourSelect = document.getElementById(hourSelectId);
+    const minuteSelect = document.getElementById(minuteSelectId);
+
+    // 時 (00-23)
+    for (let i = 0; i < 24; i++) {
+      const option = document.createElement("option");
+      option.value = String(i).padStart(2, '0'); // 2桁表示 (例: 01, 02)
+      option.textContent = String(i).padStart(2, '0');
+      hourSelect.appendChild(option);
+    }
+
+    // 分 (00-59)
+    for (let i = 0; i < 60; i++) {
+      const option = document.createElement("option");
+      option.value = String(i).padStart(2, '0'); // 2桁表示
+      option.textContent = String(i).padStart(2, '0');
+      minuteSelect.appendChild(option);
+    }
+  }
+
+  // 時間を分に変換する関数
+  function toMinutes(t) {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  // 中央時刻に基づいてイベントの背景色を取得する関数
+  function getEventColorByMidpoint(startMinutes, endMinutes) {
+    const midMinutes = (startMinutes + endMinutes) / 2; // イベントの中央時刻（分）
+    const segmentIndex = Math.floor(midMinutes / (3 * 60)); // 3時間ごとのセグメントインデックスを計算
+
+    // インデックスが配列の範囲内に収まるように調整
+    return eventColors[Math.min(segmentIndex, eventColors.length - 1)];
+  }
+
+  // ページ読み込み時にイベントを取得して表示する関数
+  // この関数はDOM操作を行うため、DOMContentLoaded内で初期化された変数（timeline, eventDetailModalなど）を
+  // 外部スコープから参照するように変更します。
+  async function fetchEvents(loggedInUserId, timeline, eventDetailModal, eventDetailText, currentEventRef) {
+    try {
+      const response = await fetch(base_url + "/api/users/me/events", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include' // Cookie（セッションID）を送る
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log("ログインユーザーのイベント取得成功:", result.data.events);
+
+        // 既存のイベントをクリア（重複表示を防ぐため）
+        timeline.innerHTML = '';
+
+        // プレースホルダー画像を削除
+        if (timeline.classList.contains('has-placeholder-image') && result.data.events.length > 0) {
+          timeline.classList.remove('has-placeholder-image');
+          timeline.style.backgroundImage = 'none';
+        } else if (result.data.events.length === 0) {
+          // イベントが一つもなければ、プレースホルダー画像を再表示
+          timeline.classList.add('has-placeholder-image');
+          timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
+        }
+
+        // 取得したイベントをタイムラインに描画
+        result.data.events.forEach(eventData => {
+          const startTime = new Date(eventData.startTime);
+          const endTime = new Date(eventData.endTime);
+
+          const start = `${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}`;
+          const end = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
+
+          const startMinutes = toMinutes(start);
+          const endMinutes = toMinutes(end);
+          const duration = endMinutes - startMinutes;
+
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = eventData.name;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          // datasetに情報保存（詳細表示用）
+          eventDiv.dataset.id = eventData.id;
+          eventDiv.dataset.title = eventData.name;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = loggedInUserId; // ログインユーザーのイベントなので、ログインユーザーIDをセット
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${eventData.name}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            // currentEventRefはオブジェクトなので直接プロパティを更新
+            currentEventRef.current = eventDiv;
+            eventDetailModal.show();
+          });
+
+          timeline.appendChild(eventDiv);
+        });
+
+      } else {
+        console.error("ログインユーザーのイベント取得失敗:", result.message);
+      }
+    } catch (error) {
+      console.error("ログインユーザーのイベント取得中に通信エラーが発生しました:", error);
+    }
+  }
+
+  // 特定のユーザーのイベントを取得してタイムラインに表示する関数
+  async function fetchAndDisplayUserEvents(userId, username, eventDetailModal, eventDetailText, currentEventRef) {
+    try {
+      const response = await fetch(`${base_url}/api/users/${userId}/events`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include' // Cookie（セッションID）を送る
+      });
+
+      const result = await response.json();
+      const allUserTimelinesContainer = document.getElementById('allUserTimelines');
+
+      // result.success が true で、かつ result.data が配列であり、その配列が空の場合
+      if (result.success && result.data && result.data.length === 0) {
+        console.log(`${username}さんのイベントはありません。タイムラインを表示しません。`);
+        return; // イベントがなければ関数を終了し、何も描画しない
+      }
+
+      if (result.success && result.data) { // イベントデータがある場合のみ実行
+        console.log(`イベント取得成功（${username}）:`, result.data);
+
+        // ユーザーごとのタイムラインセクションを作成
+        const userTimelineSection = document.createElement('div');
+        userTimelineSection.classList.add('user-timeline-section', 'mb-4', 'p-3', 'rounded-box');
+
+        const userHeader = document.createElement('h5');
+        userHeader.textContent = `　${username}さんのスケジュール`;
+        userHeader.classList.add('mb-3', 'ms-2', 'fw-bold');
+        userTimelineSection.appendChild(userHeader);
+
+        const userTimelineWrapper = document.createElement('div');
+        userTimelineWrapper.classList.add('timeline-wrapper');
+
+        const userTimelineDiv = document.createElement('div');
+        userTimelineDiv.classList.add('timeline');
+
+        result.data.forEach(eventData => { // result.data はすでにイベントデータがある前提
+          const startTime = new Date(eventData.startTime);
+          const endTime = new Date(eventData.endTime);
+
+          const start = `${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}`;
+          const end = `${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}`;
+
+          const startMinutes = toMinutes(start);
+          const endMinutes = toMinutes(end);
+          const duration = endMinutes - startMinutes;
+
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = eventData.name;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          eventDiv.dataset.id = eventData.id;
+          eventDiv.dataset.title = eventData.name;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = eventData.userId;
+          eventDiv.dataset.username = username; // usernameもdatasetに保存
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${eventData.name}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            // currentEventRefはオブジェクトなので直接プロパティを更新
+            currentEventRef.current = eventDiv;
+            eventDetailModal.show();
+          });
+
+          userTimelineDiv.appendChild(eventDiv);
+        });
+
+        userTimelineWrapper.appendChild(userTimelineDiv);
+        userTimelineSection.appendChild(userTimelineWrapper);
+        allUserTimelinesContainer.appendChild(userTimelineSection);
+
+      } else {
+        console.error(`イベント取得失敗（${username}）:`, result.message);
+        // イベント取得に失敗した場合は、何も表示しない
+        return;
+      }
+    } catch (error) {
+      console.error(`イベント取得中に通信エラーが発生しました（${username}）:`, error);
+      // 通信エラーが発生した場合も、何も表示しない
+      return;
+    }
+  }
+
+
+  // ページが完全に読み込まれた後に実行される関数
+window.addEventListener('DOMContentLoaded', async () => {
+  // 今日の日付表示
+  const today = new Date();
+  const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+  const formattedDate = today.toLocaleDateString('ja-JP', options);
+  document.getElementById("today-date").textContent = formattedDate;
+
+  // 時間選択肢の生成
+  populateTimeOptions('startHour', 'startMinute');
+  populateTimeOptions('endHour', 'endMinute');
+
+  // DOM要素の取得（DOMContentLoaded内で一度だけ、ここで定義する）
+  const form = document.getElementById("eventForm");
+  const timeline = document.getElementById("timeline");
+
+  // ★★★ ここでモーダル関連の変数を定義する ★★★
+  const eventDetailModal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+  const eventDetailText = document.getElementById('eventDetailText');
+  const deleteEventBtn = document.getElementById('deleteEventBtn');
+  const colorOptionsContainer = document.getElementById('colorOptions');
+  // currentEvent はプリミティブ値なので、オブジェクトでラップして参照渡しにする
+  const currentEventRef = { current: null }; 
+
+  const titleInput = document.getElementById('title');
+  const titleInputBubble = document.getElementById('titleInputBubble');
+  const closeBubbleBtn = document.getElementById('closeBubbleBtn');
+  const presetEventBtns = document.querySelectorAll('.preset-event-btn');
+  // ★★★ ここまで定義する ★★★
+
+  //選択されたプリセットイベントのタイプを一時的に保持
+  let selectedPresetType = null; // デフォルトはnull（プリセットが選択されていない状態）
+
+  //セッションストレージからユーザー名取得、なければ「ゲスト」
+  const username = sessionStorage.getItem("username") || "ゲスト";
+  document.getElementById("username").textContent = username;
+
+  // ログインユーザーIDの取得
+  const loggedInUserId = sessionStorage.getItem("currentUserId") || "dummyUserId123";
+
+  // 1. まず、ログインユーザー自身のイベントを読み込み表示します
+  // モーダル関連の変数を引数として渡す
+  await fetchEvents(loggedInUserId, timeline, eventDetailModal, eventDetailText, currentEventRef);
+
+  // 2. 次に、フォローしている他のユーザーのイベントを読み込み、それぞれのタイムラインに表示します。
+  const usersToDisplay = [
+    { userId: "dummyUserId456", username: "ボブ" },
+    { userId: "dummyUserId789", username: "チャーリー" } // イベントがないユーザーの例
+  ];
+
+  // 各フォローユーザーのタイムラインを読み込んで表示
+  for (const user of usersToDisplay) {
+    // モーダル関連の変数を引数として渡す
+    await fetchAndDisplayUserEvents(user.userId, user.username, eventDetailModal, eventDetailText, currentEventRef);
+  }
+
+    // イベント追加フォームの送信イベント
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const title = document.getElementById("title").value;
+      const startHour = document.getElementById("startHour").value;
+      const startMinute = document.getElementById("startMinute").value;
+      const endHour = document.getElementById("endHour").value;
+      const endMinute = document.getElementById("endMinute").value;
+
+      const start = `${startHour}:${startMinute}`;
+      const end = `${endHour}:${endMinute}`;
+
+      const startMinutes = toMinutes(start);
+      const endMinutes = toMinutes(end);
+      const duration = endMinutes - startMinutes;
+
+      if (duration <= 0) {
+        alert("終了時刻は開始時刻より後に設定してください。");
+        return;
+      }
+
+      const existingEvents = timeline.querySelectorAll('.event');
+      let overlap = false;
+
+      for (const existingEventDiv of existingEvents) {
+        // 現在のタイムライン（ログインユーザーのタイムライン）に表示されているイベントのみをチェック
+        // 他のユーザーのタイムラインにあるイベントとは重複チェックを行わない
+        if (existingEventDiv.dataset.userId === loggedInUserId) {
+            const existingStart = existingEventDiv.dataset.start;
+            const existingEnd = existingEventDiv.dataset.end;
+
+            const existingStartMinutes = toMinutes(existingStart);
+            const existingEndMinutes = toMinutes(existingEnd);
+
+            if ((startMinutes < existingEndMinutes) && (endMinutes > existingStartMinutes)) {
+                overlap = true;
+                alert(`このイベントは既存のイベント「${existingEventDiv.dataset.title}」（${existingStart}〜${existingEnd}）と時間が重複しています。`);
+                break;
+            }
+        }
+      }
+      if (overlap) {
+        return;
+      }
+
+      const todayDateTime = new Date();
+      todayDateTime.setHours(parseInt(startHour, 10));
+      todayDateTime.setMinutes(parseInt(startMinute, 10));
+      todayDateTime.setSeconds(0);
+      todayDateTime.setMilliseconds(0);
+      const startTimeISO = todayDateTime.toISOString();
+
+      todayDateTime.setHours(parseInt(endHour, 10));
+      todayDateTime.setMinutes(parseInt(endMinute, 10));
+      const endTimeISO = todayDateTime.toISOString();
+
+      const payload = {
+        "name": title,
+        "startTime": startTimeISO,
+        "endTime": endTimeISO
+      };
+
+      // プリセットタイプが設定されていれば追加
+      if (selectedPresetType) {
+          payload.type = selectedPresetType;
+      }
+
+      try {
+        const res = await fetch(base_url + "/api/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          credentials: 'include'
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          console.log("イベントが正常に作成されました:", result.data);
+
+          if (timeline.classList.contains('has-placeholder-image')) {
+            timeline.classList.remove('has-placeholder-image');
+            timeline.style.backgroundImage = 'none';
+          }
+
+          const calculatedColor = getEventColorByMidpoint(startMinutes, endMinutes);
+
+          const startPercent = (startMinutes / 1440) * 100;
+          const widthPercent = (duration / 1440) * 100;
+
+          const eventDiv = document.createElement("div");
+          eventDiv.className = "event";
+          eventDiv.style.left = `${startPercent}%`;
+          eventDiv.style.width = `${widthPercent}%`;
+          eventDiv.textContent = title;
+          eventDiv.style.backgroundColor = calculatedColor;
+          eventDiv.style.borderColor = calculatedColor;
+
+          eventDiv.dataset.id = result.data.id;
+          eventDiv.dataset.title = title;
+          eventDiv.dataset.start = start;
+          eventDiv.dataset.end = end;
+          eventDiv.dataset.color = calculatedColor;
+          eventDiv.dataset.userId = loggedInUserId; // 新規作成イベントにもログインユーザーIDをセット
+
+          //datasetにtypeを追加する
+          if (selectedPresetType) {
+              eventDiv.dataset.type = selectedPresetType;
+          }
+
+          eventDiv.addEventListener('click', function() {
+            const eventDetails = `${title}: ${start}~${end}`;
+            eventDetailText.textContent = eventDetails;
+            currentEventRef.current = eventDiv; // currentEventRef.current を更新
+            eventDetailModal.show();
+          });
+
+          timeline.appendChild(eventDiv);
+          form.reset();
+          
+          selectedPresetType = null; //プリセットタイプをリセットする
+
+        } else {
+          alert(`イベント作成に失敗しました: ${result.message}`);
+          console.error("イベント作成失敗:", result.message);
+        }
+      } catch (err) {
+        console.error("通信エラーが発生しました:", err);
+        alert("イベント作成中にエラーが発生しました。ネットワーク接続を確認してください。");
+      }
+    });
+
+    // モーダルの削除ボタン処理
+    deleteEventBtn.addEventListener('click', async function() {
+      if (currentEventRef.current) { // currentEventRef.current を参照
+        const eventId = currentEventRef.current.dataset.id;
+        const eventUserId = currentEventRef.current.dataset.userId;
+
+        if (!eventId) {
+          alert("イベントIDが見つかりません。削除できません。");
+          return;
+        }
+
+        // ログインユーザーとイベント作成者が一致するかチェック
+        if (eventUserId !== loggedInUserId) {
+          alert("他のユーザーのイベントは削除できません。");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${base_url}/api/events/${eventId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include'
+          });
+
+          const result = await res.json();
+
+          if (res.ok && result.success) {
+            console.log("イベントが正常に削除されました:", result.message);
+            currentEventRef.current.remove(); // currentEventRef.current を削除
+            eventDetailModal.hide();
+
+            if (currentEventRef.current.parentElement === timeline && timeline.children.length === 0) {
+              timeline.classList.add('has-placeholder-image');
+              timeline.style.backgroundImage = 'url(https://i.ibb.co/Lzn1192z/image.png)';
+            }
+            currentEventRef.current = null; // 削除後、参照をクリア
+          } else {
+            alert(`イベント削除に失敗しました: ${result.message || '不明なエラー'}`);
+            console.error("イベント削除失敗:", result.message);
+          }
+        } catch (err) {
+          console.error("イベント削除中にネットワークエラーが発生しました:", err);
+          alert("イベント削除中にエラーが発生しました。インターネット接続を確認してください。");
+        }
+      }
+    });
+
+    // タイムラインにおけるイベントの背景色を変更する
+    colorOptionsContainer.addEventListener('click', function(event) {
+      const clickedButton = event.target.closest('.color-option');
+      if (clickedButton && currentEventRef.current) { // currentEventRef.current を参照
+        const selectedColor = clickedButton.dataset.color;
+        currentEventRef.current.style.backgroundColor = selectedColor;
+        currentEventRef.current.style.borderColor = selectedColor;
+        currentEventRef.current.dataset.color = selectedColor;
+      }
+    });
+
+    // ログアウトボタンがクリックされた時に実行される処理
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      fetch(base_url + "/api/auth/logout", {
+        method: 'POST',
+        credentials: 'include'
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = 'TimeShare_WelcomePage.html';
+          } else {
+            alert('ログアウトに失敗しました');
+          }
+        })
+        .catch(error => {
+          console.error('ログアウト中にエラーが発生しました:', error);
+          alert('ログアウトに失敗しました。再度試してください。');
+        });
+    });
+
+
+    // --- 吹き出し関連のコード ---
+
+    // イベント名入力欄がクリックされたら吹き出しを表示
+    titleInput.addEventListener('focus', function() {
+      // 既にプリセットでdisabledになっている場合は、focusしても吹き出しを表示しない
+      if (titleInput.disabled) {
+        return;
+      }
+      const inputRect = titleInput.getBoundingClientRect();
+      const formRect = form.getBoundingClientRect(); // form変数が利用可能であること
+
+      titleInputBubble.style.left = `${inputRect.left + (inputRect.width / 2) - formRect.left}px`;
+      titleInputBubble.style.top = `${inputRect.bottom - formRect.top + 10}px`;
+      titleInputBubble.style.display = 'block';
+    });
+
+    // 吹き出しの閉じるボタンがクリックされたら吹き出しを非表示に
+    closeBubbleBtn.addEventListener('click', function() {
+      event.preventDefault();
+      titleInputBubble.style.display = 'none';
+    });
+
+    // 「ランキング機能」行の閉じるボタン（✕）のクリックイベント
+    document.querySelector('.btn-close-ranking').addEventListener('click', function() {
+      titleInputBubble.style.display = 'none'; // 吹き出しを非表示にする
+    });
+
+    // プリセットイベントボタンのクリックイベントを追加
+    presetEventBtns.forEach(button => {
+      button.addEventListener('click', function() {
+        const eventName = this.dataset.eventName;
+        titleInput.value = eventName;
+        titleInput.disabled = true;
+        titleInputBubble.style.display = 'none';
+
+        if (eventName === "睡眠") {
+          selectedPresetType = "sleep";
+        } else if (eventName === "筋トレ") {
+          selectedPresetType = "training";
+        } else {
+          selectedPresetType = null; // その他のプリセットがあればここに追加、またはnullのまま
+        }
+      });
+    });
+
+    // 吹き出しの外側がクリックされたら吹き出しを非表示に
+    document.addEventListener('click', function(event) {
+      // クリックされた要素が入力欄でも吹き出し内でもない場合、
+      // かつクリックされた要素がフォームの直接の子要素ではない場合も考慮
+      if (event.target !== titleInput && !titleInputBubble.contains(event.target) && !form.contains(event.target)) {
+        titleInputBubble.style.display = 'none';
+      }
+    });
+
+    // フォームのリセット時にも吹き出しを非表示に
+    form.addEventListener('reset', function() {
+      titleInputBubble.style.display = 'none';
+      // フォームがリセットされたときには、入力欄を必ず編集可能に戻す
+      titleInput.disabled = false; 
+      selectedPresetType = null;
+    });
+
+    // --- 吹き出し関連のコードここまで ---
+
+  });
+</script>
+</body>
+</html>
