@@ -70,7 +70,7 @@ export class UsersWithStatsResponseData extends AbstractResponseData {
     }
 }
 
-// !note!将来的に使わない
+// !note!将来的に使わない（開発用で残すかも）
 export class UsersResponseData extends AbstractResponseData {
     users: UserResponseData[];
 
