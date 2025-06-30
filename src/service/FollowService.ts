@@ -64,4 +64,18 @@ export class FollowService {
         }
         return events;
     }
+
+    public async getFollowingCount(userId: string): Promise<number> {
+        if (!await this.userRepository.exists(userId)) {
+            throw new UserNotFoundError(userId);
+        }
+        return await this.followRepository.getFollowingCount(userId);
+    }
+
+    public async getFollowerCount(userId: string): Promise<number> {
+        if (!await this.userRepository.exists(userId)) {
+            throw new UserNotFoundError(userId);
+        }
+        return await this.followRepository.getFollowerCount(userId);
+    }
 }

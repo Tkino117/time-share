@@ -59,6 +59,24 @@ export class FollowRepository {
         return follows.map(follow => follow.follower);
     }
 
+    public async getFollowingCount(userId: string): Promise<number> {
+        const count = await Follow.count({
+            where: {
+                follower: userId
+            }
+        });
+        return count;
+    }
+
+    public async getFollowerCount(userId: string): Promise<number> {
+        const count = await Follow.count({
+            where: {
+                following: userId
+            }
+        });
+        return count;
+    }
+
     public async findAll(): Promise<Follow[]> {
         return await Follow.findAll();
     }   

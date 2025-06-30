@@ -2,13 +2,28 @@ import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/
 import { SessionManager } from "../repository/SessionManager";
 import { User } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
+import { FollowService } from "./FollowService";
+
+export class UserWithStats {
+    public userId: string;
+    public name: string;
+    public followingCount: number;
+    public followerCount: number;
+    
+    constructor(user: User, followingCount: number, followerCount: number) {
+        this.userId = user.userId;
+        this.name = user.name;
+        this.followingCount = followingCount;
+        this.followerCount = followerCount;
+    }
+}
 
 export class UserService {
     private readonly passwordMinLength = 1;
     private readonly nameMinLength = 1;
     private readonly userIdMinLength = 1;
     private readonly userIdMaxLength = 20;
-    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager) {
+    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager, private readonly followService: FollowService) {
 
     }
 
@@ -71,6 +86,15 @@ export class UserService {
             throw new UserNotFoundError(userId);
         }
         return user;
+    }
+
+    public async getUserWithStats(userId: string): Promise<UserWithStats> {
+        const user = await this.getUser(userId);
+        const [followingCount, followerCount] = await Promise.all([
+            this.followService.getFollowingCount(userId),
+            this.followService.getFollowerCount(userId)
+        ]);
+        return new UserWithStats(user, followingCount, followerCount);
     }
 
     // return sessionId

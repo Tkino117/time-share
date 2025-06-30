@@ -29,6 +29,30 @@ export class UserResponseData extends AbstractResponseData {
     }
 }
 
+export class UserWithStatsResponseData extends AbstractResponseData {
+    userId: string;
+    name: string;
+    followingCount: number;
+    followerCount: number;
+
+    constructor(userWithStats: { userId: string; name: string; followingCount: number; followerCount: number }) {
+        super();
+        this.userId = userWithStats.userId;
+        this.name = userWithStats.name;
+        this.followingCount = userWithStats.followingCount;
+        this.followerCount = userWithStats.followerCount;
+    }
+
+    toJSON(): any {
+        return {
+            userId: this.userId,
+            name: this.name,
+            followingCount: this.followingCount,
+            followerCount: this.followerCount
+        };
+    }
+}
+
 export class UsersResponseData extends AbstractResponseData {
     users: UserResponseData[];
 

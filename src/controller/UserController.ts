@@ -1,6 +1,6 @@
 import { UserService } from "../service/UserService";
 import { Request, Response } from "express";
-import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData } from "../response";
+import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData, UserWithStatsResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
@@ -36,8 +36,8 @@ export class UserController {
     async getUser(req: Request, res: Response) {
         const userId: string = req.params.userId;
         try {
-            const user = await this.userService.getUser(userId);
-            const data = new UserResponseData(user);
+            const userWithStats = await this.userService.getUserWithStats(userId);
+            const data = new UserWithStatsResponseData(userWithStats);
             new SuccessResponse(data, 'Get user successful').send(res);
         }
         catch(error: any) {
@@ -83,8 +83,8 @@ export class UserController {
     async getMyUser(req: Request, res: Response) {
         try {
             const userId = await auth(req, res, this.sessionManager);
-            const user = await this.userService.getUser(userId);
-            const data = new UserResponseData(user);
+            const userWithStats = await this.userService.getUserWithStats(userId);
+            const data = new UserWithStatsResponseData(userWithStats);
             new SuccessResponse(data, 'Get my user successful').send(res);
         }
         catch(error: any) {
