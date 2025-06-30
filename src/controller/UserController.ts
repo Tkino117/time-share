@@ -118,8 +118,9 @@ export class UserController {
 
     async getFollowings(req: Request, res: Response) {
         try {
+            const targetUserId = req.params.userId;
             const userId = await auth(req, res, this.sessionManager);
-            const followings = await this.followService.getFollowings(userId);
+            const followings = await this.followService.getFollowings(targetUserId);
             const users = await Promise.all(followings.map(following => this.userService.getUserWithStats(following)));
             const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followings successful').send(res);
@@ -131,8 +132,9 @@ export class UserController {
 
     async getFollowers(req: Request, res: Response) {
         try {
+            const targetUserId = req.params.userId;
             const userId = await auth(req, res, this.sessionManager);
-            const followers = await this.followService.getFollowers(userId);
+            const followers = await this.followService.getFollowers(targetUserId);
             const users = await Promise.all(followers.map(follower => this.userService.getUserWithStats(follower)));
             const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followers successful').send(res);
