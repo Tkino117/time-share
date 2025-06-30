@@ -1,6 +1,6 @@
 import { UserService } from "../service/UserService";
 import { Request, Response } from "express";
-import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData, UserWithStatsResponseData } from "../response";
+import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData, UserWithStatsResponseData, UsersWithStatsResponseData } from "../response";
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
@@ -120,8 +120,8 @@ export class UserController {
         try {
             const userId = await auth(req, res, this.sessionManager);
             const followings = await this.followService.getFollowings(userId);
-            const users = await Promise.all(followings.map(following => this.userService.getUser(following)));
-            const data = new UsersResponseData(users);
+            const users = await Promise.all(followings.map(following => this.userService.getUserWithStats(following)));
+            const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followings successful').send(res);
         }
         catch(error: any) {
@@ -133,8 +133,8 @@ export class UserController {
         try {
             const userId = await auth(req, res, this.sessionManager);
             const followers = await this.followService.getFollowers(userId);
-            const users = await Promise.all(followers.map(follower => this.userService.getUser(follower)));
-            const data = new UsersResponseData(users);
+            const users = await Promise.all(followers.map(follower => this.userService.getUserWithStats(follower)));
+            const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followers successful').send(res);
         }
         catch(error: any) {
@@ -177,7 +177,8 @@ export class UserController {
             const userId = await auth(req, res, this.sessionManager);
             const query = req.query.query as string || '';
             const users = await this.userService.searchUser(query, userId);
-            const data = new UsersResponseData(users);
+            const usersWithStats = await Promise.all(users.map(user => this.userService.getUserWithStats(user.userId)));
+            const data = new UsersWithStatsResponseData(usersWithStats);
             new SuccessResponse(data, 'Search user successful').send(res);
         }
         catch(error: any) {

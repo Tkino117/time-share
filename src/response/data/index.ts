@@ -1,4 +1,5 @@
 import { User, Event, EventType } from "../../database/database";
+import { UserWithStats } from "../../service";
 import { Ranking } from "../../service/RankingService";
 
 export abstract class AbstractResponseData {
@@ -11,6 +12,7 @@ export class EmptyResponseData extends AbstractResponseData {
     }
 }
 
+// !note!将来的に使わない
 export class UserResponseData extends AbstractResponseData {
     userId: string;
     name: string;
@@ -35,10 +37,10 @@ export class UserWithStatsResponseData extends AbstractResponseData {
     followingCount: number;
     followerCount: number;
 
-    constructor(userWithStats: { userId: string; name: string; followingCount: number; followerCount: number }) {
+    constructor(userWithStats: UserWithStats) {
         super();
         this.userId = userWithStats.userId;
-        this.name = userWithStats.name;
+        this.name = userWithStats.name;    
         this.followingCount = userWithStats.followingCount;
         this.followerCount = userWithStats.followerCount;
     }
@@ -53,6 +55,22 @@ export class UserWithStatsResponseData extends AbstractResponseData {
     }
 }
 
+export class UsersWithStatsResponseData extends AbstractResponseData {
+    usersWithStats: UserWithStatsResponseData[];
+
+    constructor(users: UserWithStats[]) {
+        super();
+        this.usersWithStats = users.map(user => new UserWithStatsResponseData(user));
+    }
+
+    toJSON(): any {
+        return {
+            users: this.usersWithStats.map(userWithStats => userWithStats.toJSON())
+        };
+    }
+}
+
+// !note!将来的に使わない
 export class UsersResponseData extends AbstractResponseData {
     users: UserResponseData[];
 
