@@ -4,9 +4,12 @@ import cors from 'cors';
 import path from 'path';
 import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter } from './router';
 import { AuthController, UserController, EventController, RankingController } from './controller';
-import { UserService, EventService, FollowService, RankingService } from './service';
+import { UserService, EventService, FollowService, RankingService, NotificationService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
 import { Database } from './database/database';
+import { NotificationRepository } from './repository/NotificationRepository';
+import { NotificationRouter } from './router/NotificationRouter';
+import { NotificationController } from './controller/NotificationController';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -57,21 +60,25 @@ async function main() {
         const userRepository = new UserRepository();
         const eventRepository = new EventRepository();
         const followRepository = new FollowRepository();
+        const notificationRepository = new NotificationRepository();
         const sessionManager = new SessionManager();
         const followService = new FollowService(followRepository, userRepository, eventRepository);
         const userService = new UserService(userRepository, sessionManager, followService);
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
         const rankingService = new RankingService(eventRepository, userRepository, 0);
+        const notificationService = new NotificationService(notificationRepository);
         const authController = new AuthController(userService, sessionManager);
-        const userController = new UserController(userService, followService, sessionManager, eventService);
+        const userController = new UserController(userService, followService, sessionManager, eventService, notificationService);
         const eventController = new EventController(eventService, sessionManager);
         const rankingController = new RankingController(rankingService);
+        const notificationController = new NotificationController(notificationService, sessionManager);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
         const devRouter = new DevRouter(userService, eventService, followService);
         const rankingRouter = new RankingRouter(rankingController);
-        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter);
+        const notificationRouter = new NotificationRouter(notificationController);
+        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter);
 
         // 初期化
         const app = await initExpress(express());

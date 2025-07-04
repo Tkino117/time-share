@@ -32,6 +32,26 @@ export class Event extends Model {
     public type!: EventType;
 }
 
+export enum NotificationType {
+    FOLLOW = 'follow',
+    EVENT_SHARE = 'event_share',
+    EVENT_LIKE = 'event_like',
+    EVENT_COMMENT = 'event_comment',
+    ACHIEVEMENT = 'achievement',
+    REMINDER = 'reminder',
+    SYSTEM = 'system'
+}
+
+export class Notification extends Model {
+    public id!: number;
+    public userId!: string;
+    public type!: NotificationType;
+    public title!: string;
+    public message!: string;
+    public isRead!: boolean;
+    public metadata?: object;
+}
+
 export class Database {
     private static instance: Database;
     private sequelize: Sequelize;
@@ -48,6 +68,7 @@ export class Database {
         this.initUserModel();
         this.initFollowModel();
         this.initEventModel();
+        this.initNotificationModel();
     }
 
     private initUserModel(): void {
@@ -157,6 +178,63 @@ export class Database {
             modelName: 'Event',
             tableName: 'events',
             timestamps: true
+        });
+    }
+
+    private initNotificationModel(): void {
+        Notification.init({
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false
+            },
+            userId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'userId'
+                },
+                onDelete: 'CASCADE'
+            },
+            type: {
+                type: DataTypes.ENUM(...Object.values(NotificationType)),
+                allowNull: false
+            },
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            message: {
+                type: DataTypes.TEXT,
+                allowNull: false
+            },
+            isRead: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            },
+            metadata: {
+                type: DataTypes.JSON,
+                allowNull: true
+            }
+        }, {
+            sequelize: this.sequelize,
+            modelName: 'Notification',
+            tableName: 'notifications',
+            timestamps: true,
+            indexes: [
+                {
+                    fields: ['userId', 'isRead']
+                },
+                {
+                    fields: ['userId', 'createdAt']
+                },
+                {
+                    fields: ['type']
+                }
+            ]
         });
     }
 
