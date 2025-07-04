@@ -1,4 +1,4 @@
-import { User, Event, EventType } from "../../database/database";
+import { User, Event, EventType, NotificationType, Notification } from "../../database/database";
 import { Ranking } from "../../service/RankingService";
 
 export abstract class AbstractResponseData {
@@ -159,6 +159,54 @@ export class RankingsResponseData extends AbstractResponseData {
     toJSON(): any {
         return {
             rankings: this.rankings.map(ranking => ranking.toJSON())
+        };
+    }
+}
+
+export class NotificationResponseData extends AbstractResponseData {
+    id: number;
+    userId: string;
+    type: NotificationType;
+    title: string;
+    message: string;
+    isRead: boolean;
+    metadata?: object;
+
+    constructor(notification: Notification) {
+        super();
+        this.id = notification.id;
+        this.userId = notification.userId;
+        this.type = notification.type;
+        this.title = notification.title;
+        this.message = notification.message;
+        this.isRead = notification.isRead;
+        this.metadata = notification.metadata;
+    }
+
+    toJSON(): any {
+        return {
+            id: this.id,
+            userId: this.userId,
+            type: this.type,
+            title: this.title,
+            message: this.message,
+            isRead: this.isRead,
+            metadata: this.metadata
+        };
+    }
+}
+
+export class NotificationsResponseData extends AbstractResponseData {
+    notifications: NotificationResponseData[];
+
+    constructor(notifications: Notification[]) {
+        super();
+        this.notifications = notifications.map(notification => new NotificationResponseData(notification));
+    }
+
+    toJSON(): any {
+        return {
+            notifications: this.notifications.map(notification => notification.toJSON())
         };
     }
 }

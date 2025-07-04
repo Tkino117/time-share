@@ -4,11 +4,10 @@ import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData
 import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
 import { auth, checkSession, handleError } from "./util";
-import { FollowService } from "../service/FollowService";
-import { EventService } from "../service/EventService";
+import { FollowService, EventService, NotificationService } from "../service";
 
 export class UserController {
-    constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService) {
+    constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService, private notificationService: NotificationService) {
     }
 
     async createUser(req: Request, res: Response) {
@@ -97,6 +96,7 @@ export class UserController {
         try {
             const userId = await auth(req, res, this.sessionManager);
             await this.followService.followUser(userId, followingId);
+            await this.notificationService.createFollowNotification(userId, followingId);
             new SuccessResponse(new EmptyResponseData(), 'Follow user successful').send(res);
         }
         catch(error: any) {

@@ -91,6 +91,11 @@
                 <div>
                     <button id="getRankingsButton"> ランキング一覧 </button>
                 </div>
+                <h3> 通知 </h3>
+                <div>
+                    <button id="getNotificationsButton"> 通知一覧 </button>
+                    <button id="markAsReadButton"> 既読にする </button>
+                </div>
                 <h3> 設定 </h3>
                 <div>
                     <input type="text" id="update-userId" placeholder="userId" />
@@ -142,7 +147,8 @@
             document.getElementById('getFeedButton').addEventListener('click', getFeed);
             document.getElementById('getRankingsButton').addEventListener('click', getRankings);
             document.getElementById('searchButton').addEventListener('click', searchUser);
-            
+            document.getElementById('getNotificationsButton').addEventListener('click', getNotifications);
+            document.getElementById('markAsReadButton').addEventListener('click', markAsRead);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -424,6 +430,33 @@
                     for(const user of result.data.users) {
                         log('    id: ' + user.userId + ', name: ' + user.name);
                     }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 通知一覧ボタン
+            async function getNotifications() {
+                const response = await get('/api/notifications');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.notifications.length + ' notifications:');
+                    for(const notification of result.data.notifications) {
+                        log('    id: ' + notification.id + ', type: ' + notification.type + ', title: ' + notification.title + ', read: ' + notification.isRead + ', message: ' + notification.message);
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 通知既読ボタン
+            async function markAsRead() {
+                const response = await put('/api/notifications/read');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
                 }
                 else {
                     log(result.message);
