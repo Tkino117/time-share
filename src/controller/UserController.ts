@@ -144,10 +144,11 @@ export class UserController {
         }
     }
     
-    async getMyEvents(req: Request, res: Response) {
+    async getEvents(req: Request, res: Response) {
         try {
-            const userId = await auth(req, res, this.sessionManager);
-            const events = await this.eventService.getEventsByUserId(userId);
+            const myUserId = await auth(req, res, this.sessionManager);
+            const targetUserId = req.params.userId;
+            const events = await this.eventService.getEventsByUserId(targetUserId);
             const data = new EventsResponseData(events);
             new SuccessResponse(data, 'Events retrieved successfully').send(res);
         }

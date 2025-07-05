@@ -109,6 +109,13 @@
                     <input type="text" id="search-userId" placeholder="userId" />
                     <button id="searchButton"> 検索 </button>
                 </div>
+                <h3> 他ユーザー関連 </h3>
+                <div>
+                    <input type="text" id="other-userId" placeholder="userId" />
+                    <button id="getOtherUserEventsButton"> イベント一覧 </button>
+                    <button id="getOtherUserFollowingsButton"> フォロー一覧 </button>
+                    <button id="getOtherUserFollowersButton"> フォロワー一覧 </button>
+                </div>
                 <h3> 開発ツール</h3>
                 <div>
                     <button id="findAllUsersButton"> 全ユーザー取得 </button>
@@ -149,6 +156,9 @@
             document.getElementById('searchButton').addEventListener('click', searchUser);
             document.getElementById('getNotificationsButton').addEventListener('click', getNotifications);
             document.getElementById('markAsReadButton').addEventListener('click', markAsRead);
+            document.getElementById('getOtherUserEventsButton').addEventListener('click', getOtherUserEvents);
+            document.getElementById('getOtherUserFollowingsButton').addEventListener('click', getOtherUserFollowings);
+            document.getElementById('getOtherUserFollowersButton').addEventListener('click', getOtherUserFollowers);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -275,7 +285,8 @@
 
             // フォロー一覧ボタン
             async function getFollowings() {
-                const response = await get('/api/users/me/followings');
+                const myUserId = await getMyUserId();
+                const response = await get('/api/users/' + myUserId + '/followings');
                 const result = await response.json();
                 if(result.success) {
                     log(result.data.users.length + ' followings:');
@@ -290,7 +301,8 @@
 
             // フォロワー一覧ボタン
             async function getFollowers() {
-                const response = await get('/api/users/me/followers');
+                const myUserId = await getMyUserId();
+                const response = await get('/api/users/' + myUserId + '/followers');
                 const result = await response.json();
                 if(result.success) {
                     log(result.data.users.length + ' followers:');
@@ -321,7 +333,8 @@
 
             // 自分のイベント一覧ボタン
             async function getMyEvents() {
-                const response = await get('/api/users/me/events');
+                const myUserId = await getMyUserId();
+                const response = await get('/api/users/' + myUserId + '/events');
                 const result = await response.json();
                 if(result.success) {
                     log(result.data.events.length + ' events:');
@@ -457,6 +470,54 @@
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 他ユーザーイベント一覧ボタン
+            async function getOtherUserEvents() {
+                const userId = document.getElementById('other-userId').value;
+                const response = await get('/api/users/' + userId + '/events');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.events.length + ' events:');
+                    for(const event of result.data.events) {
+                        log(`    id: ${event.id}, name: ${event.name},\n    startTime: ${event.startTime},\n    endTime: ${event.endTime},\n    type: ${event.type}`);
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 他ユーザーフォロー一覧ボタン
+            async function getOtherUserFollowings() {
+                const userId = document.getElementById('other-userId').value;
+                const response = await get('/api/users/' + userId + '/followings');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.users.length + ' users:');
+                    for(const user of result.data.users) {
+                        log('    id: ' + user.userId + ', name: ' + user.name);
+                    }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 他ユーザーフォロワー一覧ボタン
+            async function getOtherUserFollowers() {
+                const userId = document.getElementById('other-userId').value;
+                const response = await get('/api/users/' + userId + '/followers');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.users.length + ' users:');
+                    for(const user of result.data.users) {
+                        log('    id: ' + user.userId + ', name: ' + user.name);
+                    }
                 }
                 else {
                     log(result.message);
