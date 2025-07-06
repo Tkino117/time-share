@@ -187,5 +187,4 @@ export class UserController {
             handleError(error, res);
         }
     }
-
 }

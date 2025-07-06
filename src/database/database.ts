@@ -52,6 +52,18 @@ export class Notification extends Model {
     public metadata?: object;
 }
 
+// 一旦、承認と拒否のみ（拒否されたら削除）
+export enum FollowRequestStatus {
+    PENDING = 'pending',
+}
+
+export class FollowRequest extends Model {
+    public id!: number;
+    public fromUserId!: string;
+    public toUserId!: string;
+    public status!: FollowRequestStatus;
+}
+
 export class Database {
     private static instance: Database;
     private sequelize: Sequelize;
@@ -69,6 +81,7 @@ export class Database {
         this.initFollowModel();
         this.initEventModel();
         this.initNotificationModel();
+        this.initFollowRequestModel();
     }
 
     private initUserModel(): void {
@@ -233,6 +246,51 @@ export class Database {
                 },
                 {
                     fields: ['type']
+                }
+            ]
+        });
+    }
+
+    private initFollowRequestModel(): void {
+        FollowRequest.init({
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false
+            },
+            fromUserId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'userId'
+                },
+                onDelete: 'CASCADE'
+            },
+            toUserId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'userId'
+                },
+                onDelete: 'CASCADE'
+            },
+            status: {
+                type: DataTypes.ENUM(...Object.values(FollowRequestStatus)),
+                allowNull: false,
+                defaultValue: FollowRequestStatus.PENDING
+            }
+        }, {
+            sequelize: this.sequelize,
+            modelName: 'FollowRequest',
+            tableName: 'follow_requests',
+            timestamps: true,
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['fromUserId', 'toUserId']
                 }
             ]
         });
