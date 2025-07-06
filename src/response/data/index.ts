@@ -267,3 +267,19 @@ export class UserSettingsResponseData extends AbstractResponseData {
         };
     }
 }
+
+
+export class FollowRequestsResponseData extends AbstractResponseData {
+    users: UserWithStatsResponseData[];
+
+    constructor(users: UserWithStats[]) {
+        super();
+        this.users = users.map(user => new UserWithStatsResponseData(user));
+    }
+
+    toJSON(): any {
+        return {
+            users: this.users.map(user => user.toJSON())
+        };
+    }
+}

@@ -5,8 +5,8 @@ import { auth, handleError } from "./util";
 import { SessionManager } from "../repository";
 
 export class NotificationController {
-    constructor(private notificationService: NotificationService, private sessionManager: SessionManager) {
-    }
+    constructor(private notificationService: NotificationService,
+                private sessionManager: SessionManager) {}
 
     async getNotifications(req: Request, res: Response) {
         try {
