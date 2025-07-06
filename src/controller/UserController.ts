@@ -1,10 +1,10 @@
 import { UserService } from "../service/UserService";
 import { Request, Response } from "express";
 import { CreateResponse, EmptyResponseData, EventsResponseData, FeedResponseData, SuccessResponse, UserEventsResponseData, UserResponseData, UsersResponseData, UserWithStatsResponseData, UsersWithStatsResponseData } from "../response";
-import { ErrorResponse } from "../response/error/ErrorResponse";
 import { SessionManager } from "../repository";
-import { auth, checkSession, handleError } from "./util";
+import { auth, checkPrivacy, checkSession, handleError } from "./util";
 import { FollowService, EventService, NotificationService } from "../service";
+import { ErrorResponse, ForbiddenResponse } from "../response";
 
 export class UserController {
     constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService, private notificationService: NotificationService) {
@@ -148,6 +148,11 @@ export class UserController {
         try {
             const myUserId = await auth(req, res, this.sessionManager);
             const targetUserId = req.params.userId;
+            if (!await checkPrivacy(myUserId, targetUserId, this.followService)) {
+                // !note! あとでエラーつくる
+                new ForbiddenResponse('Privacy violation').send(res);
+                return;
+            }
             const events = await this.eventService.getEventsByUserId(targetUserId);
             const data = new EventsResponseData(events);
             new SuccessResponse(data, 'Events retrieved successfully').send(res);

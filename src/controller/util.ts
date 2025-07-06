@@ -4,8 +4,9 @@ import { SessionManager } from "../repository";
 import * as errors from "../service/errors";
 import * as responses from "../response";
 import { EventType } from "../database/database";
+import { FollowService } from "../service/FollowService";
 
-// req のセッションIDが userId のセッションであるかを確認する
+// req のセッションIDが userId のセッションであるかを確認する（authがあるので削除してもいい気がする）
 export function checkSession(req: Request, res: Response, sessionManager: SessionManager, userId: string) {
     if (req.session.sessionId && sessionManager.getSession(req.session.sessionId)?.userId !== userId) {
         new ForbiddenResponse('You are not authorized to access this resource').send(res);
@@ -77,24 +78,33 @@ export async function auth(req: Request, res: Response, sessionManager: SessionM
     return userId;
 }
 
+export async function checkPrivacy(userId: string, targetUserId: string, followService: FollowService) {
+    if (await followService.isFollowing(userId, targetUserId)) {
+        return true;
+    }
+    if (userId === targetUserId) {
+        return true;
+    }
+    return false;
+}
 
 export function convertType(type: string | undefined): EventType {
-        switch (type) {
-            case 'meal':
-                return EventType.MEAL;
-            case 'sleep':
-                return EventType.SLEEP;
-            case 'work':
-                return EventType.WORK;
-            case 'exercise':
-                return EventType.EXERCISE;
-            case 'study':
-                return EventType.STUDY;
-            case 'other':
-            case '':
-            case undefined:
-                return EventType.OTHER;
-            default:
-                throw new errors.InvalidEventTypeError(type);
-        }
+    switch (type) {
+        case 'meal':
+            return EventType.MEAL;
+        case 'sleep':
+            return EventType.SLEEP;
+        case 'work':
+            return EventType.WORK;
+        case 'exercise':
+            return EventType.EXERCISE;
+        case 'study':
+            return EventType.STUDY;
+        case 'other':
+        case '':
+        case undefined:
+            return EventType.OTHER;
+        default:
+            throw new errors.InvalidEventTypeError(type);
     }
+}

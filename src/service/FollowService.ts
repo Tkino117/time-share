@@ -78,4 +78,14 @@ export class FollowService {
         }
         return await this.followRepository.getFollowerCount(userId);
     }
+
+    public async isFollowing(userId: string, targetUserId: string): Promise<boolean> {
+        if (!await this.userRepository.exists(userId)) {
+            throw new UserNotFoundError(userId);
+        }
+        if (!await this.userRepository.exists(targetUserId)) {
+            throw new UserNotFoundError(targetUserId);
+        }
+        return await this.followRepository.exists(userId, targetUserId);
+    }
 }

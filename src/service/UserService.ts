@@ -1,6 +1,6 @@
 import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/UserRepository";
 import { SessionManager } from "../repository/SessionManager";
-import { User } from "../database/database";
+import { User, UserSettings } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
 import { FollowService } from "./FollowService";
 
@@ -16,6 +16,10 @@ export class UserWithStats {
         this.followingCount = followingCount;
         this.followerCount = followerCount;
     }
+}
+
+export class UserSettingsUpdateInput {
+    public privacy?: 'public' | 'protected' | 'private';
 }
 
 export class UserService {
@@ -163,5 +167,19 @@ export class UserService {
             throw new InvalidUserIdError();
         }
         return trimmedUserId;
+    }
+
+    public async getSettings(userId: string): Promise<UserSettings> {
+        const user = await this.getUser(userId);
+        return user.settings;
+    }
+
+    public async updateSettings(userId: string, settings: UserSettingsUpdateInput): Promise<UserSettings> {
+        const user = await this.getUser(userId);
+        if (settings.privacy) {
+            user.settings.privacy = settings.privacy;
+        }
+        await this.userRepository.update(userId, { settings: user.settings });
+        return user.settings;
     }
 }

@@ -1,5 +1,5 @@
 import { UserWithStats } from "../../service";
-import { User, Event, EventType, NotificationType, Notification } from "../../database/database";
+import { User, Event, EventType, NotificationType, Notification, UserSettings } from "../../database/database";
 import { Ranking } from "../../service/RankingService";
 
 export abstract class AbstractResponseData {
@@ -249,6 +249,21 @@ export class NotificationsResponseData extends AbstractResponseData {
     toJSON(): any {
         return {
             notifications: this.notifications.map(notification => notification.toJSON())
+        };
+    }
+}
+
+export class UserSettingsResponseData extends AbstractResponseData {
+    userSettings: UserSettings;
+    
+    constructor(userSettings: UserSettings) {
+        super();
+        this.userSettings = userSettings;
+    }
+
+    toJSON(): any {
+        return {
+            privacy: this.userSettings.privacy
         };
     }
 }

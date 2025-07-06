@@ -1,10 +1,15 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import path from 'path';
 
+export type UserSettings = {
+    privacy: 'public' | 'protected' | 'private';
+}
+
 export class User extends Model {
     public userId!: string;
     public password!: string;
     public name!: string;
+    public settings!: UserSettings;
 }
 
 export class Follow extends Model {
@@ -85,6 +90,11 @@ export class Database {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            settings: {
+                type: DataTypes.JSON,
+                allowNull: false,
+                defaultValue: { privacy: 'public' }
             }
         }, {
             sequelize: this.sequelize,

@@ -104,6 +104,15 @@
                     <button id="updateButton"> 更新 </button>
                     <button id="deleteButton"> ユーザー削除 </button>
                 </div>
+                <div>
+                    <button id="getSettingsButton"> 設定取得 </button>
+                    <select id="update-privacy">
+                        <option value="public"> 公開 </option>
+                        <option value="protected"> 保護 </option>
+                        <option value="private"> 非公開 </option>
+                    </select>
+                    <button id="updatePrivacyButton"> プライバシー更新 </button>
+                </div>
                 <h3> ユーザー検索 </h3>
                 <div>
                     <input type="text" id="search-userId" placeholder="userId" />
@@ -159,6 +168,8 @@
             document.getElementById('getOtherUserEventsButton').addEventListener('click', getOtherUserEvents);
             document.getElementById('getOtherUserFollowingsButton').addEventListener('click', getOtherUserFollowings);
             document.getElementById('getOtherUserFollowersButton').addEventListener('click', getOtherUserFollowers);
+            document.getElementById('getSettingsButton').addEventListener('click', getSettings);
+            document.getElementById('updatePrivacyButton').addEventListener('click', updatePrivacy);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -518,6 +529,31 @@
                     for(const user of result.data.users) {
                         log('    id: ' + user.userId + ', name: ' + user.name);
                     }
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // 設定取得ボタン
+            async function getSettings() {
+                const response = await get('/api/settings');
+                const result = await response.json();
+                if(result.success) {
+                    log(result.data.privacy);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // プライバシー更新ボタン
+            async function updatePrivacy() {
+                const privacy = document.getElementById('update-privacy').value;
+                const response = await put('/api/settings/privacy', { privacy });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
                 }
                 else {
                     log(result.message);

@@ -2,14 +2,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import path from 'path';
-import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter } from './router';
-import { AuthController, UserController, EventController, RankingController } from './controller';
+import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter, SettingRouter, NotificationRouter } from './router';
+import { AuthController, UserController, EventController, RankingController, SettingController, NotificationController } from './controller';
 import { UserService, EventService, FollowService, RankingService, NotificationService } from './service';
-import { SessionManager, UserRepository, EventRepository, FollowRepository } from './repository';
+import { SessionManager, UserRepository, EventRepository, FollowRepository, NotificationRepository } from './repository';
 import { Database } from './database/database';
-import { NotificationRepository } from './repository/NotificationRepository';
-import { NotificationRouter } from './router/NotificationRouter';
-import { NotificationController } from './controller/NotificationController';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -72,13 +69,15 @@ async function main() {
         const eventController = new EventController(eventService, sessionManager);
         const rankingController = new RankingController(rankingService);
         const notificationController = new NotificationController(notificationService, sessionManager);
+        const settingController = new SettingController(userService, sessionManager);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
         const devRouter = new DevRouter(userService, eventService, followService);
         const rankingRouter = new RankingRouter(rankingController);
         const notificationRouter = new NotificationRouter(notificationController);
-        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter);
+        const settingRouter = new SettingRouter(settingController);
+        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter, settingRouter);
 
         // 初期化
         const app = await initExpress(express());

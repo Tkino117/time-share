@@ -20,10 +20,13 @@ export class DevRouter extends AbstractRouter {
         });
         this.router.post('/demo-dev', async (req, res) => {
             const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a' });
-            const demo2 = await this.userService.createUser({ userId: 'bob', password: 'b', name: 'cocos' });
-            const demo3 = await this.userService.createUser({ userId: 'coco', password: 'c', name: 'ボ' });
+            const demo2 = await this.userService.createUser({ userId: 'b', password: 'b', name: 'cocos' });
+            const demo3 = await this.userService.createUser({ userId: 'c', password: 'c', name: 'ボ' });
+            const demo4 = await this.userService.createUser({ userId: 'd', password: 'd', name: '鍵垢くん', settings: { privacy: 'protected' } });
+            const demo5 = await this.userService.createUser({ userId: 'e', password: 'e', name: '非公開くん', settings: { privacy: 'private' } });
             await this.followService.followUser(demo.userId, demo2.userId);
             await this.followService.followUser(demo.userId, demo3.userId);
+            await this.followService.followUser(demo.userId, demo4.userId);
             await this.followService.followUser(demo2.userId, demo3.userId);
             await this.followService.followUser(demo3.userId, demo.userId);
             
@@ -56,6 +59,10 @@ export class DevRouter extends AbstractRouter {
                 { userId: demo.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
             const event8 = await this.eventService.createEvent(
                 { userId: demo2.userId, name: '午後の会議', startTime: new Date(today.getTime() + 14 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 15 * 60 * 60 * 1000), type: EventType.WORK });
+            const event10 = await this.eventService.createEvent(
+                { userId: demo4.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
+            const event11 = await this.eventService.createEvent(
+                { userId: demo5.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
 
             // 明日のイベント
             const tomorrow = new Date(today);

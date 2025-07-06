@@ -1,16 +1,18 @@
-import { Database, User } from '../database/database';
+import { Database, User, UserSettings } from '../database/database';
 import { Op } from 'sequelize';
 
 export type UserCreateInput = {
     userId: string;
     password: string;
     name: string;
+    settings?: UserSettings;
 }
 
 export type UserUpdateInput = {
     userId?: string;
     password?: string;
     name?: string;
+    settings?: UserSettings;
 }
 
 export class UserRepository {
@@ -25,7 +27,8 @@ export class UserRepository {
         return await User.create({
             userId: user.userId,
             password: user.password,
-            name: user.name
+            name: user.name,
+            settings: user.settings
         });
     }
 
