@@ -86,8 +86,10 @@ export class EventService {
 
     // 絶対に save しないこと！！
     private anonymizeEvent(event: Event): Event {
-        event.name = "********";
-        event.type = EventType.OTHER;
+        if (!event.isPublic) {
+            event.name = "********";
+            event.type = EventType.OTHER;
+        }
         return event;
     }
 }

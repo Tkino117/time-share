@@ -48,7 +48,7 @@ export class DevRouter extends AbstractRouter {
 
             // 昨日のイベント
             const event4 = await this.eventService.createEvent(
-                { userId: demo.userId, name: '朝食', startTime: new Date(yesterday.getTime() + 7 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 8 * 60 * 60 * 1000), type: EventType.MEAL });
+                { userId: demo.userId, name: '朝食', startTime: new Date(yesterday.getTime() + 7 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 8 * 60 * 60 * 1000), type: EventType.MEAL, isPublic: false });
             const event5 = await this.eventService.createEvent(
                 { userId: demo2.userId, name: '昼寝', startTime: new Date(yesterday.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(yesterday.getTime() + 13 * 60 * 60 * 1000), type: EventType.SLEEP });
             const event6 = await this.eventService.createEvent(
@@ -58,7 +58,7 @@ export class DevRouter extends AbstractRouter {
             const event7 = await this.eventService.createEvent(
                 { userId: demo.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
             const event8 = await this.eventService.createEvent(
-                { userId: demo2.userId, name: '午後の会議', startTime: new Date(today.getTime() + 14 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 15 * 60 * 60 * 1000), type: EventType.WORK });
+                { userId: demo2.userId, name: '午後の会議', startTime: new Date(today.getTime() + 14 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 15 * 60 * 60 * 1000), type: EventType.WORK, isPublic: false });
             const event10 = await this.eventService.createEvent(
                 { userId: demo4.userId, name: '昼食', startTime: new Date(today.getTime() + 12 * 60 * 60 * 1000), endTime: new Date(today.getTime() + 13 * 60 * 60 * 1000), type: EventType.MEAL });
             const event11 = await this.eventService.createEvent(
@@ -68,7 +68,7 @@ export class DevRouter extends AbstractRouter {
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
             const event9 = await this.eventService.createEvent(
-                { userId: demo3.userId, name: '朝の勉強会', startTime: new Date(tomorrow.getTime() + 9 * 60 * 60 * 1000), endTime: new Date(tomorrow.getTime() + 11 * 60 * 60 * 1000), type: EventType.STUDY });
+                { userId: demo3.userId, name: '朝の勉強会', startTime: new Date(tomorrow.getTime() + 9 * 60 * 60 * 1000), endTime: new Date(tomorrow.getTime() + 11 * 60 * 60 * 1000), type: EventType.STUDY, isPublic: false });
 
             // 睡眠イベントの追加（全員おとといから昨日）
             const sleep1 = await this.eventService.createEvent(

@@ -17,12 +17,14 @@ export class EventController {
             const startTime = req.body.startTime ? new Date(req.body.startTime) : undefined;
             const endTime = req.body.endTime ? new Date(req.body.endTime) : undefined;
             const type = convertType(req.body.type);
+            const isPublic = req.body.isPublic;
             const event = await this.eventService.createEvent({
                 userId: userId,
                 name: name,
                 startTime: startTime,
                 endTime: endTime,
                 type: type,
+                isPublic: isPublic,
             });
             const data = new EventResponseData(event);
             new SuccessResponse(data, 'Event created successfully').send(res);
@@ -63,11 +65,13 @@ export class EventController {
             const startTime = req.body.startTime ? new Date(req.body.startTime) : undefined;
             const endTime = req.body.endTime ? new Date(req.body.endTime) : undefined;
             const type = req.body.type ? convertType(req.body.type) : undefined;
+            const isPublic = req.body.isPublic;
             const event = await this.eventService.updateEvent(eventId, {
                 name: name,
                 startTime: startTime,
                 endTime: endTime,
                 type: type,
+                isPublic: isPublic,
             });
             const data = new EventResponseData(event);
             new SuccessResponse(data, 'Event updated successfully').send(res);
