@@ -79,7 +79,7 @@ async function main() {
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
-        const devRouter = new DevRouter(userService, eventService, followService);
+        const devRouter = new DevRouter(userService, eventService, followService, notificationService);
         const rankingRouter = new RankingRouter(rankingController);
         const notificationRouter = new NotificationRouter(notificationController);
         const settingRouter = new SettingRouter(settingController);

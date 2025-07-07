@@ -53,7 +53,8 @@ export enum NotificationType {
     EVENT_COMMENT = 'event_comment',
     ACHIEVEMENT = 'achievement',
     REMINDER = 'reminder',
-    SYSTEM = 'system'
+    SYSTEM = 'system',
+    OTHER = 'other'
 }
 
 export class Notification extends Model {
