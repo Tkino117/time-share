@@ -68,6 +68,8 @@
                         <option value="study"> 勉強 </option>
                         <option value="other"> その他 </option>
                     </select>
+                    <input type="checkbox" id="create-event-isPublic" />
+                    <label for="create-event-isPublic"> 公開 </label>
                     <button id="createEventButton"> イベント作成 </button>
                 </div>
                 <div>
@@ -84,6 +86,8 @@
                         <option value="study"> 勉強 </option>
                         <option value="other"> その他 </option>
                     </select>
+                    <input type="checkbox" id="update-event-isPublic" />
+                    <label for="update-event-isPublic"> 公開 </label>
                     <button id="updateEventButton"> イベント更新 </button>
                 </div>
                 <div>
@@ -398,7 +402,8 @@
                 const startTime = document.getElementById('create-event-startTime').value;
                 const endTime = document.getElementById('create-event-endTime').value;
                 const type = document.getElementById('create-event-type').value;
-                const response = await post('/api/events', { name, startTime, endTime, type });
+                const isPublic = document.getElementById('create-event-isPublic').checked;
+                const response = await post('/api/events', { name, startTime, endTime, type, isPublic });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
@@ -431,7 +436,8 @@
                 const startTime = document.getElementById('update-event-startTime').value;
                 const endTime = document.getElementById('update-event-endTime').value;
                 const type = document.getElementById('update-event-type').value;
-                const response = await put('/api/events/' + eventId, { name, startTime, endTime, type });
+                const isPublic = document.getElementById('update-event-isPublic').checked;
+                const response = await put('/api/events/' + eventId, { name, startTime, endTime, type, isPublic });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
