@@ -29,8 +29,12 @@ export class FollowRequestController {
     async createFollowRequest(req: Request, res: Response): Promise<void> {
         try {
             const fromUserId = await auth(req, res, this.sessionManager);
-            const toUserId = req.body.userId;
+            const toUserId = req.params.userId;
+            if (fromUserId === toUserId) {
+                throw new Error('You cannot follow yourself');
+            }
             const followRequest = await this.followRequestService.createFollowRequest(fromUserId, toUserId);
+
             new SuccessResponse(followRequest, 'Follow request created successfully').send(res);
         }
         catch(error: any) {
@@ -41,9 +45,8 @@ export class FollowRequestController {
     async approveFollowRequest(req: Request, res: Response): Promise<void> {
         try {
             const toUserId = await auth(req, res, this.sessionManager);
-            const fromUserId = req.body.userId;
+            const fromUserId = req.params.userId;
             const followRequest = await this.followRequestService.approveFollowRequest(fromUserId, toUserId);
-            await this.followService.followUser(fromUserId, toUserId);
             await this.notificationService.createFollowNotification(fromUserId, toUserId);
             new SuccessResponse(followRequest, 'Follow request accepted successfully').send(res);
         }
@@ -55,7 +58,7 @@ export class FollowRequestController {
     async rejectFollowRequest(req: Request, res: Response): Promise<void> {
         try {
             const toUserId = await auth(req, res, this.sessionManager);
-            const fromUserId = req.body.userId;
+            const fromUserId = req.params.userId;
             const followRequest = await this.followRequestService.rejectFollowRequest(fromUserId, toUserId);
             new SuccessResponse(followRequest, 'Follow request rejected successfully').send(res);
         }

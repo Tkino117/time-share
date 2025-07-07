@@ -2,11 +2,13 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import path from 'path';
-import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter, SettingRouter, NotificationRouter } from './router';
-import { AuthController, UserController, EventController, RankingController, SettingController, NotificationController } from './controller';
+import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter, SettingRouter, NotificationRouter, FollowRequestRouter } from './router';
+import { AuthController, UserController, EventController, RankingController, SettingController, NotificationController, FollowRequestController } from './controller';
 import { UserService, EventService, FollowService, RankingService, NotificationService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository, NotificationRepository } from './repository';
 import { Database } from './database/database';
+import { FollowRequestService } from './service/FollowRequestService';
+import { FollowRequestRepository } from './repository/FollowRequestRepository';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -37,6 +39,7 @@ async function initExpress(app: express.Express) {
 
     // ログ出力
     app.use(async (req: Request, res: Response, next: NextFunction) => {
+        console.log('--------------------------------');
         console.log(`${req.method} ${req.path}`);
         console.log(`body: ${JSON.stringify(req.body)}`);
         next();
@@ -58,18 +61,21 @@ async function main() {
         const eventRepository = new EventRepository();
         const followRepository = new FollowRepository();
         const notificationRepository = new NotificationRepository();
+        const followRequestRepository = new FollowRequestRepository();
         const sessionManager = new SessionManager();
         const followService = new FollowService(followRepository, userRepository, eventRepository);
         const userService = new UserService(userRepository, sessionManager, followService);
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
         const rankingService = new RankingService(eventRepository, userRepository, 0);
         const notificationService = new NotificationService(notificationRepository);
+        const followRequestService = new FollowRequestService(followRequestRepository, userRepository, followRepository);
         const authController = new AuthController(userService, sessionManager);
         const userController = new UserController(userService, followService, sessionManager, eventService, notificationService);
         const eventController = new EventController(eventService, sessionManager);
         const rankingController = new RankingController(rankingService);
         const notificationController = new NotificationController(notificationService, sessionManager);
         const settingController = new SettingController(userService, sessionManager);
+        const followRequestController = new FollowRequestController(followRequestService, followService, notificationService, userService, sessionManager);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
@@ -77,7 +83,8 @@ async function main() {
         const rankingRouter = new RankingRouter(rankingController);
         const notificationRouter = new NotificationRouter(notificationController);
         const settingRouter = new SettingRouter(settingController);
-        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter, settingRouter);
+        const followRequestRouter = new FollowRequestRouter(followRequestController);
+        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter, settingRouter, followRequestRouter);
 
         // 初期化
         const app = await initExpress(express());
@@ -96,11 +103,11 @@ async function main() {
             if(req.session.sessionId) {
                 const userId = await userService.authorize(req.session.sessionId);
                 if (userId) {
-                    console.log('    authorized\n');
+                    console.log('    authorized');
                     return next();
                 }
                 else {
-                    console.log('    unauthorized\n');
+                    console.log('    unauthorized');
                     res.status(401).json({
                         success: false,
                         message: 'Unauthorized'
@@ -108,7 +115,7 @@ async function main() {
                 }
             }
             else {
-                console.log('    unauthorized\n');
+                console.log('    unauthorized');
                 res.status(401).json({
                     success: false,
                     message: 'Unauthorized'

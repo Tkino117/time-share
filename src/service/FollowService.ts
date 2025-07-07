@@ -10,6 +10,7 @@ export class FollowService {
         private readonly eventRepository: EventRepository) {}
 
     public async followUser(followerId: string, followingId: string): Promise<void> {
+        console.log(`FollowService.followUser : from ${followerId} to ${followingId}`);
         if (!await this.userRepository.exists(followerId)) {
             throw new UserNotFoundError(followerId);
         }
@@ -17,6 +18,7 @@ export class FollowService {
             throw new UserNotFoundError(followingId);
         }
         if (await this.followRepository.exists(followerId, followingId)) {
+            console.log(`here`);
             throw new FollowAlreadyExistsError(followerId, followingId);
         }
         if (followerId === followingId) {

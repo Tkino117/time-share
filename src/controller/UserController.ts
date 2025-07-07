@@ -92,6 +92,7 @@ export class UserController {
     }
 
     async followUser(req: Request, res: Response) {
+        console.log(`UserController.followUser : to ${req.params.userId}`);
         const followingId: string = req.params.userId;
         try {
             const userId = await auth(req, res, this.sessionManager);

@@ -3,3 +3,4 @@ export * from './EventService';
 export * from './FollowService';
 export * from './RankingService';
 export * from './NotificationService';
+export * from './FollowRequestService';
