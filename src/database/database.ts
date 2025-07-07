@@ -2,7 +2,13 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 import path from 'path';
 
 export type UserSettings = {
-    privacy: 'public' | 'protected' | 'private';
+    privacy: UserPrivacy;
+}
+
+export enum UserPrivacy {
+    PUBLIC = 'public',
+    PROTECTED = 'protected',
+    PRIVATE = 'private'
 }
 
 export class User extends Model {

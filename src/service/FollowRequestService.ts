@@ -1,10 +1,11 @@
 import { FollowRequestRepository } from "../repository/FollowRequestRepository";
-import { FollowRequest, FollowRequestStatus } from "../database/database";
+import { FollowRequest, FollowRequestStatus, UserPrivacy } from "../database/database";
 import { FollowRepository } from "../repository/FollowRepository";
 import { UserRepository } from "../repository/UserRepository";
-import { FollowRequestAlreadyExistsError, FollowRequestNotFoundError } from "./errors/FollowRequestError";
-import { FollowSelfError } from "./errors/FollowError";
+import { FollowRequestAlreadyExistsError, FollowRequestNotFoundError, FollowRequestNotRequiredError } from "./errors/FollowRequestError";
+import { FollowAlreadyExistsError, FollowSelfError } from "./errors/FollowError";
 import { FollowPermissionError } from "./errors/FollowError";
+import { UserNotFoundError } from "./errors/UserError";
 
 export class FollowRequestService {
     constructor(private followRequestRepository: FollowRequestRepository,
@@ -26,11 +27,17 @@ export class FollowRequestService {
             throw new FollowSelfError(fromUserId);
         }
         const toUser = await this.userRepository.get(toUserId);
-        if (toUser && toUser.settings.privacy === 'private') {
+        if (!toUser) {
+            throw new UserNotFoundError(toUserId);
+        }
+        if (await this.followRepository.exists(fromUserId, toUserId)) {
+            throw new FollowAlreadyExistsError(fromUserId, toUserId);
+        }
+        if (toUser.settings.privacy === UserPrivacy.PRIVATE) {
             throw new FollowPermissionError(fromUserId, toUserId);
         }
-        if (toUser && toUser.settings.privacy === 'public') {
-            throw new FollowPermissionError(fromUserId, toUserId);
+        if (toUser.settings.privacy === UserPrivacy.PUBLIC) {
+            throw new FollowRequestNotRequiredError(fromUserId, toUserId);
         }
         return await this.followRequestRepository.createFollowRequest(fromUserId, toUserId);
     }

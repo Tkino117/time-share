@@ -518,7 +518,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' users:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', privacy: ' + user.privacy);
                     }
                 }
                 else {
