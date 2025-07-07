@@ -39,6 +39,8 @@ export class Event extends Model {
 
 export enum NotificationType {
     FOLLOW = 'follow',
+    FOLLOW_REQUEST = 'follow_request',
+    FOLLOW_REQUEST_ACCEPTED = 'follow_request_accepted',
     EVENT_SHARE = 'event_share',
     EVENT_LIKE = 'event_like',
     EVENT_COMMENT = 'event_comment',

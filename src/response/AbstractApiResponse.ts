@@ -16,6 +16,5 @@ export abstract class AbstractApiResponse {
     send(res: Response) {
         res.status(this.getStatusCode()).json(this);
         console.log(`send response: ${this.message}`)
-        console.log('--------------------------------');
     }
 }

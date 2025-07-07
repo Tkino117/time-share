@@ -35,6 +35,7 @@ export class FollowRequestController {
                 throw new FollowSelfError(fromUserId);  
             }
             const followRequest = await this.followRequestService.createFollowRequest(fromUserId, toUserId);
+            await this.notificationService.createFollowRequestNotification(fromUserId, toUserId);
 
             new SuccessResponse(followRequest, 'Follow request created successfully').send(res);
         }
@@ -48,7 +49,7 @@ export class FollowRequestController {
             const toUserId = await auth(req, res, this.sessionManager);
             const fromUserId = req.params.userId;
             const followRequest = await this.followRequestService.approveFollowRequest(fromUserId, toUserId);
-            await this.notificationService.createFollowNotification(fromUserId, toUserId);
+            await this.notificationService.createFollowRequestAcceptedNotification(fromUserId, toUserId);
             new SuccessResponse(followRequest, 'Follow request accepted successfully').send(res);
         }
         catch(error: any) {

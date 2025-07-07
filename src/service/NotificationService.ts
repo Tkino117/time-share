@@ -53,4 +53,28 @@ export class NotificationService {
             }
         });
     }
+
+    public async createFollowRequestNotification(fromUserId: string, toUserId: string): Promise<void> {
+        await this.notificationRepository.create({
+            userId: toUserId,
+            type: NotificationType.FOLLOW_REQUEST,
+            title: 'フォローリクエスト',
+            message: `${fromUserId} さんからフォローリクエストが届きました`,
+            metadata: {
+                fromUserId: fromUserId
+            }
+        });
+    }
+
+    public async createFollowRequestAcceptedNotification(fromUserId: string, toUserId: string): Promise<void> {
+        await this.notificationRepository.create({
+            userId: fromUserId,
+            type: NotificationType.FOLLOW_REQUEST_ACCEPTED,
+            title: 'フォローリクエストが承認されました',
+            message: `${toUserId} さんがあなたのフォローリクエストを承認しました`,
+            metadata: {
+                toUserId: toUserId
+            }
+        });
+    }
 }
