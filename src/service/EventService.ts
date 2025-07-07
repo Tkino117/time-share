@@ -51,6 +51,14 @@ export class EventService {
         return event;
     }
 
+    public async getMyEventsByUserId(userId: string): Promise<Event[]> {
+        if (!await this.userRepository.exists(userId)) {
+            throw new UserNotFoundError(userId);
+        }
+        const events = await this.eventRepository.getByUserId(userId);
+        return events;
+    }
+
     public async getEventsByUserId(userId: string): Promise<Event[]> {
         if (!await this.userRepository.exists(userId)) {
             throw new UserNotFoundError(userId);

@@ -94,6 +94,7 @@ export class EventResponseData extends AbstractResponseData {
     endTime: string;
     isDone: boolean;
     type: EventType;
+    isPublic: boolean;
 
     constructor(event: Event) {
         super();
@@ -104,6 +105,7 @@ export class EventResponseData extends AbstractResponseData {
         this.endTime = event.endTime.toISOString();
         this.isDone = event.isDone;
         this.type = event.type;
+        this.isPublic = event.isPublic;
     }
 
     toJSON(): any {
@@ -114,7 +116,8 @@ export class EventResponseData extends AbstractResponseData {
             startTime: this.startTime,
             endTime: this.endTime,
             isDone: this.isDone,
-            type: this.type
+            type: this.type,
+            isPublic: this.isPublic
         };
     }
 }

@@ -6,6 +6,7 @@ export type EventCreateInput = {
     startTime?: Date;
     endTime?: Date;
     type?: EventType;
+    isPublic?: boolean;
 }
 
 export type EventUpdateInput = {
@@ -14,6 +15,7 @@ export type EventUpdateInput = {
     endTime?: Date;
     isDone?: boolean;
     type?: EventType;
+    isPublic?: boolean;
 }
 
 export class EventRepository {
@@ -30,7 +32,8 @@ export class EventRepository {
             startTime: event.startTime,
             endTime: event.endTime,
             isDone: false,
-            type: event.type
+            type: event.type,
+            isPublic: event.isPublic
         });
     }
 

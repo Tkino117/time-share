@@ -35,6 +35,7 @@ export class Event extends Model {
     public endTime!: Date;
     public isDone!: boolean;
     public type!: EventType;
+    public isPublic!: boolean;
 }
 
 export enum NotificationType {
@@ -197,6 +198,11 @@ export class Database {
                 type: DataTypes.ENUM(...Object.values(EventType)),
                 allowNull: false,
                 defaultValue: EventType.OTHER
+            },
+            isPublic: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
             }
         }, {
             sequelize: this.sequelize,
