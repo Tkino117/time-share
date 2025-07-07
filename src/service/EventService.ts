@@ -59,12 +59,13 @@ export class EventService {
         return events;
     }
 
-    public async getEventsByUserId(userId: string): Promise<Event[]> {
+    public async getOtherEventsByUserId(userId: string): Promise<Event[]> {
         if (!await this.userRepository.exists(userId)) {
             throw new UserNotFoundError(userId);
         }
         const events = await this.eventRepository.getByUserId(userId);
-        return events;
+        const anonymizedEvents = events.map(this.anonymizeEvent);
+        return anonymizedEvents;
     }
 
     public async updateEvent(eventId: number, updateData: EventUpdateInput): Promise<Event> {
@@ -81,5 +82,12 @@ export class EventService {
             throw new EventNotFoundError(eventId);
         }
         return deleted;
+    }
+
+    // 絶対に save しないこと！！
+    private anonymizeEvent(event: Event): Event {
+        event.name = "********";
+        event.type = EventType.OTHER;
+        return event;
     }
 }

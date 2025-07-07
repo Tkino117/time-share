@@ -5,6 +5,7 @@ import { SessionManager } from "../repository";
 import { auth, checkPrivacy, checkSession, handleError } from "./util";
 import { FollowService, EventService, NotificationService } from "../service";
 import { ErrorResponse, ForbiddenResponse } from "../response";
+import { Event } from "../database/database";
 
 export class UserController {
     constructor(private userService: UserService, private followService: FollowService, private sessionManager: SessionManager, private eventService: EventService, private notificationService: NotificationService) {
@@ -154,7 +155,12 @@ export class UserController {
                 new ForbiddenResponse('Privacy violation').send(res);
                 return;
             }
-            const events = await this.eventService.getEventsByUserId(targetUserId);
+            let events: Event[];
+            if (myUserId === targetUserId) {
+                events = await this.eventService.getMyEventsByUserId(targetUserId);
+            } else {
+                events = await this.eventService.getOtherEventsByUserId(targetUserId);
+            }
             const data = new EventsResponseData(events);
             new SuccessResponse(data, 'Events retrieved successfully').send(res);
         }
@@ -170,7 +176,7 @@ export class UserController {
             const userEvents: UserEventsResponseData[] = [];
             for (const following of followings) {
                 const user = await this.userService.getUser(following);
-                const events = await this.eventService.getEventsByUserId(following);
+                const events = await this.eventService.getOtherEventsByUserId(following);
                 userEvents.push(new UserEventsResponseData(user, events));
             }
             const data = new FeedResponseData(userEvents);
