@@ -2,6 +2,9 @@ import { FollowRequestRepository } from "../repository/FollowRequestRepository";
 import { FollowRequest, FollowRequestStatus } from "../database/database";
 import { FollowRepository } from "../repository/FollowRepository";
 import { UserRepository } from "../repository/UserRepository";
+import { FollowRequestAlreadyExistsError, FollowRequestNotFoundError } from "./errors/FollowRequestError";
+import { FollowSelfError } from "./errors/FollowError";
+import { FollowPermissionError } from "./errors/FollowError";
 
 export class FollowRequestService {
     constructor(private followRequestRepository: FollowRequestRepository,
@@ -17,17 +20,17 @@ export class FollowRequestService {
     async createFollowRequest(fromUserId: string, toUserId: string): Promise<FollowRequest> {
         const followRequest = await this.followRequestRepository.getFollowRequest(fromUserId, toUserId);
         if (followRequest) {
-            throw new Error('Follow request already exists');
+            throw new FollowRequestAlreadyExistsError(fromUserId, toUserId);
         }
         if (fromUserId === toUserId) {
-            throw new Error('You cannot follow yourself');
+            throw new FollowSelfError(fromUserId);
         }
         const toUser = await this.userRepository.get(toUserId);
         if (toUser && toUser.settings.privacy === 'private') {
-            throw new Error('You cannot follow a private user. Please send a follow request to the user.');
+            throw new FollowPermissionError(fromUserId, toUserId);
         }
         if (toUser && toUser.settings.privacy === 'public') {
-            throw new Error('You can follow this user directly');
+            throw new FollowPermissionError(fromUserId, toUserId);
         }
         return await this.followRequestRepository.createFollowRequest(fromUserId, toUserId);
     }
@@ -36,7 +39,7 @@ export class FollowRequestService {
         console.log(`FollowRequestService.approveFollowRequest : from ${fromUserId} to ${toUserId}`);
         const followRequest = await this.followRequestRepository.getFollowRequest(fromUserId, toUserId);
         if (!followRequest) {
-            throw new Error('Follow request not found');
+            throw new FollowRequestNotFoundError(fromUserId, toUserId);
         }
         await this.followRequestRepository.deleteFollowRequest(fromUserId, toUserId);
         await this.followRepository.create({ follower: fromUserId, following: toUserId });
@@ -46,7 +49,7 @@ export class FollowRequestService {
     async rejectFollowRequest(fromUserId: string, toUserId: string): Promise<FollowRequest> {
         const followRequest = await this.followRequestRepository.getFollowRequest(fromUserId, toUserId);
         if (!followRequest) {
-            throw new Error('Follow request not found');
+            throw new FollowRequestNotFoundError(fromUserId, toUserId);
         }
         await this.followRequestRepository.deleteFollowRequest(fromUserId, toUserId);
         return followRequest;

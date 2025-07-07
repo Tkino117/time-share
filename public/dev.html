@@ -45,7 +45,7 @@
                     <button id="createFollowRequestButton"> フォローリクエスト送信 </button>
                 </div>
                 <div>
-                    <input type="text" id="approve-follow-request-userId" placeholder="userId" />
+                    <input type="text" id="follow-request-userId" placeholder="userId" />
                     <button id="approveFollowRequestButton"> フォローリクエスト承認 </button>
                     <button id="rejectFollowRequestButton"> フォローリクエスト拒否 </button>
                 </div>
@@ -320,7 +320,7 @@
 
             // フォローリクエスト承認ボタン
             async function approveFollowRequest() {
-                const followingId = document.getElementById('approve-follow-request-userId').value;
+                const followingId = document.getElementById('follow-request-userId').value;
                 const response = await post('/api/follow-requests/' + followingId + '/approve');
                 const result = await response.json();
                 if(result.success) {
@@ -333,7 +333,7 @@
 
             // フォローリクエスト拒否ボタン
             async function rejectFollowRequest() {
-                const followingId = document.getElementById('follow-userId').value;
+                const followingId = document.getElementById('follow-request-userId').value;
                 const response = await post('/api/follow-requests/' + followingId + '/reject');
                 const result = await response.json();
                 if(result.success) {

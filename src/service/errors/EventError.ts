@@ -1,41 +1,37 @@
-export class EventNotFoundError extends Error {
+import { AbstractError } from "./AbstractError";
+
+export class EventNotFoundError extends AbstractError {
     constructor(eventId: number) {
-        super(`Event not found: ${eventId}`);
-        this.name = 'EventNotFoundError';
+        super(`Event not found: ${eventId}`, 'EventNotFoundError');
     }
 }
 
-export class InvalidEventIdError extends Error {
+export class InvalidEventIdError extends AbstractError {
     constructor(eventId: number) {
-        super(`Invalid event ID: ${eventId}`);
-        this.name = 'InvalidEventIdError';
+        super(`Invalid event ID: ${eventId}`, 'InvalidEventIdError');
     }
 }
 
-export class InvalidEventNameError extends Error {
+export class InvalidEventNameError extends AbstractError {
     constructor() {
-        super('Event name is required');
-        this.name = 'InvalidEventNameError';
+        super('Event name is required', 'InvalidEventNameError');
     }
 }
 
-export class InvalidTimeRangeError extends Error {
+export class InvalidTimeRangeError extends AbstractError {
     constructor() {
-        super('Start time must be before end time');
-        this.name = 'InvalidTimeRangeError';
+        super('Start time must be before end time', 'InvalidTimeRangeError');
     }
 }
 
-export class TimeConflictError extends Error {
+export class TimeConflictError extends AbstractError {
     constructor() {
-        super('Time conflict with existing event');
-        this.name = 'TimeConflictError';
+        super('Time conflict with existing event', 'TimeConflictError');
     }
 }
 
-export class InvalidEventTypeError extends Error {
+export class InvalidEventTypeError extends AbstractError {
     constructor(public readonly type: string | undefined) {
-        super(`Invalid event type: ${type}`);
-        this.name = 'InvalidEventTypeError';
+        super(`Invalid event type: ${type}`, 'InvalidEventTypeError');
     }
 }

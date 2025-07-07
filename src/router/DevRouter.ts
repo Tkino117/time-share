@@ -26,9 +26,9 @@ export class DevRouter extends AbstractRouter {
             const demo5 = await this.userService.createUser({ userId: 'e', password: 'e', name: '非公開くん', settings: { privacy: 'private' } });
             await this.followService.followUser(demo.userId, demo2.userId);
             await this.followService.followUser(demo.userId, demo3.userId);
-            await this.followService.followUser(demo.userId, demo4.userId);
             await this.followService.followUser(demo2.userId, demo3.userId);
             await this.followService.followUser(demo3.userId, demo.userId);
+            await this.followService.followUser(demo4.userId, demo.userId);
             
             const today = new Date();
             today.setHours(0, 0, 0, 0);

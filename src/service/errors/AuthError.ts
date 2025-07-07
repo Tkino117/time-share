@@ -1,6 +1,7 @@
-export class AuthError extends Error {
+import { AbstractError } from "./AbstractError";
+
+export class AuthError extends AbstractError {
     constructor() {
-        super('Authentication failed');
-        this.name = 'AuthError';
+        super('Authentication failed', 'AuthError');
     }
 }

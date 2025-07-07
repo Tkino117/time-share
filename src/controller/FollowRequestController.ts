@@ -5,6 +5,7 @@ import { SessionManager } from "../repository";
 import { SuccessResponse } from "../response";
 import { FollowService, NotificationService, UserService} from "../service";
 import { FollowRequestsResponseData } from "../response/data";
+import { FollowSelfError } from "../service/errors/FollowError";
 
 export class FollowRequestController {
     constructor(private followRequestService: FollowRequestService,
@@ -31,7 +32,7 @@ export class FollowRequestController {
             const fromUserId = await auth(req, res, this.sessionManager);
             const toUserId = req.params.userId;
             if (fromUserId === toUserId) {
-                throw new Error('You cannot follow yourself');
+                throw new FollowSelfError(fromUserId);  
             }
             const followRequest = await this.followRequestService.createFollowRequest(fromUserId, toUserId);
 
