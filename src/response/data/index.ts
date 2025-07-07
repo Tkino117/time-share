@@ -1,4 +1,4 @@
-import { UserWithStats } from "../../service";
+import { UserWithStats } from "../../service/util";
 import { User, Event, EventType, NotificationType, Notification, UserSettings, UserPrivacy } from "../../database/database";
 import { Ranking } from "../../service/RankingService";
 
@@ -188,7 +188,7 @@ export class RankingResponseData extends AbstractResponseData {
             type: this.ranking.eventType,
             ranking: this.ranking.ranking.map(item => ({
                 rank: item.rank,
-                user: new UserResponseData(item.user),
+                user: new UserWithStatsResponseData(item.user),
                 duration_min: item.duration_min
             })),
             rankingStartTime: this.rankingStartTime.toISOString()

@@ -2,23 +2,9 @@ import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/
 import { SessionManager } from "../repository/SessionManager";
 import { UserPrivacy, User, UserSettings } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
-import { FollowService } from "./FollowService";
+import { userToUserWithStats, UserWithStats } from "./util";
+import { FollowRepository } from "../repository/FollowRepository";
 
-export class UserWithStats {
-    public userId: string;
-    public name: string;
-    public followingCount: number;
-    public followerCount: number;
-    public privacy: UserPrivacy;
-    
-    constructor(user: User, followingCount: number, followerCount: number, privacy: UserPrivacy) {
-        this.userId = user.userId;
-        this.name = user.name;
-        this.followingCount = followingCount;
-        this.followerCount = followerCount;
-        this.privacy = privacy;
-    }
-}
 
 export class UserSettingsUpdateInput {
     public privacy?: UserPrivacy;
@@ -29,7 +15,7 @@ export class UserService {
     private readonly nameMinLength = 1;
     private readonly userIdMinLength = 1;
     private readonly userIdMaxLength = 20;
-    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager, private readonly followService: FollowService) {
+    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager, private readonly followRepository: FollowRepository) {
 
     }
 
@@ -96,11 +82,7 @@ export class UserService {
 
     public async getUserWithStats(userId: string): Promise<UserWithStats> {
         const user = await this.getUser(userId);
-        const [followingCount, followerCount] = await Promise.all([
-            this.followService.getFollowingCount(userId),
-            this.followService.getFollowerCount(userId)
-        ]);
-        return new UserWithStats(user, followingCount, followerCount, user.settings.privacy);
+        return userToUserWithStats(user, this.followRepository);
     }
 
     // return sessionId

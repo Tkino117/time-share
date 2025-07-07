@@ -1,9 +1,11 @@
 import { EventRepository } from "../repository/EventRepository";
 import { UserRepository } from "../repository/UserRepository";
-import { EventType, User } from "../database/database";
+import { EventType } from "../database/database";
+import { userToUserWithStats, UserWithStats } from "./util";
+import { FollowRepository } from "../repository/FollowRepository";
 
 export class RankingItem {
-    constructor(public readonly rank: number, public readonly user: User, public duration_min: number) {}
+    constructor(public readonly rank: number, public readonly user: UserWithStats, public duration_min: number) {}
 }
 
 export class Ranking {
@@ -17,7 +19,7 @@ export class RankingService {
     private rankingStartTime: Date;
 
     constructor(private readonly eventRepository: EventRepository, private readonly userRepository: UserRepository,
-         private readonly cacheTime_sec: number = 60 * 10) {
+        private readonly followRepository: FollowRepository, private readonly cacheTime_sec: number = 60 * 10) {
         this.cacheTime = this.cacheTime_sec * 1000;
         this.rankingStartTime = this.updateRankingStartTime();
     }
@@ -42,6 +44,7 @@ export class RankingService {
     private async culRankingByType(type: EventType): Promise<Ranking> {
         this.rankingStartTime = this.updateRankingStartTime();
         const events = await this.eventRepository.findAllByType(type);
+        // <userId, duration_min>
         const tmpMap = new Map<string, number>();
         events.forEach((event) => {
             const userId = event.userId;
@@ -60,11 +63,11 @@ export class RankingService {
             Array.from(tmpMap.entries())
                 .sort((a, b) => b[1] - a[1])
                 .map(async (entry, index) => {
+                    // entry[0] is userId, entry[1] is duration_min
                     const user = await this.userRepository.get(entry[0]);
-                    if (!user) throw new Error(`User not found: ${entry[0]} in RankingService.getRanking`);
-                    return new RankingItem(index + 1, user, entry[1]);
-                })
-        );
+                    const userWithStats = await userToUserWithStats(user!, this.followRepository);
+                    return new RankingItem(index + 1, userWithStats, entry[1]);
+                }));
 
         const ranking = new Ranking(type, rankingItems);
         this.rankingCache.set(type, ranking);
