@@ -2,7 +2,7 @@ import { UserRepository } from "../repository/UserRepository";
 import { FollowRepository } from "../repository/FollowRepository";
 import { EventRepository } from "../repository/EventRepository";
 import { UserNotFoundError, FollowAlreadyExistsError, FollowNotFoundError, FollowPermissionError } from "./errors";
-import { Event } from "../database/database";
+import { Event, UserPrivacy } from "../database/database";
 
 export class FollowService {
     constructor(private readonly followRepository: FollowRepository,
@@ -24,8 +24,8 @@ export class FollowService {
             throw new FollowAlreadyExistsError(followerId, followingId);
         }
         const toUser = await this.userRepository.get(followingId);
-        if (toUser && (toUser.settings.privacy === 'private' ||
-             toUser.settings.privacy === 'protected')) {
+        if (toUser && (toUser.settings.privacy === UserPrivacy.PRIVATE ||
+             toUser.settings.privacy === UserPrivacy.PROTECTED)) {
             throw new FollowPermissionError(followerId, followingId);
         }
         await this.followRepository.create({ follower: followerId, following: followingId });
