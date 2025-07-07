@@ -1,6 +1,6 @@
 import { AbstractRouter } from "./AbstractRouter";
 import { EventService, FollowService, UserService } from "../service";
-import { EventType } from "../database/database";
+import { EventType, UserPrivacy } from "../database/database";
 
 export class DevRouter extends AbstractRouter {
     constructor(private userService: UserService, private eventService: EventService, private followService: FollowService) {
@@ -22,8 +22,8 @@ export class DevRouter extends AbstractRouter {
             const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a' });
             const demo2 = await this.userService.createUser({ userId: 'b', password: 'b', name: 'cocos' });
             const demo3 = await this.userService.createUser({ userId: 'c', password: 'c', name: 'ボ' });
-            const demo4 = await this.userService.createUser({ userId: 'd', password: 'd', name: '鍵垢くん', settings: { privacy: 'protected' } });
-            const demo5 = await this.userService.createUser({ userId: 'e', password: 'e', name: '非公開くん', settings: { privacy: 'private' } });
+            const demo4 = await this.userService.createUser({ userId: 'd', password: 'd', name: '鍵垢くん', settings: { privacy: UserPrivacy.PROTECTED } });
+            const demo5 = await this.userService.createUser({ userId: 'e', password: 'e', name: '非公開くん', settings: { privacy: UserPrivacy.PRIVATE } });
             await this.followService.followUser(demo.userId, demo2.userId);
             await this.followService.followUser(demo.userId, demo3.userId);
             await this.followService.followUser(demo2.userId, demo3.userId);

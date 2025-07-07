@@ -1,6 +1,6 @@
 import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/UserRepository";
 import { SessionManager } from "../repository/SessionManager";
-import { User, UserSettings } from "../database/database";
+import { UserPrivacy, User, UserSettings } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
 import { FollowService } from "./FollowService";
 
@@ -9,17 +9,19 @@ export class UserWithStats {
     public name: string;
     public followingCount: number;
     public followerCount: number;
+    public privacy: UserPrivacy;
     
-    constructor(user: User, followingCount: number, followerCount: number) {
+    constructor(user: User, followingCount: number, followerCount: number, privacy: UserPrivacy) {
         this.userId = user.userId;
         this.name = user.name;
         this.followingCount = followingCount;
         this.followerCount = followerCount;
+        this.privacy = privacy;
     }
 }
 
 export class UserSettingsUpdateInput {
-    public privacy?: 'public' | 'protected' | 'private';
+    public privacy?: UserPrivacy;
 }
 
 export class UserService {
@@ -98,7 +100,7 @@ export class UserService {
             this.followService.getFollowingCount(userId),
             this.followService.getFollowerCount(userId)
         ]);
-        return new UserWithStats(user, followingCount, followerCount);
+        return new UserWithStats(user, followingCount, followerCount, user.settings.privacy);
     }
 
     // return sessionId

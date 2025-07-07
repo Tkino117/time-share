@@ -1,5 +1,5 @@
 import { UserWithStats } from "../../service";
-import { User, Event, EventType, NotificationType, Notification, UserSettings } from "../../database/database";
+import { User, Event, EventType, NotificationType, Notification, UserSettings, UserPrivacy } from "../../database/database";
 import { Ranking } from "../../service/RankingService";
 
 export abstract class AbstractResponseData {
@@ -36,6 +36,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
     name: string;
     followingCount: number;
     followerCount: number;
+    privacy: UserPrivacy;
 
     constructor(userWithStats: UserWithStats) {
         super();
@@ -43,6 +44,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
         this.name = userWithStats.name;    
         this.followingCount = userWithStats.followingCount;
         this.followerCount = userWithStats.followerCount;
+        this.privacy = userWithStats.privacy;
     }
 
     toJSON(): any {
@@ -50,7 +52,8 @@ export class UserWithStatsResponseData extends AbstractResponseData {
             userId: this.userId,
             name: this.name,
             followingCount: this.followingCount,
-            followerCount: this.followerCount
+            followerCount: this.followerCount,
+            privacy: this.privacy
         };
     }
 }
