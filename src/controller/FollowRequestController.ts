@@ -16,10 +16,10 @@ export class FollowRequestController {
 
     async getFollowRequests(req: Request, res: Response): Promise<void> {
         try {
-            const userId = await auth(req, res, this.sessionManager);
-            const followRequests = await this.followRequestService.getFollowRequestsByToUserId(userId);
+            const myUserId = await auth(req, res, this.sessionManager);
+            const followRequests = await this.followRequestService.getFollowRequestsByToUserId(myUserId);
             const users = followRequests.map(followRequest => followRequest.fromUserId);
-            const usersWithStats = await Promise.all(users.map(user => this.userService.getUserWithStats(user)));
+            const usersWithStats = await Promise.all(users.map(user => this.userService.getUserWithStats(user, myUserId)));
             new SuccessResponse(new FollowRequestsResponseData(usersWithStats), 'Follow requests fetched successfully').send(res);
         }
         catch(error: any) {

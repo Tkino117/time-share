@@ -22,4 +22,8 @@ export class FollowRequestRepository {
     async deleteFollowRequest(fromUserId: string, toUserId: string): Promise<void> {
         await FollowRequest.destroy({ where: { fromUserId, toUserId } });
     }
+
+    async exists(fromUserId: string, toUserId: string): Promise<boolean> {
+        return (await FollowRequest.findOne({ where: { fromUserId, toUserId } })) !== null;
+    }
 }

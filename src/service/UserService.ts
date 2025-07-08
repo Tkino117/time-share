@@ -2,8 +2,9 @@ import { UserRepository, UserUpdateInput, UserCreateInput } from "../repository/
 import { SessionManager } from "../repository/SessionManager";
 import { UserPrivacy, User, UserSettings } from "../database/database";
 import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, InvalidUserIdError, InvalidNameError, UnauthorizedError } from "./errors";
-import { userToUserWithStats, UserWithStats } from "./util";
+import { UserWithStats } from "./util";
 import { FollowRepository } from "../repository/FollowRepository";
+import { FollowRequestRepository } from "../repository/FollowRequestRepository";
 
 
 export class UserSettingsUpdateInput {
@@ -15,7 +16,7 @@ export class UserService {
     private readonly nameMinLength = 1;
     private readonly userIdMinLength = 1;
     private readonly userIdMaxLength = 20;
-    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager, private readonly followRepository: FollowRepository) {
+    constructor(private readonly userRepository: UserRepository, private readonly sessionManager: SessionManager, private readonly followRepository: FollowRepository, private readonly followRequestRepository: FollowRequestRepository) {
 
     }
 
@@ -80,9 +81,16 @@ export class UserService {
         return user;
     }
 
-    public async getUserWithStats(userId: string): Promise<UserWithStats> {
+    public async getUserWithStats(userId: string, myUserId: string | null): Promise<UserWithStats> {
         const user = await this.getUser(userId);
-        return userToUserWithStats(user, this.followRepository);
+        if (userId === myUserId) {
+            myUserId = null;
+        }
+        if (myUserId) {
+            const myUser = await this.getUser(myUserId);
+            return UserWithStats.create(user, myUser, this.followRepository, this.followRequestRepository);
+        }
+        return UserWithStats.create(user, null, this.followRepository, this.followRequestRepository);
     }
 
     // return sessionId

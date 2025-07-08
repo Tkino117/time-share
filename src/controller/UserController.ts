@@ -35,8 +35,9 @@ export class UserController {
 
     async getUser(req: Request, res: Response) {
         const userId: string = req.params.userId;
+        const myUserId = await auth(req, res, this.sessionManager);
         try {
-            const userWithStats = await this.userService.getUserWithStats(userId);
+            const userWithStats = await this.userService.getUserWithStats(userId, myUserId);
             const data = new UserWithStatsResponseData(userWithStats);
             new SuccessResponse(data, 'Get user successful').send(res);
         }
@@ -83,7 +84,7 @@ export class UserController {
     async getMyUser(req: Request, res: Response) {
         try {
             const userId = await auth(req, res, this.sessionManager);
-            const userWithStats = await this.userService.getUserWithStats(userId);
+            const userWithStats = await this.userService.getUserWithStats(userId, null);
             const data = new UserWithStatsResponseData(userWithStats);
             new SuccessResponse(data, 'Get my user successful').send(res);
         }
@@ -121,9 +122,9 @@ export class UserController {
     async getFollowings(req: Request, res: Response) {
         try {
             const targetUserId = req.params.userId;
-            const userId = await auth(req, res, this.sessionManager);
+            const myUserId = await auth(req, res, this.sessionManager);
             const followings = await this.followService.getFollowings(targetUserId);
-            const users = await Promise.all(followings.map(following => this.userService.getUserWithStats(following)));
+            const users = await Promise.all(followings.map(following => this.userService.getUserWithStats(following, myUserId)));
             const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followings successful').send(res);
         }
@@ -135,9 +136,9 @@ export class UserController {
     async getFollowers(req: Request, res: Response) {
         try {
             const targetUserId = req.params.userId;
-            const userId = await auth(req, res, this.sessionManager);
+            const myUserId = await auth(req, res, this.sessionManager);
             const followers = await this.followService.getFollowers(targetUserId);
-            const users = await Promise.all(followers.map(follower => this.userService.getUserWithStats(follower)));
+            const users = await Promise.all(followers.map(follower => this.userService.getUserWithStats(follower, myUserId)));
             const data = new UsersWithStatsResponseData(users);
             new SuccessResponse(data, 'Get followers successful').send(res);
         }
@@ -189,10 +190,10 @@ export class UserController {
 
     async searchUser(req: Request, res: Response) {
         try {
-            const userId = await auth(req, res, this.sessionManager);
+            const myUserId = await auth(req, res, this.sessionManager);
             const query = req.query.query as string || '';
-            const users = await this.userService.searchUser(query, userId);
-            const usersWithStats = await Promise.all(users.map(user => this.userService.getUserWithStats(user.userId)));
+            const users = await this.userService.searchUser(query, myUserId);
+            const usersWithStats = await Promise.all(users.map(user => this.userService.getUserWithStats(user.userId, myUserId)));
             const data = new UsersWithStatsResponseData(usersWithStats);
             new SuccessResponse(data, 'Search user successful').send(res);
         }

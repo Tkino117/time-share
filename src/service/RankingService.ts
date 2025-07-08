@@ -1,8 +1,9 @@
 import { EventRepository } from "../repository/EventRepository";
 import { UserRepository } from "../repository/UserRepository";
-import { EventType } from "../database/database";
-import { userToUserWithStats, UserWithStats } from "./util";
+import { EventType, User } from "../database/database";
+import { UserWithStats } from "./util";
 import { FollowRepository } from "../repository/FollowRepository";
+import { FollowRequestRepository } from "../repository/FollowRequestRepository";
 
 export class RankingItem {
     constructor(public readonly rank: number, public readonly user: UserWithStats, public duration_min: number) {}
@@ -19,11 +20,28 @@ export class RankingService {
     private rankingStartTime: Date;
 
     constructor(private readonly eventRepository: EventRepository, private readonly userRepository: UserRepository,
-        private readonly followRepository: FollowRepository, private readonly cacheTime_sec: number = 60 * 10) {
+        private readonly followRepository: FollowRepository, private readonly followRequestRepository: FollowRequestRepository, private readonly cacheTime_sec: number = 60 * 10) {
         this.cacheTime = this.cacheTime_sec * 1000;
         this.rankingStartTime = this.updateRankingStartTime();
     }
 
+    // myUser を指定してUserWithStatsを返す
+    // （フォロー状態などの情報が付加される）
+    public async getRankingsByMyUser(myUser: User | null): Promise<Ranking[]> {
+        const rankings = await this.getRankings();
+        if (!myUser) {
+            return rankings;
+        }
+        await Promise.all(rankings.map(async ranking => {
+            await Promise.all(ranking.ranking.map(async item => {
+                item.user.myUser = myUser;
+                await item.user.updateStats(this.followRepository, this.followRequestRepository);
+            }));
+        }));
+        return rankings;
+    }
+
+    // myUser = null の状態でUserWithStatsを返す（非ログインなど想定）
     public async getRankings(): Promise<Ranking[]> {
         const rankings: Ranking[] = [];
         for (const type of Object.values(EventType)) {
@@ -65,7 +83,7 @@ export class RankingService {
                 .map(async (entry, index) => {
                     // entry[0] is userId, entry[1] is duration_min
                     const user = await this.userRepository.get(entry[0]);
-                    const userWithStats = await userToUserWithStats(user!, this.followRepository);
+                    const userWithStats = await UserWithStats.create(user!, null, this.followRepository, this.followRequestRepository);
                     return new RankingItem(index + 1, userWithStats, entry[1]);
                 }));
 

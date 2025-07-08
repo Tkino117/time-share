@@ -1,4 +1,4 @@
-import { UserWithStats } from "../../service/util";
+import { FollowStatus, UserWithStats } from "../../service/util";
 import { User, Event, EventType, NotificationType, Notification, UserSettings, UserPrivacy } from "../../database/database";
 import { Ranking } from "../../service/RankingService";
 
@@ -37,6 +37,8 @@ export class UserWithStatsResponseData extends AbstractResponseData {
     followingCount: number;
     followerCount: number;
     privacy: UserPrivacy;
+    followingStatus: FollowStatus;
+    followedByStatus: FollowStatus;
 
     constructor(userWithStats: UserWithStats) {
         super();
@@ -45,6 +47,8 @@ export class UserWithStatsResponseData extends AbstractResponseData {
         this.followingCount = userWithStats.followingCount;
         this.followerCount = userWithStats.followerCount;
         this.privacy = userWithStats.privacy;
+        this.followingStatus = userWithStats.followingStatus;
+        this.followedByStatus = userWithStats.followedByStatus;
     }
 
     toJSON(): any {
@@ -53,7 +57,9 @@ export class UserWithStatsResponseData extends AbstractResponseData {
             name: this.name,
             followingCount: this.followingCount,
             followerCount: this.followerCount,
-            privacy: this.privacy
+            privacy: this.privacy,
+            followingStatus: this.followingStatus,
+            followedByStatus: this.followedByStatus
         };
     }
 }
