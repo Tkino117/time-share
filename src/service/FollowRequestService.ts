@@ -42,6 +42,15 @@ export class FollowRequestService {
         return await this.followRequestRepository.createFollowRequest(fromUserId, toUserId);
     }
 
+    async deleteFollowRequest(fromUserId: string, toUserId: string): Promise<FollowRequest> {
+        const followRequest = await this.followRequestRepository.getFollowRequest(fromUserId, toUserId);
+        if (!followRequest) {
+            throw new FollowRequestNotFoundError(fromUserId, toUserId);
+        }
+        await this.followRequestRepository.deleteFollowRequest(fromUserId, toUserId);
+        return followRequest;
+    }
+
     async approveFollowRequest(fromUserId: string, toUserId: string): Promise<FollowRequest> {
         console.log(`FollowRequestService.approveFollowRequest : from ${fromUserId} to ${toUserId}`);
         const followRequest = await this.followRequestRepository.getFollowRequest(fromUserId, toUserId);

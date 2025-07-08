@@ -14,6 +14,9 @@ export class FollowRequestRouter extends AbstractRouter {
         this.router.post('/:userId', async (req, res) => {
             this.followRequestController.createFollowRequest(req, res);
         });
+        this.router.delete('/:userId', async (req, res) => {
+            this.followRequestController.deleteFollowRequest(req, res);
+        });
         this.router.post('/:userId/approve', async (req, res) => {
             this.followRequestController.approveFollowRequest(req, res);
         });

@@ -43,6 +43,7 @@
                     <button id="followButton"> フォロー </button>
                     <button id="unfollowButton"> フォロー解除 </button>
                     <button id="createFollowRequestButton"> フォローリクエスト送信 </button>
+                    <button id="deleteFollowRequestButton"> フォローリクエスト削除 </button>
                 </div>
                 <div>
                     <input type="text" id="follow-request-userId" placeholder="userId" />
@@ -172,6 +173,7 @@
             document.getElementById('followButton').addEventListener('click', followUser);
             document.getElementById('unfollowButton').addEventListener('click', unfollowUser);
             document.getElementById('createFollowRequestButton').addEventListener('click', createFollowRequest);
+            document.getElementById('deleteFollowRequestButton').addEventListener('click', deleteFollowRequest);
             document.getElementById('getFollowingsButton').addEventListener('click', getFollowings);
             document.getElementById('getFollowersButton').addEventListener('click', getFollowers);
             document.getElementById('getFollowRequestsButton').addEventListener('click', getFollowRequests);
@@ -335,6 +337,19 @@
             async function createFollowRequest() {
                 const followingId = document.getElementById('follow-userId').value;
                 const response = await post('/api/follow-requests/' + followingId);
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // フォローリクエスト削除ボタン
+            async function deleteFollowRequest() {
+                const followingId = document.getElementById('follow-userId').value;
+                const response = await del('/api/follow-requests/' + followingId);
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);

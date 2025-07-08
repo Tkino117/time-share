@@ -31,13 +31,22 @@ export class FollowRequestController {
         try {
             const fromUserId = await auth(req, res, this.sessionManager);
             const toUserId = req.params.userId;
-            if (fromUserId === toUserId) {
-                throw new FollowSelfError(fromUserId);  
-            }
             const followRequest = await this.followRequestService.createFollowRequest(fromUserId, toUserId);
             await this.notificationService.createFollowRequestNotification(fromUserId, toUserId);
 
             new SuccessResponse(followRequest, 'Follow request created successfully').send(res);
+        }
+        catch(error: any) {
+            handleError(error, res);
+        }
+    }
+    
+    async deleteFollowRequest(req: Request, res: Response): Promise<void> {
+        try {
+            const fromUserId = await auth(req, res, this.sessionManager);
+            const toUserId = req.params.userId;
+            const followRequest = await this.followRequestService.deleteFollowRequest(fromUserId, toUserId);
+            new SuccessResponse(followRequest, 'Follow request deleted successfully').send(res);
         }
         catch(error: any) {
             handleError(error, res);
@@ -68,4 +77,5 @@ export class FollowRequestController {
             handleError(error, res);
         }
     }
+
 }
