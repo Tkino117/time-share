@@ -9,6 +9,7 @@ import { EmptyResponseData, SuccessResponse } from '../response';
 import { NotificationRouter } from "./NotificationRouter";
 import { SettingRouter } from "./SettingRouter";
 import { FollowRequestRouter } from "./FollowRequestRouter";
+import { UploadRouter } from "./UploadRouter";
 export * from './UserRouter';
 export * from './AuthRouter';
 export * from './EventRouter';
@@ -17,6 +18,7 @@ export * from './RankingRouter';
 export * from './NotificationRouter';
 export * from './SettingRouter';
 export * from './FollowRequestRouter';
+export * from './UploadRouter';
 
 export class Router extends AbstractRouter {
     constructor(private readonly userRouter: UserRouter,
@@ -26,7 +28,8 @@ export class Router extends AbstractRouter {
         private readonly rankingRouter: RankingRouter,
         private readonly notificationRouter: NotificationRouter,
         private readonly settingRouter: SettingRouter,
-        private readonly followRequestRouter: FollowRequestRouter
+        private readonly followRequestRouter: FollowRequestRouter,
+        private readonly uploadRouter: UploadRouter
     ) {
         super();
         this.initialize();
@@ -41,6 +44,7 @@ export class Router extends AbstractRouter {
         this.router.use('/api/notifications', this.notificationRouter.getRouter());
         this.router.use('/api/settings', this.settingRouter.getRouter());
         this.router.use('/api/follow-requests', this.followRequestRouter.getRouter());
+        this.router.use('/api/uploads', this.uploadRouter.getRouter());
         this.router.get('/api/sample', async (req: Request, res: Response) => {
             new SuccessResponse(new EmptyResponseData(), 'Sample API').send(res);
         });

@@ -13,6 +13,7 @@ export type UserUpdateInput = {
     password?: string;
     name?: string;
     settings?: UserSettings;
+    profileImageUrl?: string;
 }
 
 export class UserRepository {

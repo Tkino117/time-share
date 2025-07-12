@@ -2,13 +2,14 @@ import express, { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import path from 'path';
-import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter, SettingRouter, NotificationRouter, FollowRequestRouter } from './router';
-import { AuthController, UserController, EventController, RankingController, SettingController, NotificationController, FollowRequestController } from './controller';
+import { Router, UserRouter, AuthRouter, EventRouter, DevRouter, RankingRouter, SettingRouter, NotificationRouter, FollowRequestRouter, UploadRouter } from './router';
+import { AuthController, UserController, EventController, RankingController, SettingController, NotificationController, FollowRequestController, UploadController } from './controller';
 import { UserService, EventService, FollowService, RankingService, NotificationService } from './service';
 import { SessionManager, UserRepository, EventRepository, FollowRepository, NotificationRepository } from './repository';
 import { Database } from './database/database';
 import { FollowRequestService } from './service/FollowRequestService';
 import { FollowRequestRepository } from './repository/FollowRequestRepository';
+import fileUpload from 'express-fileupload';
 
 // セッションの型定義
 declare module 'express-session' {
@@ -76,6 +77,7 @@ async function main() {
         const notificationController = new NotificationController(notificationService, sessionManager);
         const settingController = new SettingController(userService, sessionManager);
         const followRequestController = new FollowRequestController(followRequestService, followService, notificationService, userService, sessionManager);
+        const uploadController = new UploadController(userService, sessionManager);
         const authRouter = new AuthRouter(authController);
         const userRouter = new UserRouter(userController);
         const eventRouter = new EventRouter(eventController);
@@ -84,7 +86,8 @@ async function main() {
         const notificationRouter = new NotificationRouter(notificationController);
         const settingRouter = new SettingRouter(settingController);
         const followRequestRouter = new FollowRequestRouter(followRequestController);
-        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter, settingRouter, followRequestRouter);
+        const uploadRouter = new UploadRouter(uploadController);
+        const router = new Router(userRouter, authRouter, eventRouter, devRouter, rankingRouter, notificationRouter, settingRouter, followRequestRouter, uploadRouter);
 
         // 初期化
         const app = await initExpress(express());
@@ -122,6 +125,9 @@ async function main() {
                 });
             }
         });
+
+        // ファイルアップロードミドルウェア
+        app.use(fileUpload());
 
         app.use('/', router.getRouter());
 

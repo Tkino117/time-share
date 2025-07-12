@@ -174,4 +174,13 @@ export class UserService {
         await this.userRepository.update(userId, { settings: user.settings });
         return user.settings;
     }
+
+    public async uploadProfileImage(userId: string, imageUrl: string): Promise<string> {
+        const user = await this.getUser(userId);
+        if (!user) {
+            throw new UserNotFoundError(userId);
+        }
+        await this.userRepository.update(userId, { profileImageUrl: imageUrl });
+        return imageUrl;
+    }
 }

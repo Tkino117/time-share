@@ -15,6 +15,7 @@ export class User extends Model {
     public userId!: string;
     public password!: string;
     public name!: string;
+    public profileImageUrl?: string;
     public settings!: UserSettings;
 }
 
@@ -113,6 +114,10 @@ export class Database {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false
+            },
+            profileImageUrl: {
+                type: DataTypes.STRING,
+                allowNull: true
             },
             settings: {
                 type: DataTypes.JSON,
