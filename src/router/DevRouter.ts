@@ -27,7 +27,7 @@ export class DevRouter extends AbstractRouter {
         });
         this.router.post('/demo-dev', async (req, res) => {
             try {
-                const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a' });
+                const demo = await this.userService.createUser({ userId: 'a', password: 'a', name: 'a', profileImageUrl: '/uploads/avatars/test-icon.jpg' });
                 const demo2 = await this.userService.createUser({ userId: 'b', password: 'b', name: 'cocos' });
                 const demo3 = await this.userService.createUser({ userId: 'c', password: 'c', name: 'ボ' });
                 const demo4 = await this.userService.createUser({ userId: 'd', password: 'd', name: '鍵垢くん', settings: { privacy: UserPrivacy.PROTECTED } });

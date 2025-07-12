@@ -115,6 +115,10 @@
                     <input type="text" id="update-name" placeholder="name" />
                     <button id="updateButton"> 更新 </button>
                     <button id="deleteButton"> ユーザー削除 </button>
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input type="file" name="image" accept="image/*" required>
+                        <button type="submit">プロフィール画像更新</button>
+                    </form>
                 </div>
                 <div>
                     <button id="getSettingsButton"> 設定取得 </button>
@@ -194,6 +198,9 @@
             document.getElementById('approveFollowRequestButton').addEventListener('click', approveFollowRequest);
             document.getElementById('rejectFollowRequestButton').addEventListener('click', rejectFollowRequest);
             document.getElementById('dev-notifyButton').addEventListener('click', devNotify);
+            
+            // フォーム送信の制御
+            document.getElementById('uploadForm').addEventListener('submit', uploadProfileImage);
             // -------------------- ボタンごとの処理 --------------------------------
             // サンプルボタン
             async function test1() {
@@ -660,6 +667,26 @@
             async function updatePrivacy() {
                 const privacy = document.getElementById('update-privacy').value;
                 const response = await put('/api/settings/privacy', { privacy });
+                const result = await response.json();
+                if(result.success) {
+                    log(result.message);
+                }
+                else {
+                    log(result.message);
+                }
+            }
+
+            // プロフィール画像アップロード
+            async function uploadProfileImage(event) {
+                event.preventDefault(); // フォームのデフォルト送信を防ぐ
+                
+                const formData = new FormData(event.target);
+                const response = await fetch(urlBase + '/api/uploads', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);

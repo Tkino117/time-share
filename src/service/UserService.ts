@@ -31,6 +31,11 @@ export class UserService {
         if (user.name.length < this.nameMinLength) {
             throw new InvalidNameError();
         }
+        console.log("UserService.createUser: user.profileImageUrl = " + user.profileImageUrl);
+        if (!user.profileImageUrl) {
+            user.profileImageUrl = '/uploads/avatars/no-icon.png';
+        }
+        console.log("UserService.createUser: user.profileImageUrl = " + user.profileImageUrl);
         const createdUser = await this.userRepository.create(user);
         return createdUser;
     }   

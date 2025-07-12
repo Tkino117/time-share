@@ -201,7 +201,4 @@ export class UserController {
             handleError(error, res);
         }
     }
-
-    async uploadProfileImage(req: Request, res: Response) {
-    }
 }

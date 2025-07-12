@@ -34,6 +34,7 @@ export class UserResponseData extends AbstractResponseData {
 export class UserWithStatsResponseData extends AbstractResponseData {
     userId: string;
     name: string;
+    profileImageUrl: string | undefined;
     followingCount: number;
     followerCount: number;
     privacy: UserPrivacy;
@@ -44,6 +45,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
         super();
         this.userId = userWithStats.userId;
         this.name = userWithStats.name;    
+        this.profileImageUrl = userWithStats.profileImageUrl;
         this.followingCount = userWithStats.followingCount;
         this.followerCount = userWithStats.followerCount;
         this.privacy = userWithStats.privacy;
@@ -55,6 +57,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
         return {
             userId: this.userId,
             name: this.name,
+            profileImageUrl: this.profileImageUrl,
             followingCount: this.followingCount,
             followerCount: this.followerCount,
             privacy: this.privacy,

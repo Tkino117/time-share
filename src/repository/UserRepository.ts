@@ -6,6 +6,7 @@ export type UserCreateInput = {
     password: string;
     name: string;
     settings?: UserSettings;
+    profileImageUrl?: string;
 }
 
 export type UserUpdateInput = {
@@ -29,7 +30,8 @@ export class UserRepository {
             userId: user.userId,
             password: user.password,
             name: user.name,
-            settings: user.settings
+            settings: user.settings,
+            profileImageUrl: user.profileImageUrl
         });
     }
 
