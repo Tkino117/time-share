@@ -345,7 +345,8 @@ export class Database {
 
     public async init(): Promise<void> {
         try {
-            await this.sequelize.sync({ force: true });
+            // データベースリセットフラグ
+            await this.sequelize.sync({ force: false });
             console.log('データベースを初期化しました。');
         } catch (error) {
             console.error('データベース初期化エラー:', error);

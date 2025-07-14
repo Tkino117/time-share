@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeShare-ユーザープロフィール</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        header {
+            padding-bottom: 40px;
+        }
+
+        body {
+            background: #F5F5F5;
+            margin: 0;
+            padding: 0;
+            font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+        }
+
+        /* 角を丸めた四角のスタイル */
+        .rounded-box {
+            border-radius: 15px;
+            padding: 0; /* paddingを調整 */
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* コンテンツエリアのパディング */
+        .content-area {
+            padding: 20px; /* 新しいコンテンツエリア用のパディング */
+        }
+
+        /* カスタムボタン */
+        .custom-btn {
+            border-radius: 0;
+            background-color: #00ced1;
+            border-color: #00ced1;
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 0;
+            transition: background-color 0.3s ease;
+        }
+
+        /* ボタン画像のサイズ調整 */
+        .btn img {
+            height: 2rem;
+            width: auto;
+        }
+
+        .site-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        #logout-btn{
+            position: fixed;
+            right: 35px;
+            top: 35px;
+        }
+
+        #logout-btn button {
+            background-color: #26B2B4;
+            border-color: #20b2aa;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        #logout-btn button:hover {
+            background-color: #40999A;
+            border-color: #40999A;
+        }
+
+        .logo-img {
+            height: 2.5rem; /* 画像の高さ（調整可能） */
+            width: auto;
+            border-color: #20b2aa;
+        }
+
+        /* ボタンが均等に並ぶように */
+        .btn-group {
+            display: flex;
+            width: 100%;
+        }
+
+        .btn-group > .btn {
+            flex: 1; /* 各ボタンを均等に広げる */
+            margin: 0; /* ボタン同士の隙間をゼロに */
+            padding: 0.8rem 0; /* 高さ調整 */
+            background-color: #00ced1;
+            border-color: #00ced1;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-group > .btn:not(:last-child)::after {/* ボタン同士の隙間に白いラインを入れる*/
+            content: "";
+            position: absolute;
+            top: 0%;
+            right: 0;
+            width: 1px;
+            height: 100%;
+            background-color: white ;
+        }
+
+        /* ホバー時のボタン色 */
+        .custom-btn:hover,
+        .btn-group > .btn:hover {
+            background-color: #26B2B4;
+            border-color: #20b2aa;
+            color: white;
+        }
+
+        #container {
+            background: #00ced1;
+            font-size: 1em;
+            border-bottom: 2px #5f9ea0;
+            padding: 10px 0;
+            
+        }
+
+        /* 左上端と右上端を丸める */
+        .rounded-left {
+            border-top-left-radius: 15px !important;
+        }
+        .rounded-right {
+            border-top-right-radius: 15px !important;
+        }
+
+        /* プロフィールセクションのスタイル */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #00ced1;
+        }
+        .profile-header h4 {
+            font-weight: bold;
+            color: #333;
+        }
+        /* 追加: プロフィールIDのスタイル */
+        .profile-id {
+            font-size: 0.85em; /* 小さめのフォントサイズ */
+            color: #6c757d; /* グレー系の色 */
+            margin-top: -5px; /* ユーザー名との間隔を調整 */
+            margin-bottom: 10px; /* 自己紹介文との間隔を調整 */
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .profile-stats div {
+            text-align: center;
+        }
+        .profile-stats div span {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #00ced1;
+        }
+        .profile-stats div p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .profile-bio {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            white-space: pre-wrap; /* 改行を反映 */
+        }
+        .profile-feed-section {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .profile-feed-section h5 {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* フォローボタン */
+        .follow-toggle-btn {
+            padding: 8px 25px;
+            font-size: 1.0em;
+            border-radius: 20px; /* 丸みを強くする */
+            font-weight: bold;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        /* "フォロー" ボタンのスタイル (フォローしていない状態) */
+        .follow-toggle-btn[data-is-following="false"] {
+            background-color: #00ced1; /* 水色 */
+            color: white; /* 白いテキスト */
+            border-color: #00ced1; /* 水色の枠線 */
+        }
+        .follow-toggle-btn[data-is-following="false"]:hover {
+            background-color: #26B2B4; /* ホバー時は少し濃い水色 */
+            border-color: #20b2aa;
+        }
+
+        /* "フォロー中" ボタンのスタイル (フォローしている状態) */
+        .follow-toggle-btn[data-is-following="true"] {
+            background-color: #ffffff; /* 白 */
+            color: #00ced1; /* 水色のテキスト */
+            border-color: #00ced1; /* 水色の枠線 */
+        }
+        .follow-toggle-btn[data-is-following="true"]:hover {
+            background-color: #f8f9fa; /* ホバー時は少しグレーがかった白 */
+            color: #00ced1; /* テキストは水色を維持 */
+            border-color: #00ced1;
+        }
+        /* "リクエスト中" ボタンのスタイル */
+        .follow-toggle-btn[data-is-pending="true"] {
+            background-color: #cccccc; /* グレー */
+            color: #666666; /* 暗いテキスト */
+            border-color: #cccccc; /* グレーの枠線 */
+            /* cursor: not-allowed;  リクエストキャンセル可能にするため無効化しない */
+        }
+        .follow-toggle-btn[data-is-pending="true"]:hover {
+            background-color: #b0b0b0; /* ホバー時は少し濃いグレー */
+            border-color: #b0b0b0;
+        }
+
+
+        /* イベントカードのスタイル (UserProfilePageでも使用) */
+        .event-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .event-card h5 {
+            font-weight: bold;
+            color: #333;
+        }
+        .event-card p {
+            margin-bottom: 5px;
+            color: #666;
+            line-height: 1.4; /* 行の高さを調整 */
+        }
+        /* 時刻表示を太字にする */
+        .event-time {
+            font-weight: bold;
+            color: #444; /* 少し濃い目の色 */
+            /* text-alignとflexboxの指定を削除しました */
+        }
+        /* 「〜」を縦に中央表示するためのスタイル */
+        .event-time .vertical-tilde {
+            display: block; /* ブロック要素にして縦に並べる */
+            writing-mode: vertical-rl; /* 縦書き（右から左） */
+            text-orientation: upright; /* 文字を正立させる */
+            transform: rotate(180deg); /* 「〜」を逆さまに回転させて波を上から下へ */
+            margin: 0.4em 0 0.4em 2em; /* 上下の行間を広げ、左に2emの余白を追加 */
+            font-size: 1.2em; /* 少し大きくして目立たせる */
+            line-height: 1; /* 行の高さを調整 */
+        }
+        .event-card .event-user { /* イベント作成ユーザー表示用 */
+            font-size: 0.9em;
+            color: #00ced1;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div id="container">
+            <br>
+            <div class="d-flex justify-content-center align-items-center px-3 position-relative">
+                <h1 class="site-title d-flex align-items-center m-0">
+                    <img src="https://i.ibb.co/JbLxZxR/MN-logo.png" alt="Logo" class="logo-img me-2">
+                    <span>TimeShare</span>
+                </h1>
+                <div id="logout-btn">
+                    <button class="btn btn-light fw-bold">ログアウト</button>
+                </div>
+            </div>
+            <br>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="rounded-box">
+            <div class="btn-group mb-3" role="group" aria-label="Button group">
+                <button type="button" class="btn custom-btn rounded-left" onclick="location.href='/home_new.html'">Home</button>
+                <button type="button" class="btn custom-btn">Month</button>
+                <button type="button" class="btn custom-btn" onclick="location.href='/search.html'">
+                    <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3PHRX8hdk5Q9c62vmqphCIyplTwCCXVFugJhXccY5FaCty3E3aklUrCGV6GMn9eor4E4ZSSXUWJUOqQ-hLGrG40WRBxDKzO90ZwtTVepXQAuuIL559SK1AfuwI4OVHu9HCi-VrFS1yYCFLrA8_K4R3ugIYZSFpi9w6aae_cQLK7iM=/life066.png?errorImage=false" alt="Search Icon">
+                </button>
+                <button type="button" class="btn custom-btn">
+                    <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG1lrycgurVQDRWm8YwPTR6_48UVzMzhiUYT0SKcOdi3Pq3ey490QjMMuaR0711Mn9OMm9wiVe-yYovmqKwIFCS9J5cye3YKxAXIjGTbe17l_ZCJ7Fa0RHgSdevCZcIf3gdWODrRmVVV3CWSqalTTZdHzE-G845rxiiRDSH0WQWwmznJ6l0q3REQjmLOKVTFDrZiNQswKhLmK7vSYwMk3NIQ=/fashion019.png?errorImage=false" alt="Icon">
+                </button>
+                <button type="button" class="btn custom-btn rounded-right" onclick="location.href='/notification.html'">
+                    <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG_jRZ0Zb60sd3AdQXUaXUW9122ucsGpRMMXHaqnPy2bQqyO6pEGE6UKGDpSIaVI1d1Cd2wgAddavfGZVPCCx8zRoTj5b248QHvoPxkP7eKfMBWJ5LmDxWFhHULbVDmVM5fUcb3kUwkAVk57ntBG1Mvgjbg_R3Db5E_fOsHDcAuW84stYQqwZ_wC_EmQc31DiFg==/16_2_330.png?errorImage=false" alt="Notification Icon">
+                </button>
+            </div>
+
+            <div class="content-area">
+                <div id="loadingMessage" class="text-center text-muted">ユーザープロフィールを読み込み中...</div>
+                <div id="errorMessage" class="text-center text-danger d-none"></div>
+                
+                <div id="userProfileContent" class="d-none">
+                    <div class="profile-header">
+                        <img id="profilePicture" src="https://via.placeholder.com/100" alt="プロフィール画像">
+                        <h4 id="userName"></h4>
+                        <p id="profileId" class="profile-id"></p>
+                        <p id="userBio" class="text-muted"></p>
+                        <button id="followToggleButton" type="button" class="btn follow-toggle-btn"></button>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div>
+                            <span id="followingCount">0</span>
+                            <p>フォロー中</p>
+                        </div>
+                        <div>
+                            <span id="followersCount">0</span>
+                            <p>フォロワー</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-feed-section">
+                        <h5>スケジュール</h5>
+                        <div id="userEventsFeed">
+                            <p class="text-muted">このユーザーのスケジュールはありません。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+    import { getMyUserId, post, get, log, del } from './util.js';
+
+    // ログアウトボタンがクリックされた時に実行される処理
+    document.getElementById('logout-btn').addEventListener('click', async function() {
+        try {
+            const response = await post('/api/auth/logout', {});
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`ログアウトAPIエラー: ${response.status} ${response.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+            }
+            const result = await response.json();
+            if (result.success) {
+                log(result.message);
+                window.location.href = '/TimeShare_WelcomePage.html';
+            } else {
+                const errorMessage = result.message || '不明なエラーが発生しました。';
+                log(`ログアウトに失敗しました: ${errorMessage}`);
+                alert(`ログアウトに失敗しました。再度試してください。`);
+            }
+        } catch (error) {
+            console.error('ログアウト中にエラーが発生しました:', error);
+            alert('ログアウトに失敗しました。再度試してください。');
+        }
+    });
+
+    // `pendingFollowRequests` Setは、サーバーから`followingStatus: "requesting"`が返されるようになったため、
+    // クライアント側で明示的に保持する必要はなくなりましたが、以前の文脈に合わせて宣言は残しておきます。
+    const pendingFollowRequests = new Set(); 
+
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUserId = urlParams.get('userId');
+
+        const currentUserId = await getMyUserId();
+        if (!currentUserId) {
+            document.getElementById('loadingMessage').classList.add('d-none');
+            document.getElementById('errorMessage').textContent = 'ログインしていません。プロフィールを表示できません。';
+            document.getElementById('errorMessage').classList.remove('d-none');
+            return;
+        }
+
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const userProfileContent = document.getElementById('userProfileContent');
+        const profilePicture = document.getElementById('profilePicture');
+        const userNameElement = document.getElementById('userName');
+        const profileIdElement = document.getElementById('profileId');
+        const userBioElement = document.getElementById('userBio');
+        const followingCountElement = document.getElementById('followingCount');
+        const followersCountElement = document.getElementById('followersCount');
+        const followToggleButton = document.getElementById('followToggleButton');
+        const userEventsFeed = document.getElementById('userEventsFeed');
+
+        if (!targetUserId) {
+            loadingMessage.classList.add('d-none');
+            errorMessage.textContent = '表示するユーザーが指定されていません。';
+            errorMessage.classList.remove('d-none');
+            return;
+        }
+
+        const isMyProfile = (targetUserId === currentUserId);
+        if (isMyProfile) {
+            followToggleButton.classList.add('d-none'); // 自分のプロフィールならフォローボタンを非表示
+        }
+
+        loadingMessage.classList.remove('d-none');
+        userProfileContent.classList.add('d-none');
+
+        let userData = null;
+        let isFollowing = false; // 現在のユーザーが対象ユーザーをフォローしているか
+        let isFollowedBy = false; // 対象ユーザーが現在のユーザーをフォローしているか
+        let hasPendingRequest = false; // 対象ユーザーへのフォローリクエストが保留中か
+
+        try {
+            // ユーザー情報を取得 (followingStatus, followedByStatus を含む)
+            const userResponse = await get(`/api/users/${targetUserId}`);
+            
+            if (!userResponse.ok) {
+                const errorText = await userResponse.text();
+                throw new Error(`ユーザー情報APIエラー: ${userResponse.status} ${userResponse.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+            }
+            const userResult = await userResponse.json();
+            if (userResult.success && userResult.data) {
+                userData = userResult.data;
+                // APIレスポンスから直接状態を設定
+                isFollowing = userData.followingStatus === 'following';
+                isFollowedBy = userData.followedByStatus === 'following';
+                hasPendingRequest = userData.followingStatus === 'requesting';
+            } else {
+                throw new Error(userResult.message || 'ユーザー情報の取得に失敗しました。');
+            }
+
+            // UIを更新
+            profilePicture.src = userData.profilePictureUrl || 'https://via.placeholder.com/100';
+            userNameElement.textContent = userData.name || userData.userId;
+            profileIdElement.textContent = `ID: ${userData.userId}`;
+            userBioElement.textContent = userData.bio || '自己紹介がありません。';
+            followersCountElement.textContent = userData.followerCount || 0;
+            followingCountElement.textContent = userData.followingCount || 0;
+
+            // フォローボタンの状態を設定
+            if (!isMyProfile) {
+                // ボタンのデータ属性にtargetUserIdを設定
+                followToggleButton.dataset.userId = targetUserId; 
+                updateFollowButton(isFollowing, hasPendingRequest, userData.privacy, isFollowedBy); 
+                followToggleButton.addEventListener('click', async function() {
+                    // クリック時の最新の状態をボタンのデータ属性から取得
+                    const currentIsFollowingOnBtn = this.dataset.isFollowing === 'true';
+                    const currentIsPendingOnBtn = this.dataset.isPending === 'true';
+                    const currentPrivacyOnBtn = this.dataset.privacy; 
+                    // currentIsFollowedByOnBtn はtoggleFollowに直接は渡さないが、updateFollowButtonで使うため取得
+                    const currentIsFollowedByOnBtn = this.dataset.isFollowedBy === 'true'; 
+
+                    await toggleFollow(targetUserId, currentPrivacyOnBtn, currentIsFollowingOnBtn, currentIsPendingOnBtn);
+                    
+                    // フォロー/アンフォロー/リクエスト/リクエストキャンセル後にユーザー情報を再取得し、カウントとボタンの状態を更新
+                    const updatedUserResponse = await get(`/api/users/${targetUserId}`);
+                    if (updatedUserResponse.ok) {
+                        const updatedUserResult = await updatedUserResponse.json();
+                        if (updatedUserResult.success && updatedUserResult.data) {
+                            followersCountElement.textContent = updatedUserResult.data.followerCount || 0;
+                            followingCountElement.textContent = updatedUserResult.data.followingCount || 0;
+
+                            // ボタンのデータ属性と表示を最新情報で更新
+                            const newIsFollowing = updatedUserResult.data.followingStatus === 'following';
+                            const newIsPending = updatedUserResult.data.followingStatus === 'requesting';
+                            const newIsFollowedBy = updatedUserResult.data.followedByStatus === 'following'; 
+                            updateFollowButton(newIsFollowing, newIsPending, updatedUserResult.data.privacy, newIsFollowedBy);
+                        }
+                    } else {
+                        const errorText = await updatedUserResponse.text();
+                        console.warn(`更新ユーザー情報APIエラー: ${updatedUserResponse.status} ${updatedUserResponse.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+                    }
+                    
+                    // スケジュールも更新が必要な場合があるため、再ロード
+                    // ボタンの更新された状態からisFollowingを再度取得
+                    const newIsFollowingAfterToggle = followToggleButton.dataset.isFollowing === 'true';
+                    await displayUserEvents(targetUserId, currentPrivacyOnBtn, newIsFollowingAfterToggle);
+                });
+            }
+
+            // ユーザーのスケジュールを取得 (フィードAPI)
+            await displayUserEvents(targetUserId, userData.privacy, isFollowing); // 初期ロード時のisFollowingを渡す
+            
+            loadingMessage.classList.add('d-none');
+            userProfileContent.classList.remove('d-none');
+
+        } catch (error) {
+            console.error('プロフィールデータの取得中にエラーが発生しました:', error);
+            loadingMessage.classList.add('d-none');
+            errorMessage.textContent = error.message || 'ユーザープロフィールの読み込みに失敗しました。';
+            errorMessage.classList.remove('d-none');
+        }
+    });
+
+    // フォローボタンの状態を更新する関数
+    function updateFollowButton(isFollowing, isPending, privacy, isFollowedBy) {
+        const followToggleButton = document.getElementById('followToggleButton');
+        followToggleButton.classList.remove('d-none'); // ボタンを表示
+
+        // データ属性を常に最新の状態に更新
+        followToggleButton.dataset.isFollowing = isFollowing.toString();
+        followToggleButton.dataset.isPending = isPending.toString();
+        followToggleButton.dataset.privacy = privacy;
+        followToggleButton.dataset.isFollowedBy = isFollowedBy.toString();
+
+        // クラスをリセット
+        followToggleButton.classList.remove('btn-primary', 'btn-outline-secondary', 'btn-secondary');
+        followToggleButton.disabled = false; // デフォルトで有効にする (リクエスト中のキャンセルを可能にするため)
+
+        let buttonText = '';
+
+        // ボタンの表示テキストとスタイル、有効/無効状態を決定
+        if (isFollowing) {
+            buttonText = 'フォロー中';
+            followToggleButton.classList.add('btn-outline-secondary');
+        } else if (isPending) {
+            buttonText = 'リクエスト中';
+            followToggleButton.classList.add('btn-secondary');
+            // ここでは disabled は false のまま (クリックでキャンセル可能)
+        } else if (isFollowedBy) { // 相手からフォローされており、自分がフォローしていない場合
+            buttonText = 'フォローバック';
+            followToggleButton.classList.add('btn-primary');
+        } else { // フォローしておらず、保留中でもなく、相手からもフォローされていない場合
+            if (privacy === 'public') {
+                buttonText = 'フォロー';
+                followToggleButton.classList.add('btn-primary');
+            } else if (privacy === 'protected') {
+                buttonText = 'フォローリクエスト';
+                followToggleButton.classList.add('btn-primary');
+            } else if (privacy === 'private') {
+                followToggleButton.classList.add('d-none'); // 非公開アカウントの場合はボタンを非表示
+                return;
+            }
+        }
+        followToggleButton.textContent = buttonText;
+    }
+
+    // フォロー/フォロー解除/フォローリクエストを切り替える関数
+    // targetUserIdはボタンのdatasetから取得されるので、ここでは直接受け取る
+    // `buttonElement` はもはや不要だが、以前の引数に合わせて残しておく
+    async function toggleFollow(targetUserId, privacy, currentIsFollowing, currentIsPending) {
+        try {
+            let response;
+            if (currentIsFollowing) {
+                // 現在フォロー中 -> アンフォロー
+                response = await post(`/api/users/${targetUserId}/unfollow`, {});
+            } else if (currentIsPending) {
+                // 現在リクエスト中 -> リクエストキャンセル (DELETE)
+                console.log(`Deleting follow request for ${targetUserId}`); // デバッグログ
+                response = await del(`/api/follow-requests/${targetUserId}`); // util.jsのdel関数を使用
+            } else {
+                // 現在フォローしていない、かつリクエストも保留中でない
+                if (privacy === 'public') {
+                    // 公開アカウント -> フォロー
+                    response = await post(`/api/users/${targetUserId}/follow`, {});
+                } else if (privacy === 'protected') {
+                    // 鍵付きアカウント -> フォローリクエスト
+                    response = await post(`/api/follow-requests/${targetUserId}`, {});
+                } else {
+                    return; // privateアカウントではボタンが表示されないため、ここには来ないはず
+                }
+            }
+
+            if (!response) {
+                log('操作が定義されていません。');
+                return;
+            }
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorMessageDetail = errorText;
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    errorMessageDetail = errorJson.message || errorMessageDetail;
+                } catch (e) { }
+                throw new Error(`操作APIエラー: ${response.status} ${response.statusText}. 詳細: ${errorMessageDetail}`);
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                log(data.message);
+                // ここでは成功メッセージをログに記録するのみ。
+                // ボタンの更新はクリックイベントリスナーの`updatedUserResponse`取得後に行われる。
+            } else {
+                alert(`操作に失敗しました: ${data.message || '不明なエラーが発生しました。'}`);
+            }
+        } catch (error) {
+            console.error('フォロー操作中にエラーが発生しました:', error);
+            alert('操作に失敗しました。再度お試しください。' + (error.message ? `\n詳細: ${error.message}` : ''));
+        }
+    }
+
+    // ユーザーのスケジュールを表示する関数
+    async function displayUserEvents(targetUserId, privacy, isFollowing) {
+        const userEventsFeed = document.getElementById('userEventsFeed');
+        userEventsFeed.innerHTML = ''; // クリア
+
+        // privateアカウント、またはprotectedアカウントでフォローしていない場合は非公開
+        if (privacy === 'private' || (privacy === 'protected' && !isFollowing)) {
+            userEventsFeed.innerHTML = '<p class="text-muted">このユーザーのスケジュールは非公開です。</p>';
+            return;
+        }
+
+        try {
+            const eventsResponse = await get(`/api/users/${targetUserId}/events`);
+
+            if (!eventsResponse.ok) {
+                const errorText = await eventsResponse.text();
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson.message === "Privacy violation") {
+                        userEventsFeed.innerHTML = '<p class="text-muted">このユーザーのスケジュールは非公開です。</p>';
+                    } else {
+                        userEventsFeed.innerHTML = `<p class="text-danger">スケジュールの読み込みに失敗しました。<br>詳細: ${errorJson.message || errorText}</p>`;
+                    }
+                } catch (e) {
+                    userEventsFeed.innerHTML = `<p class="text-danger">スケジュールの読み込みに失敗しました。<br>詳細: ${errorText}</p>`;
+                }
+                console.warn(`スケジュールAPIエラー: ${eventsResponse.status} ${eventsResponse.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+            } else {
+                const eventsResult = await eventsResponse.json();
+                if (eventsResult.success && eventsResult.data && Array.isArray(eventsResult.data.events)) {
+                    if (eventsResult.data.events.length > 0) {
+                        eventsResult.data.events.forEach(event => {
+                            const eventCard = document.createElement('div');
+                            eventCard.classList.add('event-card');
+                            eventCard.innerHTML = `
+                                <h5>${event.name}</h5>
+                                <p class="event-time">
+                                    <span>${new Date(event.startTime).toLocaleString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false})}</span>
+                                    <span class="vertical-tilde">〜</span>
+                                    <span>${new Date(event.endTime).toLocaleString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false})}</span>
+                                </p>
+                            `;
+                            userEventsFeed.appendChild(eventCard);
+                        });
+                    } else {
+                        userEventsFeed.innerHTML = '<p class="text-muted">このユーザーのスケジュールはありません。</p>';
+                    }
+                } else {
+                    userEventsFeed.innerHTML = '<p class="text-danger">スケジュールのデータ形式が不正です。</p>';
+                    console.warn('ユーザーのスケジュールのデータ形式が不正です。', eventsResult.message);
+                }
+            }
+        } catch (error) {
+            console.error('スケジュールデータの取得中にエラーが発生しました:', error);
+            userEventsFeed.innerHTML = '<p class="text-danger">スケジュールの読み込み中に予期せぬエラーが発生しました。</p>';
+        }
+    }
+</script>
+</body>
+</html>
