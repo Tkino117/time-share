@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 export type UserCreateInput = {
     userId: string;
     password: string;
+    passwordHash?: string;
     name: string;
     settings?: UserSettings;
     profileImageUrl?: string;
@@ -28,7 +29,7 @@ export class UserRepository {
     public async create(user: UserCreateInput): Promise<User> {
         return await User.create({
             userId: user.userId,
-            password: user.password,
+            password: user.passwordHash,
             name: user.name,
             settings: user.settings,
             profileImageUrl: user.profileImageUrl
