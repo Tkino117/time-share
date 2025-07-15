@@ -5,6 +5,7 @@ import { UserNotFoundError, UserAlreadyExistsError, InvalidPasswordError, Invali
 import { UserWithStats } from "./util";
 import { FollowRepository } from "../repository/FollowRepository";
 import { FollowRequestRepository } from "../repository/FollowRequestRepository";
+import bcrypt from 'bcrypt';
 
 
 export class UserSettingsUpdateInput {
@@ -22,6 +23,7 @@ export class UserService {
 
     public async createUser(user: UserCreateInput): Promise<User> {
         const validatedUserId = this.validateUserId(user.userId);
+        user.passwordHash = await bcrypt.hash(user.password, 10);
         if (await this.userRepository.exists(validatedUserId)) {
             throw new UserAlreadyExistsError(validatedUserId);
         }
@@ -49,7 +51,13 @@ export class UserService {
     }
 
     public async updateUser(userId: string, updateData: UserUpdateInput): Promise<User> {
-        const validatedUserId = this.validateUserId(updateData.userId);
+        let validatedUserId = '';
+        if (updateData.userId) {
+            validatedUserId = this.validateUserId(updateData.userId);
+        }
+        else {
+            validatedUserId = userId;
+        }
         if (!await this.userRepository.exists(validatedUserId)) {
             throw new UserNotFoundError(validatedUserId);
         }
@@ -70,6 +78,9 @@ export class UserService {
         }
         if (updateData.name && updateData.name.length < this.nameMinLength) {
             throw new InvalidNameError();
+        }
+        if (updateData.password) {
+            updateData.password = await bcrypt.hash(updateData.password, 10);
         }
         const updatedUser = await this.userRepository.update(userId, updateData);
         if (!updatedUser) {
@@ -102,7 +113,8 @@ export class UserService {
     public async login(userId: string, password: string): Promise<string> {
         const user = await this.userRepository.get(userId);
         if (!user) throw new UserNotFoundError(userId);
-        if (user.password !== password) throw new InvalidPasswordError();
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) throw new InvalidPasswordError();
 
         const session = this.sessionManager.createSession(userId, new Date());
         return session.sessionId;
