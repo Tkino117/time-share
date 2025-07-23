@@ -19,9 +19,6 @@ declare module 'express-session' {
 }
 
 async function initExpress(app: express.Express) {
-    // 静的ファイルの配信設定
-    app.use(express.static(path.join(__dirname, '../public')));
-
     // CORS の設定（!note!本番環境で見直すこと）
     app.use(cors({
         origin: true,
@@ -92,22 +89,33 @@ async function main() {
         // 初期化
         const app = await initExpress(express());
 
-        // 認証ミドルウェア
-        const publicPaths = ['/api/auth/login', '/api/users',
-             '/api/auth/logout', '/api/dev/users', '/api/dev/demo-dev'];
+        // 静的ファイルへのアクセス制御とリダイレクト
         app.use(async (req: Request, res: Response, next: NextFunction) => {
-            console.log('auth info:');
-            if(publicPaths.includes(req.path)) {
-                console.log('    access to: public path\n');
-                return next();
-            }
-            console.log(`    access to: private path`);
-            console.log(`    sessionId: ${req.session.sessionId}`);
-            if(req.session.sessionId) {
-                const userId = await userService.authorize(req.session.sessionId);
-                if (userId) {
-                    console.log('    authorized');
+            // APIエンドポイントの場合は既存の認証処理を使用
+            if (req.path.startsWith('/api/')) {
+                const publicPaths = ['/api/auth/login', '/api/users',
+                     '/api/auth/logout', '/api/dev/users', '/api/dev/demo-dev'];
+                
+                console.log('auth info:');
+                if(publicPaths.includes(req.path)) {
+                    console.log('    access to: public path\n');
                     return next();
+                }
+                console.log(`    access to: private path`);
+                console.log(`    sessionId: ${req.session.sessionId}`);
+                if(req.session.sessionId) {
+                    const userId = await userService.authorize(req.session.sessionId);
+                    if (userId) {
+                        console.log('    authorized');
+                        return next();
+                    }
+                    else {
+                        console.log('    unauthorized');
+                        res.status(401).json({
+                            success: false,
+                            message: 'Unauthorized'
+                        });
+                    }
                 }
                 else {
                     console.log('    unauthorized');
@@ -116,15 +124,33 @@ async function main() {
                         message: 'Unauthorized'
                     });
                 }
-            }
-            else {
-                console.log('    unauthorized');
-                res.status(401).json({
-                    success: false,
-                    message: 'Unauthorized'
-                });
+            } else {
+                // 静的ファイルへのアクセスの場合
+                const isHtmlFile = req.path.endsWith('.html') || req.path === '/';
+                const isLoginPage = req.path === '/login.html' || req.path === '/';
+                const isDevPage = req.path === '/dev.html';
+                
+                if (isHtmlFile && !isLoginPage && !isDevPage) {
+                    // HTMLファイルへのアクセスで、ログインページとdev.html以外の場合
+                    if (!req.session.sessionId) {
+                        console.log('    redirecting to login.html');
+                        return res.redirect('/login.html');
+                    }
+                    
+                    const userId = await userService.authorize(req.session.sessionId);
+                    if (!userId) {
+                        console.log('    redirecting to login.html (invalid session)');
+                        return res.redirect('/login.html');
+                    }
+                }
+                
+                // 認証OKまたはログインページまたはdev.htmlの場合は静的ファイルを配信
+                return next();
             }
         });
+
+        // 静的ファイルの配信設定（認証チェックの後に配置）
+        app.use(express.static(path.join(__dirname, '../public')));
 
         // ファイルアップロードミドルウェア
         app.use(fileUpload());
