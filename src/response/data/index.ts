@@ -153,12 +153,12 @@ export class EventsResponseData extends AbstractResponseData {
 }
 
 export class UserEventsResponseData extends AbstractResponseData {
-    user: UserResponseData;
+    user: UserWithStatsResponseData;
     events: EventsResponseData;
 
-    constructor(user: User, events: Event[]) {
+    constructor(userWithStats: UserWithStats, events: Event[]) {
         super();
-        this.user = new UserResponseData(user);
+        this.user = new UserWithStatsResponseData(userWithStats);
         this.events = new EventsResponseData(events);
     }
 

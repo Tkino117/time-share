@@ -178,9 +178,9 @@ export class UserController {
             const followings = await this.followService.getFollowings(userId);
             const userEvents: UserEventsResponseData[] = [];
             for (const following of followings) {
-                const user = await this.userService.getUser(following);
+                const userWithStats = await this.userService.getUserWithStats(following, userId);
                 const events = await this.eventService.getOtherEventsByUserId(following);
-                userEvents.push(new UserEventsResponseData(user, events));
+                userEvents.push(new UserEventsResponseData(userWithStats, events));
             }
             const data = new FeedResponseData(userEvents);
             new SuccessResponse(data, 'Feed retrieved successfully').send(res);
