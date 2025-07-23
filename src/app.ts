@@ -46,6 +46,9 @@ async function initExpress(app: express.Express) {
     // ログ出力
     app.use(async (req: Request, res: Response, next: NextFunction) => {
         console.log('--------------------------------');
+        console.log('Protocol:', req.protocol);
+        console.log('Secure:', req.secure);
+        console.log('X-Forwarded-Proto:', req.get('X-Forwarded-Proto'));
         console.log(`${req.method} ${req.path}`);
         console.log(`body: ${JSON.stringify(req.body)}`);
         next();
