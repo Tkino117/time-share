@@ -624,7 +624,7 @@
 
 <script type="module">
   import { getMyUserId, post, get, put, del, log, getApiUrl } from './util.js';
-  const base_url = "http://localhost:3500"; 
+  const base_url = getApiUrl();
 
   const eventColors = [
     '#30898c', // 00:00 - 02:59
