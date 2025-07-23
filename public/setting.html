@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeShare - マイページ設定</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* 共通スタイル */
+    header {
+      padding-bottom: 40px;
+    }
+
+    body {
+      background: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+    }
+
+    /* 角を丸めた四角のスタイル */
+    .rounded-box {
+      border-radius: 15px;
+      padding: 0;
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* コンテンツエリアのパディング */
+    .content-area {
+      padding: 20px;
+    }
+
+    /* カスタムボタン (下部ナビゲーション用) */
+    .custom-btn {
+      border-radius: 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ボタン画像のサイズ調整 (下部ナビゲーション用) */
+    .btn img {
+      height: 2rem;
+      width: auto;
+    }
+
+    /* ヘッダーのサイトタイトル */
+    .site-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      flex-grow: 1; /* 中央のタイトルが利用可能なスペースを占有 */
+      display: flex; /* ロゴとテキストをflexで並べる */
+      align-items: center; /* 垂直中央揃え */
+      justify-content: center; /* 水平中央揃え */
+    }
+    .site-title .logo-img {
+      height: 2.5rem;
+      width: auto;
+      margin-right: 10px; /* ロゴとテキストの間隔 */
+    }
+
+    /* ログアウトボタン */
+    #logout-btn button {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+      font-size: 0.8rem;
+    }
+    #logout-btn button:hover {
+      background-color: #40999A;
+      border-color: #40999A;
+    }
+
+    /* 下部ナビゲーションボタンが均等に並ぶように */
+    .btn-group {
+      display: flex;
+      width: 100%;
+    }
+    .btn-group > .btn {
+      flex: 1;
+      margin: 0;
+      padding: 0.8rem 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      position: relative; /* ::after のために必要 */
+    }
+    .btn-group > .btn:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 0%;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: white ;
+    }
+
+    /* ホバー時のボタン色 (下部ナビゲーション用) */
+    .custom-btn:hover,
+    .btn-group > .btn:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+
+    section.container {
+      max-width: 840px;
+    }
+    #container {
+      background: #00ced1;
+      font-size: 1em;
+      border-bottom: 2px #5f9ea0;
+      padding: 10px 0;
+    }
+
+    /* 左上端と右上端を丸める */
+    .rounded-left {
+      border-top-left-radius: 15px !important;
+    }
+    .rounded-right {
+      border-top-right-radius: 15px !important;
+    }
+
+    /* マイページボタン (ヘッダーのユーザーアイコン) */
+    #mypage-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff; /* 白い枠線 */
+      transition: box-shadow 0.2s ease-in-out;
+      position: absolute; /* 親要素に対する絶対位置指定 */
+      left: 30px; /* 左端からの距離 */
+      top: 50%; /* 親要素の上から50%の位置に移動 */
+      transform: translateY(-50%); /* 自身の高さの半分だけ上に移動して垂直方向中央揃え */
+    }
+    
+    #mypage-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 画像がコンテナに収まるようにトリミング */
+    }
+
+    /* ヘッダーのd-flexコンテナ */
+    header #container > .d-flex {
+      /* justify-content-between を削除し、個別の要素で位置を調整 */
+      align-items: center; /* 垂直方向中央揃え */
+      padding: 0 15px; /* 左右のパディング */
+    }
+
+    /* マイページ専用スタイル */
+    .mypage-section {
+      margin-bottom: 30px;
+    }
+    .mypage-section h5 {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .mypage-profile-edit {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .mypage-profile-edit img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 3px solid #00ced1;
+      cursor: pointer;
+    }
+    .mypage-profile-edit button {
+      margin-top: 10px;
+    }
+    .form-label {
+      font-weight: bold;
+      color: #555;
+    }
+    .form-control, .form-select {
+      margin-bottom: 15px;
+    }
+    .form-check-label {
+      margin-left: 5px;
+      color: #555;
+    }
+    .save-button {
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+    }
+    .save-button:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div id="container">
+      <br>
+      
+      <div class="d-flex justify-content-center align-items-center px-3 position-relative">
+        <div id="mypage-btn" onclick="location.href='setting.html'">
+          <img id="user-icon" src="uploads/avatars/default-avatar.png" alt="ユーザーアイコン" class="rounded-circle">
+        </div>
+
+        <h1 class="site-title d-flex align-items-center m-0">
+          <img src="images/logo.png" alt="Logo" class="logo-img me-2">
+          <span>TimeShare</span>
+        </h1>
+        <div id="logout-btn" style="position: absolute; right: 15px;">
+          <button class="btn btn-light fw-bold" onclick="handleLogout()">ログアウト</button>
+        </div>
+      </div>
+      <br>
+    </div>
+  </header>
+
+  <section class="container">
+    <div class="rounded-box">
+      <div class="btn-group mb-3" role="group" aria-label="Button group">
+        <button type="button" class="btn custom-btn rounded-left" onclick="location.href='/home.html'">
+          <img src="images/home.PNG" alt="Home Icon">
+        </button>
+        <button type="button" class="btn custom-btn" onclick="location.href='/month.html'">
+          <img src="images/calender.PNG" alt="Month Icon">
+        </button>
+        <button type="button" class="btn custom-btn" onclick="location.href='/search.html'">
+          <img src="images/follow.PNG" alt="Search Icon">
+        </button>
+        <button type="button" class="btn custom-btn" onclick="location.href='/ranking.html'">
+          <img src="images/ranking.PNG" alt="Icon">
+        </button>
+        <button type="button" class="btn custom-btn rounded-right" onclick="location.href='/notification.html'">
+          <img src="images/alerm.PNG" alt="Notification Icon">
+        </button>
+      </div>
+
+      <div class="content-area">
+        <h5 class="text-center mb-4">マイページ設定</h5>
+
+        <div id="loadingMessage" class="text-center text-muted">設定を読み込み中...</div>
+        <div id="errorMessage" class="text-center text-danger d-none"></div>
+        
+        <div id="settingsContent" class="d-none">
+          <div class="mypage-section">
+            <h5>プロフィール設定</h5>
+            <div class="mypage-profile-edit">
+              <img id="editProfilePicture" src="uploads/avatars/default-avatar.png" alt="プロフィール画像">
+              <form id="profileImageUploadForm" enctype="multipart/form-data" style="margin-top: 10px;">
+                <input type="file" id="profilePictureInput" name="image" accept="image/*" class="d-none" required>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="changeProfilePictureBtn">画像を選択</button>
+                <button type="submit" class="btn save-button mt-2">プロフィール画像を更新</button>
+              </form>
+            </div>
+            <form id="profileTextForm">
+              <div class="mb-3">
+                <label for="editUserName" class="form-label">ユーザー名</label>
+                <input type="text" class="form-control" id="editUserName" placeholder="ユーザー名">
+              </div>
+              <div class="mb-3">
+                <label for="editUserBio" class="form-label">自己紹介</label>
+                <textarea type="text" class="form-control" id="editUserBio" rows="3" placeholder="自己紹介文を入力してください"></textarea>
+              </div>
+              <p class="text-muted small">ユーザーID: <span id="displayUserId"></span> (変更不可)</p>
+              <button type="submit" class="btn save-button w-100">ユーザー名・自己紹介を保存</button>
+            </form>
+          </div>
+
+          <hr class="my-5">
+
+          <div class="mypage-section">
+            <h5>プライバシー設定</h5>
+            <form id="privacyForm">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="publicProfileToggle">
+                <label class="form-check-label" for="publicProfileToggle">
+                  プロフィールを公開する (他のユーザーから検索・閲覧可能にする)
+                </label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="publicScheduleToggle">
+                <label class="form-check-label" for="publicScheduleToggle">
+                  スケジュールを公開する 
+                </label>
+              </div>
+              <button type="submit" class="btn save-button w-100">プライバシー設定を保存</button>
+            </form>
+          </div>
+
+          <hr class="my-5">
+
+          <div class="mypage-section">
+            <h5>アカウント設定</h5>
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-outline-danger">パスワードを変更</button>
+              <button type="button" class="btn btn-outline-danger">アカウントを削除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+  // util.js から必要な関数をインポート
+import { getMyUserId, post, get, log, del, getApiUrl, put } from './util.js';
+
+// ログアウト処理を関数化
+async function handleLogout() {
+  try {
+    const response = await post('/api/auth/logout', {});
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`ログアウトAPIエラー: ${response.status} ${response.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+    }
+    const result = await response.json();
+    if (result.success) {
+      log(result.message);
+      sessionStorage.clear(); // ログアウト時にsessionStorageをクリア
+      window.location.href = '/TimeShare_WelcomePage.html';
+    } else {
+      const errorMessage = result.message || '不明なエラーが発生しました。';
+      log(`ログアウトに失敗しました: ${errorMessage}`);
+      alert(`ログアウトに失敗しました。再度試してください。`);
+    }
+  } catch (error) {
+    console.error('ログアウト中にエラーが発生しました:', error);
+    alert('ログアウトに失敗しました。ネットワーク接続を確認してください。');
+  }
+}
+// ログアウトボタンにイベントリスナーを設定
+document.getElementById('logout-btn').addEventListener('click', handleLogout);
+
+// プロフィール画像アップロード関数
+async function uploadProfileImage(event) {
+    event.preventDefault(); // フォームのデフォルト送信を防ぐ
+
+    const formData = new FormData(event.target); // event.target は <form> 要素になる
+    const fileInput = event.target.querySelector('#profilePictureInput'); // fileInputを取得
+
+    // ファイルが選択されているかどうかのチェック
+    if (!fileInput.files || !fileInput.files[0]) {
+        log('ファイルが選択されていません。');
+        alert('アップロードするファイルを選択してください。'); // ユーザーへのフィードバック
+        return; // ファイルがなければここで処理を中断
+    }
+
+    const urlBase = getApiUrl();
+
+    try { 
+        // fetch を直接使用して、FormData を送信
+        const response = await fetch(`${urlBase}/api/uploads`, {
+            method: 'POST',
+            credentials: 'include', // クッキーを送信するために必要
+            body: formData
+        });
+
+        if (!response.ok) { 
+            const errorText = await response.text();
+            throw new Error(`画像アップロードAPIエラー: ${response.status} ${response.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+        }
+
+        const result = await response.json();
+        if(result.success) {
+            log(result.message);
+            alert('プロフィール画像が更新されました！'); 
+            location.reload(); 
+
+            // APIレスポンスから新しい画像URLを取得
+            const newRelativeImageUrl = result.data ? (result.data.profileImageUrl || result.data.profilePictureUrl) : null;
+            
+            if (newRelativeImageUrl) {
+                // 新しい画像URLを完全なパスにする
+                const newFullImageUrl = `${urlBase}${newRelativeImageUrl}`;
+                
+                // --- ★ここが修正・強化されたキャッシュ対策の箇所★ ---
+                // キャッシュを回避するために、URLにユニークなクエリパラメータを追加
+                // 乱数とタイムスタンプを組み合わせることで、さらに強力なキャッシュ無効化を行います。
+                const cacheBuster = Math.random().toString(36).substring(2, 8) + new Date().getTime();
+                const imageUrlWithCacheBuster = `${newFullImageUrl}?t=${cacheBuster}`;
+
+                // ヘッダーのアイコン画像を更新 (id="user-icon" の要素)
+                const headerUserIconElement = document.getElementById('user-icon');
+                if (headerUserIconElement) {
+                    headerUserIconElement.src = imageUrlWithCacheBuster;
+                }
+
+                // 設定画面のプロフィール画像を更新 (id="editProfilePicture" の要素)
+                const editProfilePictureElement = document.getElementById('editProfilePicture');
+                if (editProfilePictureElement) {
+                    editProfilePictureElement.src = imageUrlWithCacheBuster;
+                }
+                // --- ★ここまで★ ---
+                
+                // セッションストレージも更新（次のページロード時に正しい画像が表示されるように）
+                // sessionStorageにはクエリパラメータなしで保存するのが一般的です
+                sessionStorage.setItem("userIconUrl", newFullImageUrl); 
+
+                // 画像アップロード後、サーバーに新しい画像URLを保存するPUTリクエストも送信
+                const updateProfileResponse = await put('/api/users/me', { profileImageUrl: newRelativeImageUrl });
+                if (!updateProfileResponse.ok) {
+                    const updateErrorText = await updateProfileResponse.text();
+                    throw new Error(`プロフィール画像URL保存APIエラー: ${updateProfileResponse.status} ${updateProfileResponse.statusText}. 詳細: ${updateErrorText.substring(0, 100)}...`);
+                }
+                const updateProfileResult = await updateProfileResponse.json();
+                if (updateProfileResult.success) {
+                    log('プロフィール画像URLの保存に成功しました。');
+                    // ここにページリロードのコードを追加
+                    location.reload(); 
+                } else {
+                    log('プロフィール画像URLの保存に失敗しました:', updateProfileResult.message);
+                }
+            }
+
+        }
+        else {
+            const errorMessage = result.message || '不明なエラーが発生しました。';
+            log(`画像のアップロードに失敗しました: ${errorMessage}`);
+            alert(`画像のアップロードに失敗しました: ${errorMessage}`); 
+        }
+    } catch (error) {
+        console.error('プロフィール画像のアップロード中にエラーが発生しました:', error);
+        alert('プロフィール画像のアップロード中にエラーが発生しました。ネットワーク接続を確認してください。');
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+  const currentUserId = await getMyUserId();
+  if (!currentUserId) {
+    document.getElementById('loadingMessage').classList.add('d-none');
+    document.getElementById('errorMessage').textContent = 'ログインしていません。設定を表示できません。';
+    document.getElementById('errorMessage').classList.remove('d-none');
+    return;
+  }
+
+  const loadingMessage = document.getElementById('loadingMessage');
+  const errorMessage = document.getElementById('errorMessage');
+  const settingsContent = document.getElementById('settingsContent');
+
+  const headerUserIcon = document.getElementById('user-icon');
+  const editProfilePicture = document.getElementById('editProfilePicture');
+  const profilePictureInput = document.getElementById('profilePictureInput');
+  const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
+  const editUserName = document.getElementById('editUserName');
+  const editUserBio = document.getElementById('editUserBio');
+  const displayUserId = document.getElementById('displayUserId');
+  const profileTextForm = document.getElementById('profileTextForm'); // ユーザー名と自己紹介文用のフォーム
+
+  const publicProfileToggle = document.getElementById('publicProfileToggle');
+  const publicScheduleToggle = document.getElementById('publicScheduleToggle');
+  const privacyForm = document.getElementById('privacyForm');
+
+  const profileImageUploadForm = document.getElementById('profileImageUploadForm'); // プロフィール画像アップロード用フォーム
+
+  loadingMessage.classList.remove('d-none');
+  settingsContent.classList.add('d-none');
+
+  try {
+    // 1. ユーザー自身のプロフィール情報をGETするAPIを叩く (/api/users/me)
+    const userMeResponse = await get('/api/users/me');
+    let userData = null;
+
+    if (!userMeResponse.ok) {
+        const errorText = await userMeResponse.text();
+        throw new Error(`ユーザー情報APIエラー: ${userMeResponse.status} ${userMeResponse.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+    }
+    const userMeResult = await userMeResponse.json();
+    if (userMeResult.success && userMeResult.data) {
+        userData = userMeResult.data;
+    } else {
+        throw new Error(userMeResult.message || 'ユーザー情報の取得に失敗しました。');
+    }
+
+    // 2. 設定情報（プライバシー）をGETするAPIを叩く (/api/settings/)
+    const settingsResponse = await get('/api/settings/');
+    let settingsData = null;
+
+    if (!settingsResponse.ok) {
+        const errorText = await settingsResponse.text();
+        throw new Error(`設定情報APIエラー: ${settingsResponse.status} ${settingsResponse.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+    }
+    const settingsResult = await settingsResponse.json();
+    if (settingsResult.success && settingsResult.data) {
+        settingsData = settingsResult.data;
+    } else {
+        throw new Error(settingsResult.message || '設定情報の取得に失敗しました。');
+    }
+
+    // 取得したデータをフォームに反映
+    const defaultIcon = 'https://via.placeholder.com/100';
+    const profileImageUrl = userData.profileImageUrl ? `${getApiUrl()}${userData.profileImageUrl}` : defaultIcon;
+
+    // 初期表示時も、ヘッダーと設定画面の画像を両方更新
+    if (headerUserIcon) headerUserIcon.src = profileImageUrl;
+    editProfilePicture.src = profileImageUrl;
+
+    editUserName.value = userData.name || '';
+    editUserBio.value = userData.bio || '';
+    displayUserId.textContent = userData.userId || currentUserId;
+
+    // プライバシー設定はAPIのprivacy値に合わせて設定
+    publicProfileToggle.checked = (settingsData.privacy === 'public');
+    publicScheduleToggle.checked = (settingsData.privacy === 'public'); 
+
+    // 3. プロフィール画像変更処理
+    // 「画像を選択」ボタンがクリックされたら、隠れたファイル選択ダイアログを開く
+    changeProfilePictureBtn.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        profilePictureInput.click();
+    });
+
+    // profileImageUploadForm の submit イベントに uploadProfileImage 関数を紐付け
+    if (profileImageUploadForm) {
+        profileImageUploadForm.addEventListener('submit', uploadProfileImage);
+    }
+
+
+    // 4. ユーザー名・自己紹介文保存フォームの送信イベント (IDをprofileTextFormに変更)
+    if (profileTextForm) { 
+      profileTextForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const updatedProfile = {
+          name: editUserName.value,
+          bio: editUserBio.value,
+        };
+
+        try {
+          const response = await put('/api/users/me', updatedProfile);
+
+          if (response.ok) {
+              const result = await response.json();
+              if (result.success) {
+                  alert('ユーザー名と自己紹介が保存されました！');
+                  log('ユーザー名・自己紹介保存成功:', result.message);
+                  sessionStorage.setItem("username", updatedProfile.name);
+              } else {
+                  alert('ユーザー名と自己紹介の保存に失敗しました: ' + (result.message || '不明なエラー'));
+              }
+          } else {
+              const errorText = await response.text();
+              throw new Error(`プロフィール保存APIエラー: ${response.status} ${response.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+          }
+        } catch (error) {
+          console.error('ユーザー名と自己紹介の保存中にエラーが発生しました:', error);
+          alert('ユーザー名と自己紹介の保存中にエラーが発生しました。ネットワーク接続を確認してください。');
+        }
+      });
+    }
+
+
+    // 5. プライバシー設定フォームの送信イベント
+    privacyForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const updatedPrivacy = {
+        privacy: publicProfileToggle.checked ? 'public' : 'private'
+      };
+
+      try {
+        const response = await put('/api/settings/privacy', updatedPrivacy);
+
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                alert('プライバシー設定が保存されました！');
+                log('プライバシー設定保存成功:', result.message);
+                location.reload(); 
+            } else {
+                alert('プライバシー設定の保存に失敗しました: ' + (result.message || '不明なエラー'));
+            }
+        } else {
+            const errorText = await response.text();
+            throw new Error(`プライバシー設定APIエラー: ${response.status} ${response.statusText}. 詳細: ${errorText.substring(0, 100)}...`);
+        }
+      } catch (error) {
+        console.error('プライバシー設定の保存中にエラーが発生しました:', error);
+        alert('プライバシー設定の保存中にエラーが発生しました。ネットワーク接続を確認してください。');
+      }
+    });
+
+    // 全ての表示が完了したらローディングメッセージを隠し、コンテンツを表示
+    loadingMessage.classList.add('d-none');
+    settingsContent.classList.remove('d-none');
+
+  } catch (error) {
+    console.error('設定データの取得中にエラーが発生しました:', error);
+    loadingMessage.classList.add('d-none');
+    errorMessage.textContent = error.message || '設定の読み込みに失敗しました。';
+    errorMessage.classList.remove('d-none');
+  }
+});
+  </script>
+</body>
+</html>
