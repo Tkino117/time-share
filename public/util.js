@@ -72,6 +72,6 @@ export function getApiUrl() {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
         return 'http://localhost:3500';
     } else {
-        return 'https://tkino117.dev/time-share';
+        return 'https://time-share.site';
     }
 }
