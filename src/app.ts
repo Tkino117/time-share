@@ -138,6 +138,8 @@ async function main() {
             } else {
                 // 静的ファイルへのアクセスの場合
                 const isHtmlFile = req.path.endsWith('.html') || req.path === '/';
+                const isSignupPage = req.path === '/signup.html';
+                const isWelcomePage = req.path === '/welcome.html';
                 const isLoginPage = req.path === '/login.html';
                 const isDevPage = req.path === '/dev.html';
                 const isRootPath = req.path === '/';
@@ -145,31 +147,31 @@ async function main() {
                 // ルートパス（/）へのアクセスの場合
                 if (isRootPath) {
                     if (!req.session.sessionId) {
-                        console.log('    redirecting to login.html (root path, no session)');
-                        return res.redirect('/login.html');
+                        console.log('    redirecting to welcome.html (root path, no session)');
+                        return res.redirect('/welcome.html');
                     }
                     
                     const userId = await userService.authorize(req.session.sessionId);
                     if (!userId) {
-                        console.log('    redirecting to login.html (root path, invalid session)');
-                        return res.redirect('/login.html');
+                        console.log('    redirecting to welcome.html (root path, invalid session)');
+                        return res.redirect('/welcome.html');
                     }
                     
                     console.log('    redirecting to home.html (root path, authenticated)');
                     return res.redirect('/home.html');
                 }
                 
-                if (isHtmlFile && !isLoginPage && !isDevPage) {
+                if (isHtmlFile && !isLoginPage && !isDevPage && !isSignupPage && !isWelcomePage) {
                     // HTMLファイルへのアクセスで、ログインページとdev.html以外の場合
                     if (!req.session.sessionId) {
-                        console.log('    redirecting to login.html');
-                        return res.redirect('/login.html');
+                        console.log('    redirecting to welcome.html');
+                        return res.redirect('/welcome.html');
                     }
                     
                     const userId = await userService.authorize(req.session.sessionId);
                     if (!userId) {
-                        console.log('    redirecting to login.html (invalid session)');
-                        return res.redirect('/login.html');
+                        console.log('    redirecting to welcome.html (invalid session)');
+                        return res.redirect('/welcome.html');
                     }
                 }
                 
