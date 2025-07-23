@@ -38,7 +38,7 @@ async function initExpress(app: express.Express) {
         resave: false,
         saveUninitialized: true,
         cookie: {
-            // secure: true,
+            secure: true,
             maxAge: 24 * 60 * 60 * 1000 // 1日
         }
     }));
