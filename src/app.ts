@@ -28,11 +28,19 @@ async function initExpress(app: express.Express) {
     // json のパース
     app.use(express.json());
 
+    // nginx 用設定
+    app.set('trust proxy', 1);
+
     // cookie の設定。デフォルトの session を利用する
+    // https のとき、secure: true を設定する
     app.use(session({
         secret: 'secret',
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: {
+            // secure: true,
+            maxAge: 24 * 60 * 60 * 1000 // 1日
+        }
     }));
 
     // ログ出力
