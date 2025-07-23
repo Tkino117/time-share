@@ -127,8 +127,26 @@ async function main() {
             } else {
                 // 静的ファイルへのアクセスの場合
                 const isHtmlFile = req.path.endsWith('.html') || req.path === '/';
-                const isLoginPage = req.path === '/login.html' || req.path === '/';
+                const isLoginPage = req.path === '/login.html';
                 const isDevPage = req.path === '/dev.html';
+                const isRootPath = req.path === '/';
+                
+                // ルートパス（/）へのアクセスの場合
+                if (isRootPath) {
+                    if (!req.session.sessionId) {
+                        console.log('    redirecting to login.html (root path, no session)');
+                        return res.redirect('/login.html');
+                    }
+                    
+                    const userId = await userService.authorize(req.session.sessionId);
+                    if (!userId) {
+                        console.log('    redirecting to login.html (root path, invalid session)');
+                        return res.redirect('/login.html');
+                    }
+                    
+                    console.log('    redirecting to home.html (root path, authenticated)');
+                    return res.redirect('/home.html');
+                }
                 
                 if (isHtmlFile && !isLoginPage && !isDevPage) {
                     // HTMLファイルへのアクセスで、ログインページとdev.html以外の場合
