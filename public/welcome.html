@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeShare-WelcomePage</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #F5F5F5;
+      margin: 0;
+      padding: 0;
+      font-family: "游ゴシック体", "Yu Gothic", sans-serif;
+    }
+
+    header {
+      margin-bottom: 12rem;
+    }
+
+    /* カスタムボタン */
+    .custom-btn {
+      border-radius: 0;
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 0;
+      transition: background-color 0.3s ease;
+    }
+
+    /* ボタン画像のサイズ調整 */
+    .btn img {
+      height: 3rem;
+      width: auto;
+    }
+
+    .site-title {
+      text-align: center;
+      font-size: 3.5rem;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .logo-img {
+      height: 3.5rem; /* 画像の高さ（調整可能） */
+      width: auto;
+    }
+
+    /* ボタンが均等に並ぶように */
+    .btn-group {
+      display: flex;
+      width: 100%;
+    }
+
+    .btn-group > .btn {
+      position: relative;
+      flex: 1; /* 各ボタンを均等に広げる */
+      margin: 0; /* ボタン同士の隙間をゼロに */
+      padding: 0.8rem 0; /* 高さ調整 */
+      background-color: #00ced1;
+      border-color: #00ced1;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-group > .btn:not(:last-child)::after {/* ボタン同士の隙間に白いラインを入れる*/
+      content: "";
+      position: absolute;
+      top: 0%;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: white;
+    }
+
+    /* ホバー時のボタン色 */
+    .custom-btn:hover,
+    .btn-group > .btn:hover {
+      background-color: #26B2B4;
+      border-color: #20b2aa;
+      color: white;
+    }
+
+    #container {
+      background: #00ced1;
+      font-size: 1em;
+      border-bottom: 2px #5f9ea0;
+      padding: 10px 0;
+    }
+
+    /* ボタン上下の角を丸める */
+    .rounded-left {
+      border-top-left-radius: 15px !important;
+      border-bottom-left-radius: 15px !important;
+    }
+
+    .rounded-right {
+      border-top-right-radius: 15px !important;
+      border-bottom-right-radius: 15px !important;
+    }
+
+    /* スマホ対応*/
+    @media (max-width: 576px) {
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn-group > .btn {
+        border-radius: 15px !important;
+      }
+
+      .btn-group > .btn:not(:last-child) {
+        border-bottom: 1px solid white;
+      }
+
+      .btn-group > .btn:not(:last-child)::after {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 最上部のタイトル部分 -->
+  <header>
+    <div id="container">
+      <div class="site-title d-flex align-items-center justify-content-center py-5">
+        <img src="images/logo.png" alt="Logo" class="logo-img me-2">
+        <span>TimeShare</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 余白を CSS に変更 -->
+  <section class="container my-5">  
+    <div class="btn-group mb-3" role="group" aria-label="Button group">
+      <button type="button" class="btn custom-btn rounded-left" onclick="location.href='login.html'">ログイン</button>
+      <button type="button" class="btn custom-btn rounded-right" onclick="location.href='signup.html'">新規登録</button>
+    </div>
+  </section>
+
+
+  <!-- Bootstrap JSと依存ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
