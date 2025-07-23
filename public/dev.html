@@ -113,6 +113,7 @@
                     <input type="text" id="update-userId" placeholder="userId" />
                     <input type="password" id="update-password" placeholder="password" />
                     <input type="text" id="update-name" placeholder="name" />
+                    <input type="text" id="update-bio" placeholder="bio" />
                     <button id="updateButton"> 更新 </button>
                     <button id="deleteButton"> ユーザー削除 </button>
                     <form id="uploadForm" enctype="multipart/form-data">
@@ -274,10 +275,12 @@
                 let userId = document.getElementById('update-userId').value;
                 let password = document.getElementById('update-password').value;
                 let name = document.getElementById('update-name').value;
+                let bio = document.getElementById('update-bio').value;
                 if (userId === '') userId = undefined;
                 if (password === '') password = undefined;
                 if (name === '') name = undefined;
-                const response = await put('/api/users/' + preUserId, { userId, password, name });
+                if (bio === '') bio = undefined;
+                const response = await put('/api/users/' + preUserId, { userId, password, name, bio });
                 const result = await response.json();
                 if(result.success) {
                     log(result.message);
@@ -399,7 +402,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' followings:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio);
                     }
                 }
                 else {
@@ -415,7 +418,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' followers:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio);
                     }
                 }
                 else {
@@ -431,7 +434,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' follow requests:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio);
                     }
                 }
                 else {
@@ -567,7 +570,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' users:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name + ', privacy: ' + user.privacy);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio + ', privacy: ' + user.privacy);
                     }
                 }
                 else {
@@ -626,7 +629,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' users:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio);
                     }
                 }
                 else {
@@ -642,7 +645,7 @@
                 if(result.success) {
                     log(result.data.users.length + ' users:');
                     for(const user of result.data.users) {
-                        log('    id: ' + user.userId + ', name: ' + user.name);
+                        log('    id: ' + user.userId + ', name: ' + user.name + ', bio: ' + user.bio);
                     }
                 }
                 else {

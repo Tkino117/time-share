@@ -13,6 +13,7 @@ export class UserWithStats {
     public userId: string = "";
     public name: string = "";
     public profileImageUrl: string | undefined = undefined;
+    public bio: string | undefined = undefined;
     public privacy: UserPrivacy = UserPrivacy.PUBLIC;
     public followingCount: number = 0;
     public followerCount: number = 0;
@@ -29,6 +30,7 @@ export class UserWithStats {
         res.userId = user.userId;
         res.name = user.name;
         res.profileImageUrl = user.profileImageUrl;
+        res.bio = user.bio;
         res.privacy = user.settings.privacy;
         res.followingCount = await followRepository.getFollowingCount(user.userId);
         res.followerCount = await followRepository.getFollowerCount(user.userId);
@@ -57,6 +59,6 @@ export class UserWithStats {
     }
 
     public toString(): string {
-        return `UserWithStats: userId=${this.userId}, name=${this.name}, profileImageUrl=${this.profileImageUrl}, privacy=${this.privacy}, followingCount=${this.followingCount}, followerCount=${this.followerCount}, followingStatus=${this.followingStatus}, followedByStatus=${this.followedByStatus}`;
+        return `UserWithStats: userId=${this.userId}, name=${this.name}, profileImageUrl=${this.profileImageUrl}, bio=${this.bio}, privacy=${this.privacy}, followingCount=${this.followingCount}, followerCount=${this.followerCount}, followingStatus=${this.followingStatus}, followedByStatus=${this.followedByStatus}`;
     }
 }

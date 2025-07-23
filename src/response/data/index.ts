@@ -35,6 +35,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
     userId: string;
     name: string;
     profileImageUrl: string | undefined;
+    bio: string | undefined;
     followingCount: number;
     followerCount: number;
     privacy: UserPrivacy;
@@ -46,6 +47,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
         this.userId = userWithStats.userId;
         this.name = userWithStats.name;    
         this.profileImageUrl = userWithStats.profileImageUrl;
+        this.bio = userWithStats.bio;
         this.followingCount = userWithStats.followingCount;
         this.followerCount = userWithStats.followerCount;
         this.privacy = userWithStats.privacy;
@@ -58,6 +60,7 @@ export class UserWithStatsResponseData extends AbstractResponseData {
             userId: this.userId,
             name: this.name,
             profileImageUrl: this.profileImageUrl,
+            bio: this.bio,
             followingCount: this.followingCount,
             followerCount: this.followerCount,
             privacy: this.privacy,
@@ -150,12 +153,12 @@ export class EventsResponseData extends AbstractResponseData {
 }
 
 export class UserEventsResponseData extends AbstractResponseData {
-    user: UserResponseData;
+    user: UserWithStatsResponseData;
     events: EventsResponseData;
 
-    constructor(user: User, events: Event[]) {
+    constructor(userWithStats: UserWithStats, events: Event[]) {
         super();
-        this.user = new UserResponseData(user);
+        this.user = new UserWithStatsResponseData(userWithStats);
         this.events = new EventsResponseData(events);
     }
 

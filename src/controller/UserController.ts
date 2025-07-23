@@ -19,12 +19,13 @@ export class UserController {
         const userId: string = req.body.userId;
         const password: string = req.body.password;
         const name: string = req.body.name;
+        const bio: string | undefined = req.body.bio;
         if (userId === 'me' || userId === 'Me' || userId === 'mE' || userId === 'ME') {
             new ErrorResponse('User id cannot be "me"').send(res);
             return;
         }
         try {
-            const user = await this.userService.createUser({ userId, password, name });
+            const user = await this.userService.createUser({ userId, password, name, bio });
             const data = new UserResponseData(user);
             new CreateResponse(data, 'Register successful').send(res);
         }
@@ -50,11 +51,12 @@ export class UserController {
         const newUserId: string | undefined = req.body.userId;
         const newPassword: string | undefined = req.body.password;
         const newName: string | undefined = req.body.name;
+        const newBio: string | undefined = req.body.bio;
         try {
             if (!checkSession(req, res, this.sessionManager, userId)) {
                 return;
             }
-            const user = await this.userService.updateUser(userId, { userId: newUserId, password: newPassword, name: newName });
+            const user = await this.userService.updateUser(userId, { userId: newUserId, password: newPassword, name: newName, bio: newBio });
             const data = new UserResponseData(user);
             new SuccessResponse(data, 'Update user successful').send(res);
         }
@@ -176,9 +178,9 @@ export class UserController {
             const followings = await this.followService.getFollowings(userId);
             const userEvents: UserEventsResponseData[] = [];
             for (const following of followings) {
-                const user = await this.userService.getUser(following);
+                const userWithStats = await this.userService.getUserWithStats(following, userId);
                 const events = await this.eventService.getOtherEventsByUserId(following);
-                userEvents.push(new UserEventsResponseData(user, events));
+                userEvents.push(new UserEventsResponseData(userWithStats, events));
             }
             const data = new FeedResponseData(userEvents);
             new SuccessResponse(data, 'Feed retrieved successfully').send(res);
