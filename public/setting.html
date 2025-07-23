@@ -420,7 +420,8 @@ async function uploadProfileImage(event) {
                 sessionStorage.setItem("userIconUrl", newFullImageUrl); 
 
                 // 画像アップロード後、サーバーに新しい画像URLを保存するPUTリクエストも送信
-                const updateProfileResponse = await put('/api/users/me', { profileImageUrl: newRelativeImageUrl });
+                const myUserId = await getMyUserId();
+                const updateProfileResponse = await put(`/api/users/${myUserId}`, { profileImageUrl: newRelativeImageUrl });
                 if (!updateProfileResponse.ok) {
                     const updateErrorText = await updateProfileResponse.text();
                     throw new Error(`プロフィール画像URL保存APIエラー: ${updateProfileResponse.status} ${updateProfileResponse.statusText}. 詳細: ${updateErrorText.substring(0, 100)}...`);
@@ -549,7 +550,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         };
 
         try {
-          const response = await put('/api/users/me', updatedProfile);
+          const myUserId = await getMyUserId();
+          const response = await put(`/api/users/${myUserId}`, updatedProfile);
 
           if (response.ok) {
               const result = await response.json();
