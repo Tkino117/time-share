@@ -1,9 +1,11 @@
 import { NotificationRepository } from "../repository/NotificationRepository";
 import { NotificationCreateInput, NotificationUpdateInput } from "../repository/NotificationRepository";
 import { NotificationType, Notification } from "../database/database";
+import { UserService } from "./UserService";
+import { UserWithStatsResponseData } from "../response/data";
 
 export class NotificationService {
-    constructor(private readonly notificationRepository: NotificationRepository) {}
+    constructor(private readonly notificationRepository: NotificationRepository, private readonly userService: UserService) {}
 
     public async createNotification(notification: NotificationCreateInput): Promise<Notification> {
         // !note! あとでエラー処理かく
@@ -43,13 +45,16 @@ export class NotificationService {
     }
 
     public async createFollowNotification(userId: string, followingId: string): Promise<void> {
+        // !note! ここservice依存良くないのでいつか治す
+        const followingUser = await this.userService.getUserWithStats(followingId, userId);
+        const followingUserResponseData = new UserWithStatsResponseData(followingUser);
         await this.notificationRepository.create({
             userId: followingId,
             type: NotificationType.FOLLOW,
             title: 'フォローされました',
             message: `${userId} さんがあなたをフォローしました`,
             metadata: {
-                followingId: userId
+                followingUser: followingUserResponseData
             }
         });
     }

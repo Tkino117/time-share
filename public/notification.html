@@ -488,7 +488,7 @@
         if (notification.type === 'follow' || notification.type === 'follow_request' || notification.type === 'follow_request_accepted') {
             // ここで特定のアイコンを指定する代わりに、ユーザーのプロフィール画像を使用することを検討
             // または、フォロースタート/フォローリクエスト/フォロー承認用の汎用アイコンを使用
-            iconUrl = 'uploads/avatars/default-avatar.png'; // 例: ユーザーアイコンのプレースホルダー
+            iconUrl = notification.metadata?.followingUser?.profileImageUrl || 'uploads/avatars/default-avatar.png';
         }
 
         card.innerHTML = `

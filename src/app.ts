@@ -68,7 +68,7 @@ async function main() {
         const userService = new UserService(userRepository, sessionManager, followRepository, followRequestRepository);
         const eventService = new EventService(eventRepository, userRepository, sessionManager);
         const rankingService = new RankingService(eventRepository, userRepository, followRepository, followRequestRepository, 1);
-        const notificationService = new NotificationService(notificationRepository);
+        const notificationService = new NotificationService(notificationRepository, userService);
         const followRequestService = new FollowRequestService(followRequestRepository, userRepository, followRepository);
         const authController = new AuthController(userService, sessionManager);
         const userController = new UserController(userService, followService, sessionManager, eventService, notificationService);

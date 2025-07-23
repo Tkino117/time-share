@@ -800,7 +800,7 @@
         result.data.userEvents.forEach(userData => { 
           const userId = userData.user.userId;
           const username = userData.user.name;
-          const profilePictureUrl = userData.user.profilePictureUrl || 'uploads/avatars/default-avatar.png';
+          const profilePictureUrl = userData.user.profileImageUrl || 'uploads/avatars/default-avatar.png';
           // パスの先頭にスラッシュがない場合、追加する
           const finalProfilePictureUrl = profilePictureUrl.startsWith('/') ? profilePictureUrl : '/' + profilePictureUrl;
           let events = userData.events.events;
