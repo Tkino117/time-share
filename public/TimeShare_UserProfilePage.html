@@ -590,12 +590,28 @@
                             eventsResult.data.events.forEach(event => {
                                 const eventCard = document.createElement('div');
                                 eventCard.classList.add('event-card');
+                                
+                                // 時間の計算
+                                const startTime = new Date(event.startTime);
+                                const endTime = new Date(event.endTime);
+                                const durationMs = endTime.getTime() - startTime.getTime();
+                                const durationHours = Math.round((durationMs / (1000 * 60 * 60)) * 10) / 10; // 小数点第1位まで
+                                
+                                // 時間表示のフォーマット
+                                const formatTime = (date) => {
+                                    return date.toLocaleString('ja-JP', {
+                                        month: 'numeric',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        hour12: false
+                                    });
+                                };
+                                
                                 eventCard.innerHTML = `
                                     <h5>${event.name}</h5>
                                     <p class="event-time">
-                                        <span>${new Date(event.startTime).toLocaleString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false})}</span>
-                                        <span class="vertical-tilde">〜</span>
-                                        <span>${new Date(event.endTime).toLocaleString('ja-JP', {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false})}</span>
+                                        <span>${durationHours}時間&nbsp;&nbsp;${formatTime(startTime)} ～ ${formatTime(endTime)}</span>
                                     </p>
                                 `;
                                 userEventsFeed.appendChild(eventCard);

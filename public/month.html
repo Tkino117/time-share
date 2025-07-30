@@ -615,7 +615,6 @@
                           const result = await response.json();
                           if (result.success) {
                               info.event.remove();
-                              alert(result.message);
                           } else {
                               alert(`イベント削除失敗: ${result.message}`);
                           }
@@ -681,7 +680,6 @@
                           addEventModal.hide();
                           calendar.unselect();
                           this.reset();
-                          alert(result.message);
                       } else {
                           alert(`イベント追加失敗: ${result.message}`);
                       }
