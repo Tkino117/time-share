@@ -337,6 +337,9 @@
           }
 
           rankingsToDisplay.forEach(rankingType => {
+            if (rankingType.type === 'other' || rankingType.type === 'meal') {
+              return;
+            }
             const typeTitle = document.createElement('h3');
             typeTitle.textContent = `${rankingType.type ? rankingType.type.toUpperCase() : '不明'} ランキング`;
             typeTitle.style.marginTop = '15px';

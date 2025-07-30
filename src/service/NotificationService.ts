@@ -46,7 +46,7 @@ export class NotificationService {
 
     public async createFollowNotification(userId: string, followingId: string): Promise<void> {
         // !note! ここservice依存良くないのでいつか治す
-        const followingUser = await this.userService.getUserWithStats(followingId, userId);
+        const followingUser = await this.userService.getUserWithStats(userId, followingId);
         const followingUserResponseData = new UserWithStatsResponseData(followingUser);
         await this.notificationRepository.create({
             userId: followingId,

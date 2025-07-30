@@ -461,7 +461,6 @@
                           const result = await response.json();
                           if (result.success) {
                               info.event.remove(); // フロントエンドから削除
-                              alert(result.message); // 成功メッセージ表示
                           } else {
                               alert(`イベント削除失敗: ${result.message}`);
                           }

@@ -507,12 +507,14 @@
     }
 
     function handleNotificationClick(notification) {
+        console.log(notification.type);
         if (notification.type === 'follow' && notification.metadata && notification.metadata.followingUser.userId) {
+            console.log(notification.metadata.followingUser.userId);
             window.location.href = `/TimeShare_UserProfilePage.html?userId=${notification.metadata.followingUser.userId}`;
         } else if (notification.type === 'follow_request') {
             window.location.href = `/followrequest.html?requestId=${notification.id}`;
         } else if (notification.type === 'follow_request_accepted' && notification.metadata && notification.metadata.toUserId) {
-            window.location.href = `/TimeShare_UserProfilePage.html?userId=${notification.metadata.toUserId}`;
+            window.location.href = `/TimeShare_UserProfilePage.html?userId=${notification.metadata.followingUser.userId}`;
         } else {
             console.log(`通知がクリックされました: ${notification.title}`);
             console.log(notification.type);

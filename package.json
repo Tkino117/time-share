@@ -10,7 +10,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@types/express-fileupload": "^1.5.1",
     "@types/jest": "^29.5.14",
@@ -34,5 +33,18 @@
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
     "uuid": "^11.1.0"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tkino117/time-share.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Tkino117/time-share/issues"
+  },
+  "homepage": "https://github.com/Tkino117/time-share#readme",
+  "description": ""
 }
