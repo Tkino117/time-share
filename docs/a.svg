@@ -1,0 +1,103 @@
+<svg viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="800" height="700" fill="#ffffff"/>
+  
+  <!-- レイヤー背景 -->
+  <rect x="50" y="50" width="700" height="90" fill="#e3f2fd" stroke="#1976d2" stroke-width="2" rx="10"/>
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1976d2">Controller 層</text>
+  
+  <rect x="50" y="195" width="700" height="90" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" rx="10"/>
+  <text x="400" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#7b1fa2">Service 層</text>
+  
+  <rect x="50" y="345" width="700" height="90" fill="#e8f5e8" stroke="#388e3c" stroke-width="2" rx="10"/>
+  <text x="400" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#388e3c">Repository 層</text>
+  
+  <rect x="50" y="495" width="700" height="90" fill="#fff3e0" stroke="#f57c00" stroke-width="2" rx="10"/>
+  <text x="400" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#f57c00">Model 層</text>
+  
+  <!-- Controller -->
+  <rect x="100" y="70" width="120" height="50" fill="#bbdefb" stroke="#1976d2" stroke-width="2" rx="5"/>
+  <text x="160" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">User</text>
+  <text x="160" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Controller</text>
+  
+  <rect x="340" y="70" width="120" height="50" fill="#bbdefb" stroke="#1976d2" stroke-width="2" rx="5"/>
+  <text x="400" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Event</text>
+  <text x="400" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Controller</text>
+  
+  <!-- Service -->
+  <rect x="100" y="215" width="120" height="50" fill="#ce93d8" stroke="#7b1fa2" stroke-width="2" rx="5"/>
+  <text x="160" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">User</text>
+  <text x="160" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Service</text>
+  
+  <rect x="340" y="215" width="120" height="50" fill="#ce93d8" stroke="#7b1fa2" stroke-width="2" rx="5"/>
+  <text x="400" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Event</text>
+  <text x="400" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Service</text>
+  
+  <rect x="580" y="215" width="120" height="50" fill="#ce93d8" stroke="#7b1fa2" stroke-width="2" rx="5"/>
+  <text x="640" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Follow</text>
+  <text x="640" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Service</text>
+  
+  <!-- Repository -->
+  <rect x="100" y="365" width="120" height="50" fill="#a5d6a7" stroke="#388e3c" stroke-width="2" rx="5"/>
+  <text x="160" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">User</text>
+  <text x="160" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Repository</text>
+  
+  <rect x="340" y="365" width="120" height="50" fill="#a5d6a7" stroke="#388e3c" stroke-width="2" rx="5"/>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Event</text>
+  <text x="400" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Repository</text>
+  
+  <rect x="580" y="365" width="120" height="50" fill="#a5d6a7" stroke="#388e3c" stroke-width="2" rx="5"/>
+  <text x="640" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Follow</text>
+  <text x="640" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Repository</text>
+  
+  <!-- Model -->
+  <rect x="160" y="515" width="80" height="50" fill="#ffcc02" stroke="#f57c00" stroke-width="2" rx="5"/>
+  <text x="200" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">User</text>
+  <text x="200" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Model</text>
+  
+  <rect x="360" y="515" width="80" height="50" fill="#ffcc02" stroke="#f57c00" stroke-width="2" rx="5"/>
+  <text x="400" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Event</text>
+  <text x="400" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Model</text>
+  
+  <rect x="560" y="515" width="80" height="50" fill="#ffcc02" stroke="#f57c00" stroke-width="2" rx="5"/>
+  <text x="600" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Follow</text>
+  <text x="600" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" dominant-baseline="middle">Model</text>
+  
+  <!-- 依存関係の矢印 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+  
+  <!-- UserController -> UserService -->
+  <line x1="160" y1="120" x2="160" y2="215" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- EventController -> EventService -->
+  <line x1="400" y1="120" x2="400" y2="215" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Service -> Repository -->
+  <!-- UserService -> UserRepository -->
+  <line x1="160" y1="265" x2="160" y2="365" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- EventService -> EventRepository -->
+  <line x1="400" y1="265" x2="400" y2="365" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- EventService -> UserRepository -->
+  <line x1="340" y1="240" x2="220" y2="390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- FollowService -> Multiple Repositories -->
+  <line x1="580" y1="265" x2="580" y2="365" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="580" y1="240" x2="460" y2="390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="580" y1="240" x2="220" y2="390" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Repository -> Model -->
+  <!-- UserRepository -> User -->
+  <line x1="160" y1="415" x2="200" y2="515" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- EventRepository -> Event -->
+  <line x1="400" y1="415" x2="400" y2="515" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- FollowRepository -> Follow -->
+  <line x1="640" y1="415" x2="600" y2="515" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+</svg>

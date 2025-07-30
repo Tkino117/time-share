@@ -213,9 +213,9 @@
     .chart-container {
       margin: 20px 0;
       padding: 15px;
-      background-color: #f8f9fa;
+      background-color: white;
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
     }
 
     .chart-title {
@@ -358,13 +358,23 @@
             return;
           }
 
-          rankingsToDisplay.forEach(rankingType => {
+                    rankingsToDisplay.forEach(rankingType => {
             if (rankingType.type === 'other' || rankingType.type === 'meal') {
               return;
             }
+            
+            // 各type用のブロックコンテナを作成
+            const typeBlock = document.createElement('div');
+            typeBlock.style.marginBottom = '30px';
+            typeBlock.style.padding = '20px';
+            typeBlock.style.backgroundColor = 'white';
+            typeBlock.style.borderRadius = '10px';
+            typeBlock.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+            
             const typeTitle = document.createElement('h3');
             typeTitle.textContent = `${rankingType.type ? rankingType.type.toUpperCase() : '不明'}`;
-            typeTitle.style.marginTop = '15px';
+            typeTitle.style.marginTop = '0';
+            typeTitle.style.marginBottom = '20px';
             typeTitle.style.textAlign = 'center';
 
                          // 棒グラフコンテナを作成
@@ -383,7 +393,7 @@
             const rankingList = document.createElement('ul');
             rankingList.style.listStyle = 'none';
             rankingList.style.paddingLeft = '0';
-            rankingList.style.marginBottom = '20px';
+            rankingList.style.marginBottom = '0';
 
             if (rankingType.ranking.length === 0) {
               const listItem = document.createElement('li');
@@ -392,7 +402,7 @@
             } else {
               // TOP3のデータを取得
               const top3Data = rankingType.ranking.slice(0, 3);
-              
+               
               // 棒グラフを作成
               if (top3Data.length > 0) {
                 const ctx = canvas.getContext('2d');
@@ -470,21 +480,25 @@
                 });
               }
 
-              rankingType.ranking.forEach(item => {
-                const listItem = document.createElement('li');
-                listItem.style.marginBottom = '5px';
-                listItem.innerHTML = `
-                  <strong>${item.rank}位:</strong> ${item.user.name}さん (${item.duration_min}分)
-                `;
-                rankingList.appendChild(listItem);
-              });
+                             // TOP3のみを表示
+               const top3ForList = rankingType.ranking.slice(0, 3);
+               top3ForList.forEach(item => {
+                 const listItem = document.createElement('li');
+                 listItem.style.marginBottom = '5px';
+                 listItem.innerHTML = `
+                   <strong>${item.rank}位:</strong> ${item.user.name}さん (${item.duration_min}分)
+                 `;
+                 rankingList.appendChild(listItem);
+               });
             }
-            rankingContentDiv.appendChild(typeTitle);
-            rankingContentDiv.appendChild(chartContainer);
-            rankingContentDiv.appendChild(rankingList);
-            if (rankingsToDisplay.indexOf(rankingType) < rankingsToDisplay.length - 1) {
-              rankingContentDiv.appendChild(document.createElement('hr'));
-            }
+            
+            // ブロックコンテナに要素を追加
+            typeBlock.appendChild(typeTitle);
+            typeBlock.appendChild(chartContainer);
+            typeBlock.appendChild(rankingList);
+            
+            // メインコンテナにブロックを追加
+            rankingContentDiv.appendChild(typeBlock);
           });
         } else {
           rankingContentDiv.innerHTML = '<p>ランキングデータの取得に失敗しました。</p>';
