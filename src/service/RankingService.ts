@@ -99,11 +99,16 @@ export class RankingService {
 
     private updateRankingStartTime(): Date {
         // 前回の日曜日の開始時刻を設定
-        const today = new Date();
-        const day = today.getDay();
-        const diff = day === 0 ? 7 : day; // 日曜日からの差分を計算
-        const rankingStartTime = new Date(today);
-        rankingStartTime.setDate(today.getDate() - diff);
+        // const today = new Date();
+        // const day = today.getDay();
+        // const diff = day === 0 ? 7 : day; // 日曜日からの差分を計算
+        // const rankingStartTime = new Date(today);
+        // rankingStartTime.setDate(today.getDate() - diff);
+        // rankingStartTime.setHours(0, 0, 0, 0);
+
+        // 一週間前を開始時刻に設定
+        const rankingStartTime = new Date();
+        rankingStartTime.setDate(rankingStartTime.getDate() - 7);
         rankingStartTime.setHours(0, 0, 0, 0);
         return rankingStartTime;
     }
