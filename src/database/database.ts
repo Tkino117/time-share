@@ -66,6 +66,7 @@ export class Notification extends Model {
     public title!: string;
     public message!: string;
     public isRead!: boolean;
+    public imageUrl!: string;
     public metadata?: object;
 }
 
@@ -263,10 +264,15 @@ export class Database {
                 allowNull: false,
                 defaultValue: false
             },
+            imageUrl: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: '/images/alerm.png'
+            },
             metadata: {
                 type: DataTypes.JSON,
                 allowNull: true
-            }
+            },
         }, {
             sequelize: this.sequelize,
             modelName: 'Notification',

@@ -5,6 +5,7 @@ export type NotificationCreateInput = {
     type: NotificationType;
     title: string;
     message: string;
+    imageUrl?: string;
     metadata?: object;
 }
 
@@ -21,12 +22,16 @@ export class NotificationRepository {
     }
 
     public async create(notification: NotificationCreateInput): Promise<Notification> {
+        if (!notification.imageUrl) {
+            notification.imageUrl = '/images/alerm.png';
+        }
         return await Notification.create({
             userId: notification.userId,
             type: notification.type,
             title: notification.title,
             message: notification.message,
-            metadata: notification.metadata
+            metadata: notification.metadata,
+            imageUrl: notification.imageUrl
         });
     }
 

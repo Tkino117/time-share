@@ -230,6 +230,7 @@ export class NotificationResponseData extends AbstractResponseData {
     title: string;
     message: string;
     isRead: boolean;
+    imageUrl: string;
     metadata?: object;
 
     constructor(notification: Notification) {
@@ -240,6 +241,7 @@ export class NotificationResponseData extends AbstractResponseData {
         this.title = notification.title;
         this.message = notification.message;
         this.isRead = notification.isRead;
+        this.imageUrl = notification.imageUrl;
         this.metadata = notification.metadata;
     }
 
@@ -251,6 +253,7 @@ export class NotificationResponseData extends AbstractResponseData {
             title: this.title,
             message: this.message,
             isRead: this.isRead,
+            imageUrl: this.imageUrl,
             metadata: this.metadata
         };
     }

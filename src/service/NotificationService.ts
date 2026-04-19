@@ -55,31 +55,38 @@ export class NotificationService {
             message: `${userId} さんがあなたをフォローしました`,
             metadata: {
                 followingUser: followingUserResponseData
-            }
+            },
+            imageUrl: followingUserResponseData.profileImageUrl
         });
     }
 
     public async createFollowRequestNotification(fromUserId: string, toUserId: string): Promise<void> {
+        const fromUser = await this.userService.getUserWithStats(fromUserId, toUserId);
+        const fromUserResponseData = new UserWithStatsResponseData(fromUser);
         await this.notificationRepository.create({
             userId: toUserId,
             type: NotificationType.FOLLOW_REQUEST,
             title: 'フォローリクエスト',
             message: `${fromUserId} さんからフォローリクエストが届きました`,
             metadata: {
-                fromUserId: fromUserId
-            }
+                fromUser: fromUserResponseData
+            },
+            imageUrl: fromUserResponseData.profileImageUrl
         });
     }
 
     public async createFollowRequestAcceptedNotification(fromUserId: string, toUserId: string): Promise<void> {
+        const toUser = await this.userService.getUserWithStats(toUserId, fromUserId);
+        const toUserResponseData = new UserWithStatsResponseData(toUser);
         await this.notificationRepository.create({
             userId: fromUserId,
             type: NotificationType.FOLLOW_REQUEST_ACCEPTED,
             title: 'フォローリクエストが承認されました',
             message: `${toUserId} さんがあなたのフォローリクエストを承認しました`,
             metadata: {
-                toUserId: toUserId
-            }
+                toUser: toUserResponseData
+            },
+            imageUrl: toUserResponseData.profileImageUrl
         });
     }
 }
